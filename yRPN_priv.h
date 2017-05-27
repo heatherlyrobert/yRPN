@@ -11,8 +11,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7b"
-#define   zRPN_VER_TXT       "forgot to add bloody files to git ;p"
+#define   zRPN_VER_NUM       "0.7c"
+#define   zRPN_VER_TXT       "moved to make_program makefile enhancement"
 
 
 #define   zRPN_MAX_LEN       2000
