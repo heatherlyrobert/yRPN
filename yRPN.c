@@ -114,9 +114,13 @@ tPREC     precedence [MAX_PREC] = {
    { 'd' +  6,  "<="    , 'l',   2 },    /* relational less or equal          */
    { 'd' +  6,  ">"     , 'l',   2 },    /* relational greater                */
    { 'd' +  6,  ">="    , 'l',   2 },    /* relational more or equal          */
+   { 'd' +  6,  "#<"    , 'l',   2 },    /* relational string lesser          */
+   { 'd' +  6,  "#>"    , 'l',   2 },    /* relational string greater         */
    /*---(equality)---------------*/
    { 'd' +  7,  "=="    , 'l',   2 },    /* relational equality               */
    { 'd' +  7,  "!="    , 'l',   2 },    /* relational inequality             */
+   { 'd' +  7,  "#="    , 'l',   2 },    /* relational string equality        */
+   { 'd' +  7,  "#!"    , 'l',   2 },    /* relational string inequality      */
    /*---(bitwise)----------------*/
    { 'd' +  8,  "&"     , 'l',   2 },    /* bitwise AND                       */
    { 'd' +  9,  "^"     , 'l',   2 },    /* bitwise XOR                       */

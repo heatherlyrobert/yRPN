@@ -11,8 +11,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7c"
-#define   zRPN_VER_TXT       "moved to make_program makefile enhancement"
+#define   zRPN_VER_NUM       "0.7d"
+#define   zRPN_VER_TXT       "added spreadsheet string logical comparison operators"
 
 
 #define   zRPN_MAX_LEN       2000
