@@ -11,8 +11,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7d"
-#define   zRPN_VER_TXT       "added spreadsheet string logical comparison operators"
+#define   zRPN_VER_NUM       "0.7e"
+#define   zRPN_VER_TXT       "updated and cleaned yRPN__keywords and its unit test"
 
 
 #define   zRPN_MAX_LEN       2000
@@ -27,6 +27,46 @@ extern char     *v_operator;
 extern char     *v_address;
 
 extern char      zRPN_olddebug;
+
+/*---(DEBUGGING)----------------------*/
+#define      S_DEBUG_NO         'n'
+#define      S_DEBUG_YES        'y'
+
+/*---(token types)--------------------*/
+/*---(grouping)--------*/
+#define      S_TTYPE_GROUP      '('
+/*---(lower)-----------*/
+#define      S_TTYPE_CKEY       'k'
+#define      S_TTYPE_ERROR      'e'
+#define      S_TTYPE_TYPE       't'
+#define      S_TTYPE_CONST      'n'
+#define      S_TTYPE_OPER       'o'
+#define      S_TTYPE_FUNC       'f'
+#define      S_TTYPE_ADDR       '@'
+#define      S_TTYPE_SYM        'v'
+/*---(upper)-----------*/
+#define      S_TTYPE_CHAR       'C'
+#define      S_TTYPE_STR        'S'
+#define      S_TTYPE_HEX        'X'
+#define      S_TTYPE_BIN        'B'
+#define      S_TTYPE_BINHEX     "BX"
+#define      S_TTYPE_OCT        'O'
+#define      S_TTYPE_INT        'I'
+#define      S_TTYPE_FLOAT      'F'
+/*---(precidence)---------------------*/
+#define      S_PREC_NONE        '-'
+#define      S_PREC_FAIL        '?'
+#define      S_PREC_FUNC        'a'
+/*---(language support)---------------*/
+#define      S_LANG_C           'c'
+#define      S_LANG_GYGES       's'
+/*---(evalulation direction)----------*/
+#define      S_LEFT             'l'
+#define      S_RIGHT            'r'
+
+#define      S_PPROC_INCL       'i'
+#define      S_PPROC_OTHER      'o'
+
 
 typedef  struct cRPN_DEBUG   tRPN_DEBUG;
 struct cRPN_DEBUG {
@@ -48,17 +88,17 @@ tRPN_DEBUG  zRPN_debug;
 typedef   struct cRPN  tRPN;
 struct  cRPN {
    /*---(infix format)-----+-----------+-*/
-   char        source      [zRPN_MAX_LEN];  /* source infix string (saved)    */
-   int         nsource;                     /* source infix length (saved)    */
+   char        source      [zRPN_MAX_LEN];  /* source infix string (const)    */
+   int         nsource;                     /* length of source infix string  */
    /*---(working areas)----+-----------+-*/
    char        working     [zRPN_MAX_LEN];  /* copy of source for parsing     */
    int         nworking;                    /* position in working string     */
    /*---(working areas)----+-----------+-*/
-   char        type;
-   char        prec;
-   char        dir;
-   char        arity;
-   char        token       [zRPN_MAX_LEN];
+   char        type;                        /* category of token              */
+   char        prec;                        /* precidence                     */
+   char        dir;                         /* direction of evaluation        */
+   char        arity;                       /* unary, binary, etc.            */
+   char        token       [zRPN_MAX_LEN];  /* current token                  */
    int         ntoken;
    /*---(stack)------------+-----------+-*/
    char        stack       [zRPN_MAX_LEN][zRPN_MAX_LEN];
@@ -114,8 +154,8 @@ extern  tRPN      rpn;
 
 
 extern  char      zRPN_lang;
-#define   MODE_GYGES    if (zRPN_lang == 's')
-#define   MODE_HEPH     if (zRPN_lang == 'c')
+#define   MODE_GYGES    if (zRPN_lang == S_LANG_GYGES)
+#define   MODE_C        if (zRPN_lang == S_LANG_C    )
 
 
 extern  char      zRPN_divider [5];
@@ -159,7 +199,7 @@ int        /* ---- : save off constants --------------------------------------*/
 yRPN__constants    (int  a_pos);
 
 int        /* ---- : save off keywords ---------------------------------------*/
-yRPN__ckeywords    (int  a_pos);
+yRPN__keywords     (int  a_pos);
 
 int        /* ---- : save off type declarations ------------------------------*/
 yRPN__types        (int  a_pos);

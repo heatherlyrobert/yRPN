@@ -3,6 +3,7 @@
 #include  "yRPN.h"
 #include  "yRPN_priv.h"
 
+
 char      preproc     = 'n';
 
 char     *v_alphanum  = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
@@ -21,7 +22,7 @@ char     *v_address   = "@$abcdefghijklmnopqrstuvwxyz0123456789";
 
 char      zRPN_olddebug = 'n';
 
-char      zRPN_lang   = 'c';      /* c = C, s = spreadsheet                   */
+char      zRPN_lang   = S_LANG_C;
 
 char      zRPN_divider [5] = " ";
 char      zRPN_divtech [5] = " ";
@@ -76,83 +77,83 @@ struct    cPREC {
 tPREC     precedence [MAX_PREC] = {
    /*-prec------token----dir-arity-*/
    /*---(spreadsheet)------------*/
-   { 'd' +  0,  ".."    , 'l',   2 },    /* cell range                        */
+   { 'd' +  0,  ".."    , S_LEFT ,   2 },    /* cell range                        */
    /*---(preprocessor)-----------*/
-   /*> { 'd' +  0,  "#"     , 'l',   2 },    /+ prefix                            +/   <*/
-   /*> { 'd' +  0,  "##"    , 'l',   2 },    /+ stringification                   +/   <*/
+   /*> { 'd' +  0,  "#"     , S_LEFT ,   2 },    /+ prefix                            +/   <*/
+   /*> { 'd' +  0,  "##"    , S_LEFT ,   2 },    /+ stringification                   +/   <*/
    /*---(unary/prefix)-----------*/
-   { 'd' +  1,  "+-"    , 'l',   1 },    /* suffix increment                  */
-   { 'd' +  1,  "-+"    , 'l',   1 },    /* suffix decrement                  */
+   { 'd' +  1,  "+-"    , S_LEFT ,   1 },    /* suffix increment                  */
+   { 'd' +  1,  "-+"    , S_LEFT ,   1 },    /* suffix decrement                  */
    /*---(element of)-------------*/
-   { 'd' +  1,  "["     , 'l',   1 },    /* array subscripting                */
-   { 'd' +  1,  "]"     , 'l',   1 },    /* array subscripting                */
-   { 'd' +  1,  "."     , 'l',   2 },    /* element selection by reference    */
-   { 'd' +  1,  "->"    , 'l',   2 },    /* element selection thru pointer    */
+   { 'd' +  1,  "["     , S_LEFT ,   1 },    /* array subscripting                */
+   { 'd' +  1,  "]"     , S_LEFT ,   1 },    /* array subscripting                */
+   { 'd' +  1,  "."     , S_LEFT ,   2 },    /* element selection by reference    */
+   { 'd' +  1,  "->"    , S_LEFT ,   2 },    /* element selection thru pointer    */
    /*---(unary/prefix)-----------*/
-   { 'd' +  2,  "++"    , 'r',   1 },    /* prefix increment                  */
-   { 'd' +  2,  "--"    , 'r',   1 },    /* prefix decrement                  */
-   { 'd' +  2,  "+:"    , 'r',   1 },    /* unary plus                        */
-   { 'd' +  2,  "-:"    , 'r',   1 },    /* unary minus                       */
-   { 'd' +  2,  "!"     , 'r',   1 },    /* logical NOT                       */
-   { 'd' +  2,  "~"     , 'r',   1 },    /* bitwise NOT                       */
-   { 'd' +  2,  "*:"    , 'r',   1 },    /* indirection/dereference           */
-   { 'd' +  2,  "&:"    , 'r',   1 },    /* address-of                        */
+   { 'd' +  2,  "++"    , S_RIGHT,   1 },    /* prefix increment                  */
+   { 'd' +  2,  "--"    , S_RIGHT,   1 },    /* prefix decrement                  */
+   { 'd' +  2,  "+:"    , S_RIGHT,   1 },    /* unary plus                        */
+   { 'd' +  2,  "-:"    , S_RIGHT,   1 },    /* unary minus                       */
+   { 'd' +  2,  "!"     , S_RIGHT,   1 },    /* logical NOT                       */
+   { 'd' +  2,  "~"     , S_RIGHT,   1 },    /* bitwise NOT                       */
+   { 'd' +  2,  "*:"    , S_RIGHT,   1 },    /* indirection/dereference           */
+   { 'd' +  2,  "&:"    , S_RIGHT,   1 },    /* address-of                        */
    /*---(multiplicative)---------*/
-   { 'd' +  3,  "*"     , 'l',   2 },    /* multiplication                    */
-   { 'd' +  3,  "/"     , 'l',   2 },    /* division                          */
-   { 'd' +  3,  "%"     , 'l',   2 },    /* modulus                           */
+   { 'd' +  3,  "*"     , S_LEFT ,   2 },    /* multiplication                    */
+   { 'd' +  3,  "/"     , S_LEFT ,   2 },    /* division                          */
+   { 'd' +  3,  "%"     , S_LEFT ,   2 },    /* modulus                           */
    /*---(additive)---------------*/
-   { 'd' +  4,  "+"     , 'l',   2 },    /* addition                          */
-   { 'd' +  4,  "-"     , 'l',   2 },    /* substraction                      */
-   { 'd' +  4,  "#"     , 'l',   2 },    /* string concatination              */
-   { 'd' +  4,  "##"    , 'l',   2 },    /* string concatination              */
+   { 'd' +  4,  "+"     , S_LEFT ,   2 },    /* addition                          */
+   { 'd' +  4,  "-"     , S_LEFT ,   2 },    /* substraction                      */
+   { 'd' +  4,  "#"     , S_LEFT ,   2 },    /* string concatination              */
+   { 'd' +  4,  "##"    , S_LEFT ,   2 },    /* string concatination              */
    /*---(shift)------------------*/
-   { 'd' +  5,  "<<"    , 'l',   2 },    /* bitwise shift left                */
-   { 'd' +  5,  ">>"    , 'l',   2 },    /* bitwise shift right               */
+   { 'd' +  5,  "<<"    , S_LEFT ,   2 },    /* bitwise shift left                */
+   { 'd' +  5,  ">>"    , S_LEFT ,   2 },    /* bitwise shift right               */
    /*---(relational)-------------*/
-   { 'd' +  6,  "<"     , 'l',   2 },    /* relational lesser                 */
-   { 'd' +  6,  "<="    , 'l',   2 },    /* relational less or equal          */
-   { 'd' +  6,  ">"     , 'l',   2 },    /* relational greater                */
-   { 'd' +  6,  ">="    , 'l',   2 },    /* relational more or equal          */
-   { 'd' +  6,  "#<"    , 'l',   2 },    /* relational string lesser          */
-   { 'd' +  6,  "#>"    , 'l',   2 },    /* relational string greater         */
+   { 'd' +  6,  "<"     , S_LEFT ,   2 },    /* relational lesser                 */
+   { 'd' +  6,  "<="    , S_LEFT ,   2 },    /* relational less or equal          */
+   { 'd' +  6,  ">"     , S_LEFT ,   2 },    /* relational greater                */
+   { 'd' +  6,  ">="    , S_LEFT ,   2 },    /* relational more or equal          */
+   { 'd' +  6,  "#<"    , S_LEFT ,   2 },    /* relational string lesser          */
+   { 'd' +  6,  "#>"    , S_LEFT ,   2 },    /* relational string greater         */
    /*---(equality)---------------*/
-   { 'd' +  7,  "=="    , 'l',   2 },    /* relational equality               */
-   { 'd' +  7,  "!="    , 'l',   2 },    /* relational inequality             */
-   { 'd' +  7,  "#="    , 'l',   2 },    /* relational string equality        */
-   { 'd' +  7,  "#!"    , 'l',   2 },    /* relational string inequality      */
+   { 'd' +  7,  "=="    , S_LEFT ,   2 },    /* relational equality               */
+   { 'd' +  7,  "!="    , S_LEFT ,   2 },    /* relational inequality             */
+   { 'd' +  7,  "#="    , S_LEFT ,   2 },    /* relational string equality        */
+   { 'd' +  7,  "#!"    , S_LEFT ,   2 },    /* relational string inequality      */
    /*---(bitwise)----------------*/
-   { 'd' +  8,  "&"     , 'l',   2 },    /* bitwise AND                       */
-   { 'd' +  9,  "^"     , 'l',   2 },    /* bitwise XOR                       */
-   { 'd' + 10,  "|"     , 'l',   2 },    /* bitwise OR                        */
+   { 'd' +  8,  "&"     , S_LEFT ,   2 },    /* bitwise AND                       */
+   { 'd' +  9,  "^"     , S_LEFT ,   2 },    /* bitwise XOR                       */
+   { 'd' + 10,  "|"     , S_LEFT ,   2 },    /* bitwise OR                        */
    /*---(logical)----------------*/
-   { 'd' + 11,  "&&"    , 'l',   2 },    /* logical AND                       */
-   { 'd' + 12,  "||"    , 'l',   2 },    /* logical OR                        */
+   { 'd' + 11,  "&&"    , S_LEFT ,   2 },    /* logical AND                       */
+   { 'd' + 12,  "||"    , S_LEFT ,   2 },    /* logical OR                        */
    /*---(conditional)------------*/
-   { 'd' + 13,  "?"     , 'r',   2 },    /* trinary conditional               */
-   { 'd' + 13,  ":"     , 'r',   2 },    /* trinary conditional               */
+   { 'd' + 13,  "?"     , S_RIGHT,   2 },    /* trinary conditional               */
+   { 'd' + 13,  ":"     , S_RIGHT,   2 },    /* trinary conditional               */
    /*---(assignment)-------------*/
-   { 'd' + 14,  "="     , 'r',   2 },    /* direct assignment                 */
-   { 'd' + 14,  "+="    , 'r',   2 },
-   { 'd' + 14,  "-="    , 'r',   2 },
-   { 'd' + 14,  "*="    , 'r',   2 },
-   { 'd' + 14,  "/="    , 'r',   2 },
-   { 'd' + 14,  "%="    , 'r',   2 },
-   { 'd' + 14,  "<<="   , 'r',   2 },
-   { 'd' + 14,  ">>="   , 'r',   2 },
-   { 'd' + 14,  "&="    , 'r',   2 },
-   { 'd' + 14,  "^="    , 'r',   2 },
-   { 'd' + 14,  "|="    , 'r',   2 },
+   { 'd' + 14,  "="     , S_RIGHT,   2 },    /* direct assignment                 */
+   { 'd' + 14,  "+="    , S_RIGHT,   2 },
+   { 'd' + 14,  "-="    , S_RIGHT,   2 },
+   { 'd' + 14,  "*="    , S_RIGHT,   2 },
+   { 'd' + 14,  "/="    , S_RIGHT,   2 },
+   { 'd' + 14,  "%="    , S_RIGHT,   2 },
+   { 'd' + 14,  "<<="   , S_RIGHT,   2 },
+   { 'd' + 14,  ">>="   , S_RIGHT,   2 },
+   { 'd' + 14,  "&="    , S_RIGHT,   2 },
+   { 'd' + 14,  "^="    , S_RIGHT,   2 },
+   { 'd' + 14,  "|="    , S_RIGHT,   2 },
    /*---(comma)------------------*/
-   { 'd' + 15,  ","     , 'l',   2 },    /* comma                             */
+   { 'd' + 15,  ","     , S_LEFT ,   2 },    /* comma                             */
    /*---(parenthesis)------------*/
-   { 'd' + 16,  "("     , 'l',   1 },
-   { 'd' + 16,  ")"     , 'l',   1 },
+   { 'd' + 16,  "("     , S_LEFT ,   1 },
+   { 'd' + 16,  ")"     , S_LEFT ,   1 },
    /*---(semicolon)--------------*/
-   { 'd' + 17,  ";"     , 'l',   1 },
+   { 'd' + 17,  ";"     , S_LEFT ,   1 },
    /*---(braces)-----------------*/
-   { 'd' + 18,  "{"     , 'l',   1 },
-   { 'd' + 18,  "}"     , 'l',   1 },
+   { 'd' + 18,  "{"     , S_LEFT ,   1 },
+   { 'd' + 18,  "}"     , S_LEFT ,   1 },
    /*---(end)--------------------*/
    { '-'     ,  "end"   , '-',   0 },
 };
@@ -211,49 +212,49 @@ tTYPES    ctypes [MAX_TYPES] = {
 };
 
 #define   MAX_CKEYWORDS   200
-typedef   struct cCKEYWORDS tCKEYWORDS;
-struct    cCKEYWORDS {
+typedef   struct cKEYWORDS tKEYWORDS;
+struct    cKEYWORDS {
    char      name  [30];
    char      usage;
 };
-tCKEYWORDS  ckeywords [MAX_CKEYWORDS] = {
+tKEYWORDS  s_keywords [MAX_CKEYWORDS] = {
    /*---(beg)--------------------*/
-   { "beg-of-keywords"        , '-'                },
+   { "beg-of-keywords"        , '-' },
    /*---(preprocessor)-----------*/
-   { "include"                , 'b'                },
-   { "define"                 , 'b'                },
-   { "unfef"                  , 'b'                },
-   { "ifdef"                  , 'b'                },
-   { "ifndef"                 , 'b'                },
-   { "elif"                   , 'b'                },
-   { "endif"                  , 'b'                },
-   { "line"                   , 'b'                },
-   { "error"                  , 'b'                },
-   { "pragma"                 , 'b'                },
+   { "include"                , '-' },
+   { "define"                 , '-' },
+   { "unfef"                  , '-' },
+   { "ifdef"                  , '-' },
+   { "ifndef"                 , '-' },
+   { "elif"                   , '-' },
+   { "endif"                  , '-' },
+   { "line"                   , '-' },
+   { "error"                  , '-' },
+   { "pragma"                 , '-' },
    /*---(storage)----------------*/
-   { "struct"                 , 'b'                },
-   { "union"                  , 'b'                },
-   { "typedef"                , 'b'                },
-   { "enum"                   , 'b'                },
-   { "sizeof"                 , 'b'                },
+   { "struct"                 , '-' },
+   { "union"                  , '-' },
+   { "typedef"                , '-' },
+   { "enum"                   , '-' },
+   { "sizeof"                 , '-' },
    /*---(control)----------------*/
-   { "break"                  , 'b'                },
-   { "case"                   , 'b'                },
-   { "continue"               , 'b'                },
-   { "default"                , 'b'                },
-   { "do"                     , 'b'                },
-   { "else"                   , 'b'                },
-   { "for"                    , 'b'                },
-   { "goto"                   , 'b'                },
-   { "if"                     , 'b'                },
-   { "return"                 , 'b'                },
-   { "switch"                 , 'b'                },
-   { "while"                  , 'b'                },
+   { "break"                  , '-' },
+   { "case"                   , '-' },
+   { "continue"               , '-' },
+   { "default"                , '-' },
+   { "do"                     , '-' },
+   { "else"                   , '-' },
+   { "for"                    , '-' },
+   { "goto"                   , '-' },
+   { "if"                     , '-' },
+   { "return"                 , '-' },
+   { "switch"                 , '-' },
+   { "while"                  , '-' },
    /*---(reserving)--------------*/
-   { "asm"                    , 'b'                },
-   { "typeof"                 , 'b'                },
+   { "asm"                    , '-' },
+   { "typeof"                 , '-' },
    /*---(end)--------------------*/
-   { "end-of-keywords"        , '-'                },
+   { "end-of-keywords"        , '-' },
 };
 
 
@@ -322,7 +323,7 @@ yRPN__precedence   (void)
       return  0;
    }
    /*---(complete)----------------*/
-   rpn.prec  = '?';
+   rpn.prec  = S_PREC_FAIL;
    return -1;
 }
 
@@ -342,18 +343,18 @@ yRPN_arity         (char *a_op)
 
 
 /*====================------------------------------------====================*/
-/*===----                       stack management                       ----===*/
+/*===----                        normal output                         ----===*/
 /*====================------------------------------------====================*/
-static void        o___STACK___________o () { return; }
+static void        o___NORMAL__________o () { return; }
 
 char             /* [------] put current item on normal output ---------------*/
 yRPN__normal       (int a_pos)
 {
    char      x_token [zRPN_MAX_LEN];
-   /*> if (rpn.type == '(')  return 0;                                                <*/
-   /*> if (rpn.type == 'o' && strcmp(rpn.token, ",") == 0)  return 0;                 <*/
+   /*> if (rpn.type == S_TTYPE_GROUP)  return 0;                                                <*/
+   /*> if (rpn.type == S_TTYPE_OPER && strcmp(rpn.token, ",") == 0)  return 0;                 <*/
    /*> printf ("found a comma, skipping  %c, %c, %s\n", zRPN_lang, rpn.type, rpn.token);    <* 
-    *> if (zRPN_lang == 's' && rpn.type == 'o' && strcmp(rpn.token, ",") == 0)  return 0;   <* 
+    *> if (zRPN_lang == S_LANG_GYGES && rpn.type == S_TTYPE_OPER && strcmp(rpn.token, ",") == 0)  return 0;   <* 
     *> printf ("just didn't skip\n");                                                       <*/
    sprintf (x_token, "%c,%04d,%s%s", rpn.type, a_pos, rpn.token, zRPN_divtech);
    strncat (rpn.normal, x_token, zRPN_MAX_LEN);
@@ -361,6 +362,13 @@ yRPN__normal       (int a_pos)
    zRPN_DEBUG  printf("      RPN__normal     :: (---) %s\n", x_token);
    return 0;
 }
+
+
+
+/*====================------------------------------------====================*/
+/*===----                       stack management                       ----===*/
+/*====================------------------------------------====================*/
+static void        o___STACK___________o () { return; }
 
 char             /* [------] push current token to stack ---------------------*/
 yRPN__push         (void)
@@ -463,55 +471,60 @@ yRPN__token        (void)
 static void        o___C_LANG__________________o (void) {;}
 
 int        /* ---- : save off keywords ---------------------------------------*/
-yRPN__ckeywords    (int  a_pos)
-{
-   /*---(design notes)-------------------*/
-   /*
-    *  symbols begin with a letter and contain alphanumerics plus underscore.
-    *
-    */
-   /*---(locals)-------*-------------------*/
-   int       i         = a_pos;
-   int       j         = 0;
-   char      post      = 'n';
+yRPN__keywords     (int  a_pos)
+{  /*---(design notes)--------------------------------------------------------*/
+   /* symbols are only lowercase alphanumerics plus underscore.               */
+   /*---(locals)-------*-----------------*/
+   char      rce       =  -10;         /* return code for errors              */
+   int       x_pos     = a_pos;        /* updated position in input           */
+   int       x_len     = 0;            /* keyword/token length                */
+   int       i         = 0;            /* iterator for keywords               */
+   int       x_key     = -1;           /* index of keyword                    */
    int       rc        = 0;
-   /*---(defense: spreadsheet)-----------*/
-   MODE_GYGES      return a_pos;
+   /*---(defenses)-----------------------*/
+   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
+   rpn.type   = S_TTYPE_ERROR;
+   rpn.ntoken = 0;
+   --rce;  if (zRPN_lang == S_LANG_GYGES)                 return rce;
+   --rce;  if (a_pos <  0)                                return rce;
+   --rce;  if (a_pos >= rpn.nworking)                     return rce;
+   --rce;  if (strchr(v_lower, rpn.working[a_pos]) == 0)  return rce;
    /*---(prepare)------------------------*/
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = 'k';
-   rpn.prec = '-';
-   /*---(defenses)-----------------------*/
-   if (i              >= rpn.nworking)        return  zRPN_ERR_INPUT_NOT_AVAIL;
-   if (strchr(v_lower, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_START_ALPHA;
-   /*---(main loop)------------------------*/
-   zRPN_DEBUG  printf("   ckeywords---------------\n");
+   rpn.type = S_TTYPE_CKEY;
+   rpn.prec = S_PREC_NONE;
+   zRPN_DEBUG  printf("   s_keywords--------------\n");
    rpn.ntoken = 0;
-   while (i < rpn.nworking) {
+   /*---(accumulate characters)------------*/
+   while (x_pos < rpn.nworking) {
       /*---(test for right characters)-----*/
-      if (strchr(v_lower, rpn.working[i]) == 0)  break;
+      if (strchr(v_lower, rpn.working[x_pos]) == 0)  break;
       /*---(normal name)-------------------*/
-      rpn.token[j]     = rpn.working[i];
-      rpn.token[j + 1] = '\0';
-      ++rpn.ntoken;
+      rpn.token[x_len]    = rpn.working[x_pos];
+      rpn.token[++x_len]  = '\0';
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.ntoken, rpn.token);
+      zRPN_DEBUG  printf("          (%02d) <<%s>>\n", x_len, rpn.token);
       /*---(prepare for next char)-------*/
-      ++i;
-      ++j;
+      ++x_pos;
    }
-   for (j = 0; j < MAX_CKEYWORDS; ++j) {
-      if  (strcmp (ckeywords [j].name, "end-of-keywords") == 0) {
-         strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-         rpn.type = 'e';
-         rpn.ntoken = 0;
-         return zRPN_ERR_UNKNOWN_TYPE;
-      }
-      if  (strcmp (ckeywords [j].name, rpn.token ) == 0) break;
+   rpn.ntoken = x_len;
+   /*---(try to match keyword)-------------*/
+   for (i = 0; i < MAX_CKEYWORDS; ++i) {
+      if  (strcmp (s_keywords [i].name, "end-of-keywords") == 0) break;
+      if  (strcmp (s_keywords [i].name, rpn.token ) != 0)        continue;
+      x_key = i;
+      break;
+   }
+   /*---(handle misses)--------------------*/
+   --rce;  if (x_key < 0) {
+      strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
+      rpn.type   = S_TTYPE_ERROR;
+      rpn.ntoken = 0;
+      return rce;
    }
    /*---(mark includes)--------------------*/
    if (preproc == 'y') {
-      if (strcmp (rpn.token, "include") == 0)  preproc = 'i';
+      if (strcmp (rpn.token, "include") == 0)  preproc = S_PPROC_INCL;
       else                                     preproc = 'o';
    }
    /*---(end)------------------------------*/
@@ -521,11 +534,11 @@ yRPN__ckeywords    (int  a_pos)
    yRPN__normal (a_pos);
    rpn.lops = 'y';
    /*---(complete)-------------------------*/
-   return i;
+   return x_pos;
 }
 
 int        /* ---- : save off type declarations ------------------------------*/
-yRPN__ctypes       (int  a_pos)
+yRPN__types        (int  a_pos)
 {
    /*---(design notes)-------------------*/
    /*
@@ -533,6 +546,7 @@ yRPN__ctypes       (int  a_pos)
     *
     */
    /*---(locals)-------*-------------------*/
+   char      rce       =  -10;
    int       i         = a_pos;
    int       j         = 0;
    char      post      = 'n';
@@ -541,11 +555,11 @@ yRPN__ctypes       (int  a_pos)
    MODE_GYGES      return a_pos;
    /*---(prepare)------------------------*/
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = 't';
-   rpn.prec = '-';
+   rpn.type = S_TTYPE_TYPE;
+   rpn.prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
-   if (i              >= rpn.nworking)        return  zRPN_ERR_INPUT_NOT_AVAIL;
-   if (strchr(v_lower, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_START_ALPHA;
+   --rce;  if (i >= rpn.nworking)                     return rce;
+   --rce;  if (strchr(v_lower, rpn.working[i]) == 0)  return rce;
    /*---(main loop)------------------------*/
    zRPN_DEBUG  printf("   ctypes------------------\n");
    rpn.ntoken = 0;
@@ -566,7 +580,7 @@ yRPN__ctypes       (int  a_pos)
    for (j = 0; j < MAX_TYPES; ++j) {
       if  (strcmp (ctypes [j].name, "end-of-types") == 0) {
          strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-         rpn.type = 'e';
+         rpn.type = S_TTYPE_ERROR;
          rpn.ntoken = 0;
          return zRPN_ERR_UNKNOWN_TYPE;
       }
@@ -604,10 +618,10 @@ yRPN__constants    (int  a_pos)
    int       rc        = 0;
    /*---(prepare)------------------------*/
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = 'n';
-   rpn.prec = '-';
+   rpn.type = S_TTYPE_CONST;
+   rpn.prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
-   if (zRPN_lang       != 's'        )        return  zRPN_ERR_NOT_SPREADSHEET;
+   if (zRPN_lang      != S_LANG_GYGES)        return  zRPN_ERR_NOT_SPREADSHEET;
    if (i              >= rpn.nworking)        return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (strchr(v_alpha, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_START_ALPHA;
    /*---(main loop)------------------------*/
@@ -659,8 +673,8 @@ yRPN__chars        (int  a_pos)
    char      prev      = ' ';
    /*---(prepare)------------------------*/
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = 'C';
-   rpn.prec = '-';
+   rpn.type = S_TTYPE_CHAR;
+   rpn.prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    if (i              >= rpn.nworking)    return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (rpn.working[i] != '\''        )    return  zRPN_ERR_NO_STARTING_QUOTE;
@@ -714,59 +728,49 @@ yRPN__text         (int  a_pos)
 
 int        /* ---- : save off string literals --------------------------------*/
 yRPN__strings      (int  a_pos)
-{
-   /*---(design notes)-------------------*/
-   /*
-    *  string literals begin with a double quote and end with the same.
-    *  they can not be nested, but escaped characters can appear inside.
-    *
-    *  serious errors...
-    *     - no leading quote
-    *     - no trailing quote
-    *
-    *  warnings...
-    *     (none)
-    *
-    */
+{  /*---(design notes)--------------------------------------------------------*/
+   /*  begin and end with double quotes, can escape quotes inside             */
    /*---(locals)-------------------------*/
-   int       i         = a_pos;
+   int       x_pos     = a_pos;
+   int       x_len     = 0;
    int       j         = 0;
    char      prev      = ' ';
+   /*---(defenses)-----------------------*/
+   if (a_pos >= rpn.nworking)                                   return  zRPN_ERR_INPUT_NOT_AVAIL;
+   if (rpn.working[a_pos] != '\"' && rpn.working[a_pos] != '<') return  zRPN_ERR_NO_STARTING_QUOTE;
    /*---(prepare)------------------------*/
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = 'S';
-   rpn.prec = '-';
-   /*---(defenses)-----------------------*/
-   if (i              >= rpn.nworking)                  return  zRPN_ERR_INPUT_NOT_AVAIL;
-   if (rpn.working[i] != '\"' && rpn.working[i] != '<') return  zRPN_ERR_NO_STARTING_QUOTE;
-   /*---(main loop)----------------------*/
-   zRPN_DEBUG  printf("   string-----------------\n");
+   rpn.type = S_TTYPE_STR;
+   rpn.prec = S_PREC_NONE;
    rpn.ntoken = 0;
+   zRPN_DEBUG  printf("   string-----------------\n");
+   /*---(accumulate characters)------------*/
    zRPN_DEBUG  printf("      start             (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
-   while (i < rpn.nworking) {
-      zRPN_DEBUG  printf("      %02d) testing %c", j, rpn.working[i]);
+   while (x_pos < rpn.nworking) {
+      zRPN_DEBUG  printf("      %02d) testing %c", j, rpn.working[x_pos]);
       /*---(normal name)-----------------*/
-      rpn.token[j]     = rpn.working[i];
-      rpn.token[j + 1] = '\0';
+      rpn.token[x_len]    = rpn.working[x_pos];
+      rpn.token[++x_len]  = '\0';
       ++rpn.ntoken;
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.ntoken, rpn.token);
+      zRPN_DEBUG  printf("          (%02d) <<%s>>\n", x_len, rpn.token);
       /*---(test for end)----------------*/
-      if (rpn.working[i] == '\"' && j > 0 && prev != '\\')  break;
-      if (preproc == 'i' && rpn.working[i] == '>')          break;
+      if (rpn.working[x_pos] == '\"' && j > 0 && prev != '\\')  break;
+      if (preproc == S_PPROC_INCL && rpn.working[x_pos] == '>')          break;
       /*---(prepare for next char)-------*/
-      prev  = rpn.working[i];
-      ++i;
+      prev  = rpn.working[x_pos];
+      ++x_pos;
       ++j;
    }
+   rpn.ntoken = x_pos;
    /*---(check for long enough)----------*/
-   if (i  <= a_pos + 1) {
+   if (x_pos  <= a_pos + 1) {
       strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
       rpn.ntoken = 0;
       return  zRPN_ERR_LITERAL_TOO_SHORT;
    }
    /*---(check for final quote)----------*/
-   if (rpn.working[i] != '\"' && rpn.working[i] != '>') {
+   if (rpn.working[x_pos] != '\"' && rpn.working[x_pos] != '>') {
       strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
       rpn.ntoken = 0;
       return  zRPN_ERR_NO_ENDING_QUOTE;
@@ -779,7 +783,7 @@ yRPN__strings      (int  a_pos)
    yRPN__normal (a_pos);
    rpn.lops = 'n';
    /*---(complete)-----------------------*/
-   return ++i;
+   return ++x_pos;
 }
 
 int        /* ---- : save off symbol names -----------------------------------*/
@@ -799,8 +803,8 @@ yRPN__symbols      (int   a_pos)
    int       rc        = 0;
    /*---(prepare)------------------------*/
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = 'v';
-   rpn.prec = '-';
+   rpn.type = S_TTYPE_SYM;
+   rpn.prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    if (i              >= rpn.nworking)        return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (strchr(v_alpha, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_START_ALPHA;
@@ -815,8 +819,8 @@ yRPN__symbols      (int   a_pos)
       }
       /*---(function marker)---------------*/
       if (rpn.working[i] == '(') {
-         rpn.type = 'p';
-         rpn.prec = 'a';
+         rpn.type = S_TTYPE_FUNC;
+         rpn.prec = S_PREC_FUNC;
          yRPN__push();
          yRPN__normal (a_pos);
          break;
@@ -836,7 +840,7 @@ yRPN__symbols      (int   a_pos)
    }
    /*---(end)------------------------------*/
    zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
-   if (rpn.type == 'v')  {
+   if (rpn.type == S_TTYPE_SYM)  {
       yRPN__save();
       yRPN__normal (a_pos);
    }
@@ -863,8 +867,8 @@ yRPN__numbers      (int  a_pos)
    int       points    = 0;
    /*---(prepare)------------------------*/
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type   = 'e';
-   rpn.prec   = '-';
+   rpn.type   = S_TTYPE_ERROR;
+   rpn.prec   = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    if (i              >= rpn.nworking) {
       DEBUG_OPER  yLOG_exit    (__FUNCTION__);
@@ -905,11 +909,11 @@ yRPN__numbers      (int  a_pos)
          zRPN_DEBUG  printf ("      switching to binary constant mode\n");
          rpn.type = 'B';
       } else {
-         if      (rpn.type == 'I' && strchr(v_number  , rpn.working[i]) == 0)  break;
-         else if (rpn.type == 'F' && strchr(v_number  , rpn.working[i]) == 0)  break;
-         else if (rpn.type == 'X' && strchr(v_hex     , rpn.working[i]) == 0)  break;
-         else if (rpn.type == 'B' && strchr(v_binary  , rpn.working[i]) == 0)  break;
-         else if (rpn.type == 'O' && strchr(v_octal   , rpn.working[i]) == 0)  break;
+         if      (rpn.type == S_TTYPE_INT   && strchr(v_number  , rpn.working[i]) == 0)  break;
+         else if (rpn.type == S_TTYPE_FLOAT && strchr(v_number  , rpn.working[i]) == 0)  break;
+         else if (rpn.type == S_TTYPE_HEX   && strchr(v_hex     , rpn.working[i]) == 0)  break;
+         else if (rpn.type == S_TTYPE_BIN   && strchr(v_binary  , rpn.working[i]) == 0)  break;
+         else if (rpn.type == S_TTYPE_OCT   && strchr(v_octal   , rpn.working[i]) == 0)  break;
       }
       /*---(normal number)-----------------*/
       rpn.token[j]     = rpn.working[i];
@@ -922,15 +926,15 @@ yRPN__numbers      (int  a_pos)
       ++j;
    }
    /*---(check for octal)------------------*/
-   if (rpn.type == 'I' && rpn.ntoken > 1 && rpn.token [0] == '0') {
+   if (rpn.type == S_TTYPE_INT && rpn.ntoken > 1 && rpn.token [0] == '0') {
       zRPN_DEBUG  printf ("      recast as an octal onstant\n");
-      rpn.type = 'O';
+      rpn.type = S_TTYPE_OCT;
    }
    /*---(check for no payload)-------------*/
-   if ((strchr ("BX", rpn.type) != 0) && rpn.ntoken < 3) {
+   if ((strchr (S_TTYPE_BINHEX, rpn.type) != 0) && rpn.ntoken < 3) {
       zRPN_DEBUG  printf ("      special format (0x or 0b) has no payload)\n");
       strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-      rpn.type   = 'e';
+      rpn.type   = S_TTYPE_ERROR;
    }
    /*---(end)------------------------------*/
    zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
@@ -961,8 +965,8 @@ yRPN__operators    (int  a_pos)
    int       rc        = 0;
    /*---(prepare)------------------------*/
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = 'o';
-   rpn.prec = '-';
+   rpn.type = S_TTYPE_OPER;
+   rpn.prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    DEBUG_OPER  yLOG_value   ("nworking"  , rpn.nworking);
    if (i              >= rpn.nworking) {
@@ -980,7 +984,7 @@ yRPN__operators    (int  a_pos)
       DEBUG_OPER  yLOG_complex ("current"   , "i=%3d, j=%3d, ch=%c", i, j, rpn.working[i]);
       /*---(test for right chars)-------------*/
       if (strchr(v_operator, rpn.working[i]) == 0)  break;
-      if (zRPN_lang != 's' && rpn.count == 0 && rpn.working[i] == '#')   preproc = 'y';
+      if (zRPN_lang != S_LANG_GYGES && rpn.count == 0 && rpn.working[i] == '#')   preproc = 'y';
       /*---(add to token)------------------*/
       rpn.token[j]     = rpn.working[i];
       rpn.token[j + 1] = '\0';
@@ -988,7 +992,7 @@ yRPN__operators    (int  a_pos)
       DEBUG_OPER  yLOG_complex ("token"     , "len=%3d, str=%s", rpn.ntoken, rpn.token);
       /*---(check for too long)---------------*/
       yRPN__precedence ();
-      if (j > 0 && rpn.prec == '?') {
+      if (j > 0 && rpn.prec == S_PREC_FAIL) {
          rpn.token[j]     = '\0';
          --rpn.ntoken;
          --j;
@@ -1027,10 +1031,10 @@ yRPN__operators    (int  a_pos)
    yRPN__peek ();
    DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.prec, rpn.t_prec);
    zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.prec, rpn.t_prec);
-   if ( (rpn.dir == 'l' && rpn.prec >= rpn.t_prec) ||
-         (rpn.dir == 'r' && rpn.prec >  rpn.t_prec)) {
-      while ((rpn.dir == 'l' && rpn.prec >= rpn.t_prec) ||
-            (rpn.dir == 'r' && rpn.prec >  rpn.t_prec)) {
+   if ( (rpn.dir == S_LEFT && rpn.prec >= rpn.t_prec) ||
+         (rpn.dir == S_RIGHT && rpn.prec >  rpn.t_prec)) {
+      while ((rpn.dir == S_LEFT && rpn.prec >= rpn.t_prec) ||
+            (rpn.dir == S_RIGHT && rpn.prec >  rpn.t_prec)) {
          /*> if (rpn__last != 'z') RPN__pops();                                       <*/
          if (rpn.t_prec == 'z') break;
          yRPN__pops();
@@ -1060,22 +1064,20 @@ yRPN__grouping     (int  a_pos)
    zRPN_DEBUG  printf("   group------------------\n");
    /*---(locals)---------------------------*/
    int       i         = a_pos;
-   int       j         = 0;
    int       rc        = 0;
    char      x_match   = ' ';
    char      x_fake    = 'n';
    /*---(prepare)------------------------*/
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.token[j]     = rpn.working[i];
-   rpn.token[j + 1] = '\0';
-   rpn.type         = '(';
-   rpn.prec         = '-';
+   rpn.token[0] = rpn.working[i];
+   rpn.token[1] = '\0';
+   rpn.type     = S_TTYPE_GROUP;
+   rpn.prec     = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    if (i              >= rpn.nworking)           return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (strchr(v_paren   , rpn.working[i]) == 0)  return  zRPN_ERR_NOT_GROUPING;
    /*---(main loop)------------------------*/
    rpn.ntoken = 1;
-   ++j;
    ++i;
    /*---(end)------------------------------*/
    zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
@@ -1087,13 +1089,13 @@ yRPN__grouping     (int  a_pos)
       yRPN__token ();
       /*> strcpy (rpn.token, "]*");                                                   <*/
       strcpy (rpn.token, "]");
-      rpn.type         = 'o';
+      rpn.type         = S_TTYPE_OPER;
       yRPN__push();
       strcpy (rpn.token, "[");
       yRPN__normal (a_pos);
       x_fake = 'y';
       strcpy (rpn.token, "(");
-      rpn.type         = '(';
+      rpn.type         = S_TTYPE_GROUP;
       yRPN__precedence ();
    }
    /*---(open paren)-----------------------*/
@@ -1107,7 +1109,7 @@ yRPN__grouping     (int  a_pos)
    if (rpn.token[0] == ']') {
       yRPN__token ();
       strcpy (rpn.token, ")");
-      rpn.type         = ')';
+      rpn.type         = S_TTYPE_GROUP;
       yRPN__precedence ();
       x_fake = 'y';
    }
@@ -1141,8 +1143,8 @@ yRPN__grouping     (int  a_pos)
          /*> zRPN_DEBUG  printf ("      FATAL :: nothing more on stack\n");           <*/
          /*> return rc;                                                               <*/
       }
-      if (zRPN_lang != 's') {
-         rpn.type = 'o';
+      if (zRPN_lang != S_LANG_GYGES) {
+         rpn.type = S_TTYPE_OPER;
          yRPN__save ();
          yRPN__normal (a_pos);
          rpn.lops = 'y';
@@ -1291,11 +1293,11 @@ yRPN__addresses    (int  a_pos)
    /*---(prepare)------------------------*/
    zRPN_DEBUG  printf("entering yRPN_addresses");
    strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = '@';
-   rpn.prec = '-';
+   rpn.type = S_TTYPE_ADDR;
+   rpn.prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    zRPN_DEBUG  printf("entering defenses");
-   if (zRPN_lang       != 's'         )         return  zRPN_ERR_NOT_SPREADSHEET;
+   if (zRPN_lang       != S_LANG_GYGES)         return  zRPN_ERR_NOT_SPREADSHEET;
    if (i               >= rpn.nworking)         return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (strchr(v_address, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_ADDRESS_CHAR;
    /*---(main loop)------------------------*/
@@ -1377,7 +1379,7 @@ yRPN__load         (
    zRPN_DEBUG  printf("   output  (%02d) <<%s>>\n", rpn.noutput , rpn.output );
    /*---(set the working vars)-----------*/
    rpn.nnormal  = 0;
-   rpn.type     = 'e';
+   rpn.type     = S_TTYPE_ERROR;
    rpn.nstack   = 0;
    rpn.depth    = 0;
    rpn.count    = 0;
@@ -1391,7 +1393,7 @@ yRPN__load         (
 char       /* ---- : set c human readable ------------------------------------*/
 yRPN__chuman       (void)
 {
-   zRPN_lang    = 'c';
+   zRPN_lang    = S_LANG_C;
    strcpy (zRPN_divider, " ");
    return 0;
 }
@@ -1399,7 +1401,7 @@ yRPN__chuman       (void)
 char       /* ---- : set spreadsheet human readable --------------------------*/
 yRPN__shuman       (int *a_ntoken)
 {
-   zRPN_lang    = 's';
+   zRPN_lang    = S_LANG_GYGES;
    strcpy (zRPN_divider, " ");
    return 0;
 }
@@ -1407,7 +1409,7 @@ yRPN__shuman       (int *a_ntoken)
 char       /* ---- : set c internal ------------------------------------------*/
 yRPN_compiler      (void)
 {
-   zRPN_lang    = 'c';
+   zRPN_lang    = S_LANG_C;
    strcpy (zRPN_divider, ", ");
    strcpy (zRPN_divtech, "\x1F");
    return 0;
@@ -1422,7 +1424,7 @@ yRPN_spreadsheet   (
    /*---(locals)-----------+-----------+-*/
    char       *x_rpn       = NULL;          /* return string of rpn notation  */
    /*---(prepare flags)------------------*/
-   zRPN_lang    = 's';
+   zRPN_lang    = S_LANG_GYGES;
    strcpy (zRPN_divider, ",");
    /*---(convert)------------------------*/
    x_rpn = yRPN_convert (a_source);
@@ -1441,7 +1443,7 @@ char*      /* ---- : retrieve the tokenized format ---------------------------*/
 yRPN_stokens       (char *a_source)
 {
    char     *x_rpn = NULL;
-   zRPN_lang    = 's';
+   zRPN_lang    = S_LANG_GYGES;
    strcpy (zRPN_divider, " ");
    x_rpn = yRPN_convert (a_source);
    if (x_rpn == NULL)   return NULL;
@@ -1452,7 +1454,7 @@ char*      /* ---- : retrieve the normal format ------------------------------*/
 yRPN_normal        (char *a_source, char *a_normal, int *a_ntoken)
 {
    char     *x_rpn = NULL;
-   zRPN_lang    = 'c';
+   zRPN_lang    = S_LANG_C;
    strcpy (zRPN_divider, ", ");
    strcpy (zRPN_divtech, "\x1F");
    x_rpn = yRPN_convert (a_source);
@@ -1470,7 +1472,7 @@ char*      /* ---- : retrieve the detailed format ----------------------------*/
 yRPN_detail        (char *a_source, char *a_detail, int *a_ntoken)
 {
    char     *x_rpn = NULL;
-   zRPN_lang    = 'c';
+   zRPN_lang    = S_LANG_C;
    strcpy (zRPN_divider, ", ");
    strcpy (zRPN_divtech, "\x1F");
    x_rpn = yRPN_convert (a_source);
@@ -1488,7 +1490,7 @@ char*      /* ---- : retrieve the tokenized format ---------------------------*/
 yRPN_techtoken     (char *a_source)
 {
    char     *x_rpn = NULL;
-   zRPN_lang    = 'c';
+   zRPN_lang    = S_LANG_C;
    strcpy (zRPN_divider, "\x1F");
    x_rpn = yRPN_convert (a_source);
    if (x_rpn == NULL)   return NULL;
@@ -1499,7 +1501,7 @@ char*      /* ---- : retrieve the tokenized format ---------------------------*/
 yRPN_tokens        (char *a_source)
 {
    char     *x_rpn = NULL;
-   zRPN_lang    = 'c';
+   zRPN_lang    = S_LANG_C;
    strcpy (zRPN_divider, " ");
    x_rpn = yRPN_convert (a_source);
    if (x_rpn == NULL)   return NULL;
@@ -1568,6 +1570,7 @@ yRPN_convert       (char *a_source)
    int       i         = 1;
    int       len       = 0;
    int       rc        = 0;
+   char      x_ch      = 0;
    /*---(defenses)-----------------------*/
    if (a_source     == NULL)  {
       DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
@@ -1581,26 +1584,27 @@ yRPN_convert       (char *a_source)
    while (i < rpn.nworking) {
       /*---(pick handler)----------------*/
       rc = i;
-      if (rc <= i && rpn.working[i] == '\"')                    rc = yRPN__strings    (i);
-      if (rc <= i && rpn.working[i] == '\'')                    rc = yRPN__chars      (i);
-      if (rc <= i && rpn.working[i] == '<' && preproc == 'i' )  rc = yRPN__strings    (i);
-      if (rc <= i && preproc == 'o'                          )  rc = yRPN__text       (i);
-      if (rc <= i && strchr(v_address  , rpn.working[i]) != 0)  rc = yRPN__addresses  (i);
-      if (rc <= i && strchr(v_lower    , rpn.working[i]) != 0)  rc = yRPN__ckeywords  (i);
-      if (rc <= i && strchr(v_lower    , rpn.working[i]) != 0)  rc = yRPN__ctypes     (i);
-      if (rc <= i && strchr(v_alpha    , rpn.working[i]) != 0)  rc = yRPN__constants  (i);
-      if (rc <= i && strchr(v_alpha    , rpn.working[i]) != 0)  rc = yRPN__symbols    (i);
-      if (rc <= i && strchr(v_number   , rpn.working[i]) != 0)  rc = yRPN__numbers    (i);
-      if (rc <= i && strchr(v_paren    , rpn.working[i]) != 0)  rc = yRPN__grouping   (i);
-      if (rc <= i && strchr(v_operator , rpn.working[i]) != 0)  rc = yRPN__operators  (i);
+      x_ch = rpn.working [i];
+      if (rc <= i && x_ch == '\"')                            rc = yRPN__strings    (i);
+      if (rc <= i && x_ch == '\'')                            rc = yRPN__chars      (i);
+      if (rc <= i && x_ch == '<' && preproc == S_PPROC_INCL)  rc = yRPN__strings    (i);
+      if (rc <= i &&                preproc == S_PPROC_OTHER) rc = yRPN__text       (i);
+      if (rc <= i && strchr(v_address  , x_ch) != 0)          rc = yRPN__addresses  (i);
+      if (rc <= i && strchr(v_lower    , x_ch) != 0)          rc = yRPN__keywords   (i);
+      if (rc <= i && strchr(v_lower    , x_ch) != 0)          rc = yRPN__types      (i);
+      if (rc <= i && strchr(v_alpha    , x_ch) != 0)          rc = yRPN__constants  (i);
+      if (rc <= i && strchr(v_alpha    , x_ch) != 0)          rc = yRPN__symbols    (i);
+      if (rc <= i && strchr(v_number   , x_ch) != 0)          rc = yRPN__numbers    (i);
+      if (rc <= i && strchr(v_paren    , x_ch) != 0)          rc = yRPN__grouping   (i);
+      if (rc <= i && strchr(v_operator , x_ch) != 0)          rc = yRPN__operators  (i);
       /*---(unrecognized)----------------*/
       if (rc <= i) {
-         if (rpn.working [i] == ' ')  zRPN_DEBUG  printf ("   whitespace\n");
+         if (x_ch == ' ')  zRPN_DEBUG  printf ("   whitespace\n");
          ++i;
          continue;
       }
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("   current = <<%s>>\n", rpn.output);
+      zRPN_DEBUG  printf("   shunted = <<%s>>\n", rpn.output);
       zRPN_DEBUG  printf("   detail  = <<%s>>\n", rpn.detail);
       zRPN_DEBUG  printf("   normal  = <<%s>>\n", rpn.normal);
       zRPN_DEBUG  printf("   tokens  = <<%s>>\n", rpn.tokens);

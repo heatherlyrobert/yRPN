@@ -11,7 +11,7 @@ SCRP          string literal interpretation (all)                          yRP
    COND       setup some testing variables                                                                                                                                                                                    
 #    code     set the debug on                     zRPN_olddebug= 'y';
      code     set the debug off                    zRPN_olddebug= 'n';
-     code     set the compiler mode                zRPN_lang    = 'c';
+     code     set the compiler mode                zRPN_lang    = S_LANG_C;
 
    COND       try a single string literal                                                                                                                                                                                     
      exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                                      
@@ -300,7 +300,7 @@ SCRP          variable name interpretation         yRPN__symbols             
 
 
 #==(verb)===  ===========(short desc)============  =====(function)=====  ========================(arguments)=========================  ==========  ==========================(results)========================= 
-SCRP          basic variable types                 yRPN__ctypes                                                                                                                                                   
+SCRP          basic variable types                 yRPN__types                                                                                                                                                    
 
    COND       setup some testing variables                                                                                                                                                                          
 #    code     set the debug off                    zRPN_olddebug= 'y';
@@ -309,7 +309,7 @@ SCRP          basic variable types                 yRPN__ctypes              
 
    COND       try a very basic type                                                                                                                                                                                 
      exec     load the string                      yRPN__load            "int"                                                         i_equal     3                                                            
-     exec     check the type                       yRPN__ctypes          0                                                             i_equal     3                                                            
+     exec     check the type                       yRPN__types           0                                                             i_equal     3                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : int                                       
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : int                                       
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -317,7 +317,7 @@ SCRP          basic variable types                 yRPN__ctypes              
 
    COND       try another basic type                                                                                                                                                                                
      exec     load the string                      yRPN__load            "char"                                                        i_equal     4                                                            
-     exec     check the type                       yRPN__ctypes          0                                                             i_equal     4                                                            
+     exec     check the type                       yRPN__types           0                                                             i_equal     4                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : char                                      
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : char                                      
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -325,7 +325,7 @@ SCRP          basic variable types                 yRPN__ctypes              
 
    COND       try a modifier                                                                                                                                                                                        
      exec     load the string                      yRPN__load            "signed"                                                      i_equal     6                                                            
-     exec     check the type                       yRPN__ctypes          0                                                             i_equal     6                                                            
+     exec     check the type                       yRPN__types           0                                                             i_equal     6                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : signed                                    
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : signed                                    
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -333,7 +333,7 @@ SCRP          basic variable types                 yRPN__ctypes              
 
    COND       try a storage class                                                                                                                                                                                   
      exec     load the string                      yRPN__load            "const"                                                       i_equal     5                                                            
-     exec     check the type                       yRPN__ctypes          0                                                             i_equal     5                                                            
+     exec     check the type                       yRPN__types           0                                                             i_equal     5                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : const                                     
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : const                                     
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -341,7 +341,7 @@ SCRP          basic variable types                 yRPN__ctypes              
 
    COND       try a spelled out type (error)                                                                                                                                                                        
      exec     load the string                      yRPN__load            "integer"                                                     i_equal     7                                                            
-     exec     check the type                       yRPN__ctypes          0                                                             i_lesser    0                                                            
+     exec     check the type                       yRPN__types           0                                                             i_lesser    0                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : integer                                   
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -349,7 +349,7 @@ SCRP          basic variable types                 yRPN__ctypes              
 
    COND       try a shorten type name (error)                                                                                                                                                                       
      exec     load the string                      yRPN__load            "chr"                                                         i_equal     3                                                            
-     exec     check the type                       yRPN__ctypes          0                                                             i_lesser    0                                                            
+     exec     check the type                       yRPN__types           0                                                             i_lesser    0                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : chr                                       
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -357,7 +357,7 @@ SCRP          basic variable types                 yRPN__ctypes              
 
    COND       try another valid type                                                                                                                                                                                
      exec     load the string                      yRPN__load            "void"                                                        i_equal     4                                                            
-     exec     check the type                       yRPN__ctypes          0                                                             i_equal     4                                                            
+     exec     check the type                       yRPN__types           0                                                             i_equal     4                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : void                                      
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : void                                      
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -370,16 +370,15 @@ SCRP          basic variable types                 yRPN__ctypes              
 
 
 #==(verb)===  ===========(short desc)============  =====(function)=====  ========================(arguments)=========================  ==========  ==========================(results)========================= 
-SCRP          basic variable keywords              yRPN__ckeywords                                                                                                                                                
+SCRP          finding keywords                     yRPN__keywords                                                                                                                                                 
 
    COND       setup some testing variables                                                                                                                                                                          
-#    code     set the debug off                    zRPN_olddebug= 'y';
-     code     set the debug off                    zRPN_olddebug= 'n';
+     code     set the debug off                    zRPN_olddebug= S_DEBUG_NO;
      code     set the compiler mode                zRPN_lang    = 'c';
 
    COND       try a common keyword                                                                                                                                                                                  
      exec     load the string                      yRPN__load            "if"                                                          i_equal     2                                                            
-     exec     check the type                       yRPN__ckeywords       0                                                             i_equal     2                                                            
+     exec     check the type                       yRPN__keywords        0                                                             i_equal     2                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : if                                        
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : if                                        
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -387,7 +386,7 @@ SCRP          basic variable keywords              yRPN__ckeywords           
 
    COND       try another common keyword                                                                                                                                                                            
      exec     load the string                      yRPN__load            "while"                                                       i_equal     5                                                            
-     exec     check the type                       yRPN__ckeywords       0                                                             i_equal     5                                                            
+     exec     check the type                       yRPN__keywords        0                                                             i_equal     5                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : while                                     
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : while                                     
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -395,7 +394,7 @@ SCRP          basic variable keywords              yRPN__ckeywords           
 
    COND       try a funkier one                                                                                                                                                                                     
      exec     load the string                      yRPN__load            "switch"                                                      i_equal     6                                                            
-     exec     check the type                       yRPN__ckeywords       0                                                             i_equal     6                                                            
+     exec     check the type                       yRPN__keywords        0                                                             i_equal     6                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : switch                                    
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : switch                                    
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -403,7 +402,7 @@ SCRP          basic variable keywords              yRPN__ckeywords           
 
    COND       try a repeating one                                                                                                                                                                                   
      exec     load the string                      yRPN__load            "case"                                                        i_equal     4                                                            
-     exec     check the type                       yRPN__ckeywords       0                                                             i_equal     4                                                            
+     exec     check the type                       yRPN__keywords        0                                                             i_equal     4                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : case                                      
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : case                                      
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -411,7 +410,7 @@ SCRP          basic variable keywords              yRPN__ckeywords           
 
    COND       try a misspelled one (error)                                                                                                                                                                          
      exec     load the string                      yRPN__load            "braek"                                                       i_equal     5                                                            
-     exec     check the type                       yRPN__ckeywords       0                                                             i_lesser    0                                                            
+     exec     check the type                       yRPN__keywords        0                                                             i_lesser    0                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : braek                                     
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -419,7 +418,7 @@ SCRP          basic variable keywords              yRPN__ckeywords           
 
    COND       try a keyword within a larger word (error)                                                                                                                                                            
      exec     load the string                      yRPN__load            "iff"                                                         i_equal     3                                                            
-     exec     check the type                       yRPN__ckeywords       0                                                             i_lesser    0                                                            
+     exec     check the type                       yRPN__keywords        0                                                             i_lesser    0                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : iff                                       
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
@@ -427,15 +426,72 @@ SCRP          basic variable keywords              yRPN__ckeywords           
 
    COND       try another valid type                                                                                                                                                                                
      exec     load the string                      yRPN__load            "continue"                                                    i_equal     8                                                            
-     exec     check the type                       yRPN__ckeywords       0                                                             i_equal     8                                                            
+     exec     check the type                       yRPN__keywords        0                                                             i_equal     8                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : continue                                  
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : continue                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : k                                         
+
+   COND       try if the position is advanced                                                                                                                                                                       
+     exec     load the string                      yRPN__load            "continue"                                                    i_equal     8                                                            
+     exec     check the type                       yRPN__keywords        1                                                             i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : continue                                  
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       try if advanced to right start                                                                                                                                                                        
+     exec     load the string                      yRPN__load            "iif"                                                         i_equal     3                                                            
+     exec     check the type                       yRPN__keywords        1                                                             i_equal     3                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : iif                                       
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : if                                        
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : k                                         
+
+   COND       try on a blank load                                                                                                                                                                                   
+     exec     load the string                      yRPN__load            ""                                                            i_equal     0                                                            
+     exec     check the type                       yRPN__keywords        0                                                             i_lesser    0                                                            
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       try with the position to advanced                                                                                                                                                                     
+     exec     load the string                      yRPN__load            "continue"                                                    i_equal     8                                                            
+     exec     check the type                       yRPN__keywords        15                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : continue                                  
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       try with a negative position                                                                                                                                                                          
+     exec     load the string                      yRPN__load            "continue"                                                    i_equal     8                                                            
+     exec     check the type                       yRPN__keywords        -5                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : continue                                  
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       try in spreadsheet mode                                                                                                                                                                               
+     exec     load the string                      yRPN__load            "continue"                                                    i_equal     8                                                            
+     code     set the mode to spreadsheet          zRPN_lang    = S_LANG_GYGES;
+     exec     check the type                       yRPN__keywords        0                                                             i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : continue                                  
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       repeat same in c language mode                                                                                                                                                                        
+     exec     load the string                      yRPN__load            "continue"                                                    i_equal     8                                                            
+     code     set the mode to compiler             zRPN_lang    = S_LANG_C;
+     exec     check the type                       yRPN__keywords        0                                                             i_equal     8                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : continue                                  
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : continue                                  
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : k                                         
 
    COND       clean-up                                                                                                                                                                                              
-     code     set the debug off                    zRPN_olddebug= 'n';
-     code     set the mode to compiler             zRPN_lang    = 'c';
+     code     set the debug off                    zRPN_olddebug= S_DEBUG_NO;
+     code     set the mode to compiler             zRPN_lang    = S_LANG_C;
 
 
 
