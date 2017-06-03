@@ -534,6 +534,12 @@ yRPN__token_add      (char a_type, int *a_pos)
       }
       /*---(done)------------------------*/
       break;
+   case S_TTYPE_CHAR   :
+      if (rpn.t_len == 0 && x_ch != '\'')                       x_bad = 'y';
+      if (x_esc != 'y' && rpn.t_len == 2 && x_ch == '\'')       x_bad = '#';
+      if (x_esc == 'y' && rpn.t_len == 3 && x_ch == '\'')       x_bad = '#';
+      if (rpn.t_len >= 3)                                       x_bad = 'y';
+      break;
    default             :
       DEBUG_YRPN_M  yLOG_snote   ("illegal type");
       DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
@@ -565,7 +571,7 @@ yRPN__token_add      (char a_type, int *a_pos)
 }
 
 char         /*--> add a char to current token -----------[--------[--------]-*/
-yRPN__token_save     (char a_pos)
+yRPN__token_done     (char a_pos)
 {
    yRPN__token  ();         /* strait to tokens list                          */
    yRPN__save   ();         /* strait to shunted and output lists (no stack)  */
@@ -634,7 +640,7 @@ yRPN__keywords       (int  a_pos)
    }
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put token directly to output");
-   yRPN__token_save    (a_pos);
+   yRPN__token_done    (a_pos);
    rpn.lops = 'y';
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
@@ -691,7 +697,7 @@ yRPN__types          (int  a_pos)
    }
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put token directly to output");
-   yRPN__token_save    (a_pos);
+   yRPN__token_done    (a_pos);
    rpn.lops = 'y';
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
@@ -714,31 +720,14 @@ yRPN__strings        (int  a_pos)
    int         x_pos       =    0;     /* updated position in input           */
    int         i           =    0;     /* iterator for keywords               */
    int         x_found     =   -1;     /* index of keyword                    */
-   char       *x_ppre      = "\"<";
-   char       *x_psuf      = "\">";
+   int         x_last      =    0;
    /*---(header)------------------------*/
    DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(defenses)-----------------------*/
    yRPN__token_error ();
-   --rce;  if (zRPN_lang == S_LANG_GYGES) {
-      DEBUG_YRPN    yLOG_note    ("skip in gyges mode");
-      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
-      return rce;
-   }
    DEBUG_YRPN    yLOG_value   ("a_pos"     , a_pos);
    --rce;  if (a_pos <  0) {
       DEBUG_YRPN    yLOG_note    ("start can not be negative");
-      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
-      return rce;
-   }
-   /*---(check first character)------------*/
-   --rce;  if (rpn.pproc != S_PPROC_INCL && rpn.working[a_pos] != '\"') {
-      DEBUG_YRPN    yLOG_note    ("does not start properly");
-      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
-      return rce;
-   }
-   --rce;  if (rpn.pproc == S_PPROC_INCL && strchr (x_ppre, rpn.working[a_pos]) == 0) {
-      DEBUG_YRPN    yLOG_note    ("does not start properly");
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
@@ -748,23 +737,94 @@ yRPN__strings        (int  a_pos)
    x_pos        = a_pos;  /* starting point */
    while (yRPN__token_add (S_TTYPE_STR, &x_pos) == 0);
    DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
-   /*---(check for validity)---------------*/
-   DEBUG_YRPN    yLOG_note    ("check final string");
+   /*---(check if long enough)-------------*/
+   DEBUG_YRPN    yLOG_value   ("rpn.t_len" , rpn.t_len);
    --rce;  if (rpn.t_len <  2) {
       yRPN__token_error ();
       DEBUG_YRPN    yLOG_note    ("string too short");
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   --rce;  if (strchr (x_psuf, rpn.t_name [rpn.t_len - 1]) == 0) {
+   /*---(check matching quotes)------------*/
+   x_last = rpn.t_len - 1;
+   --rce;  if (rpn.t_name [0] == '\"' && rpn.t_name [x_last] != '\"') {
       yRPN__token_error ();
       DEBUG_YRPN    yLOG_note    ("string does not end properly");
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
+   --rce;  if (rpn.t_name [0] == '<' && rpn.t_name [x_last] != '>') {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("include does not end properly");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put token directly to output");
-   yRPN__token_save    (a_pos);
+   yRPN__token_done    (a_pos);
+   rpn.lops = 'n';
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
+   return x_pos;
+}
+
+int          /*--> check for character literals ----------[--------[--------]-*/
+yRPN__chars          (int  a_pos)
+{  /*---(design notes)--------------------------------------------------------*/
+   /*  begin and end with single quotes, only one character inside.           */
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   int         x_pos       =    0;     /* updated position in input           */
+   int         i           =    0;     /* iterator for keywords               */
+   int         x_found     =   -1;     /* index of keyword                    */
+   int         x_last      =    0;
+   /*---(header)------------------------*/
+   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
+   /*---(defenses)-----------------------*/
+   yRPN__token_error ();
+   DEBUG_YRPN    yLOG_value   ("a_pos"     , a_pos);
+   --rce;  if (a_pos <  0) {
+      DEBUG_YRPN    yLOG_note    ("start can not be negative");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(accumulate characters)------------*/
+   DEBUG_YRPN    yLOG_note    ("accumulate characters");
+   rpn.t_type   = S_TTYPE_CHAR;
+   x_pos        = a_pos;  /* starting point */
+   while (yRPN__token_add (S_TTYPE_CHAR, &x_pos) == 0);
+   DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
+   /*---(check if long enough)-------------*/
+   DEBUG_YRPN    yLOG_value   ("rpn.t_len" , rpn.t_len);
+   --rce;  if (rpn.t_len <  3) {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("string too short");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   --rce;  if (rpn.t_len >  4) {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("string long short");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(check start and stop)-------------*/
+   x_last = rpn.t_len - 1;
+   --rce;  if (rpn.t_name [0] != rpn.t_name [x_last]) {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("char literal does not end properly");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   --rce;  if (rpn.t_len == 4 && rpn.t_name [1] != '\\') {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("long char literal not escaped");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(save)-----------------------------*/
+   DEBUG_YRPN    yLOG_note    ("put token directly to output");
+   yRPN__token_done    (a_pos);
    rpn.lops = 'n';
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
@@ -831,66 +891,6 @@ yRPN__constants    (int  a_pos)
    rpn.lops = 'n';
    /*---(complete)-------------------------*/
    return i;
-}
-
-int        /* ---- : save off character literals -----------------------------*/
-yRPN__chars        (int  a_pos)
-{
-   /*---(design notes)-------------------*/
-   /*
-    *  character literals begin and end with single quotes.
-    *  they can not be nested, but escaped characters can appear inside.
-    *
-    */
-   /*---(locals)-------------------------*/
-   int       i         = a_pos;
-   int       j         = 0;
-   char      prev      = ' ';
-   /*---(prepare)------------------------*/
-   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-   rpn.t_type = S_TTYPE_CHAR;
-   rpn.t_prec = S_PREC_NONE;
-   /*---(defenses)-----------------------*/
-   if (i              >= rpn.nworking)    return  zRPN_ERR_INPUT_NOT_AVAIL;
-   if (rpn.working[i] != '\''        )    return  zRPN_ERR_NO_STARTING_QUOTE;
-   /*---(main loop)----------------------*/
-   zRPN_DEBUG  printf("   character--------------\n");
-   rpn.t_len  = 0;
-   while (i < rpn.nworking) {
-      /*---(normal name)-----------------*/
-      rpn.t_name[j]     = rpn.working[i];
-      rpn.t_name[j + 1] = '\0';
-      ++rpn.t_len ;
-      /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
-      /*---(test for end)----------------*/
-      if (rpn.working[i] == '\'' && j > 0 && prev != '\\')  break;
-      /*---(prepare for next char)-------*/
-      prev  = rpn.working[i];
-      ++i;
-      ++j;
-   }
-   /*---(check for long enough)----------*/
-   if (i  != a_pos + 2) {
-      strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-      rpn.t_len  = 0;
-      return  zRPN_ERR_LITERAL_TOO_SHORT;
-   }
-   /*---(check for final quote)----------*/
-   if (rpn.working[i] != '\'') {
-      strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-      rpn.t_len  = 0;
-      return  zRPN_ERR_NO_ENDING_QUOTE;
-   }
-   /*---(display)------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
-   /*---(finish off)---------------------*/
-   yRPN__token ();
-   yRPN__save  ();
-   yRPN__normal (a_pos);
-   rpn.lops = 'n';
-   /*---(complete)-----------------------*/
-   return ++i;
 }
 
 int        /* ---- : save off string literals --------------------------------*/

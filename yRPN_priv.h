@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7h"
-#define   zRPN_VER_TXT       "updated yRPN__strings and unit test to be much harder ;)"
+#define   zRPN_VER_NUM       "0.7i"
+#define   zRPN_VER_TXT       "updated yRPN__chars and unit test to be much harder ;)"
 
 
 
