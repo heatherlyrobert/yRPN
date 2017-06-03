@@ -211,13 +211,13 @@ tTYPES    ctypes [MAX_TYPES] = {
    { "end-of-types"           , '-'                },
 };
 
-#define   MAX_CKEYWORDS   200
+#define   MAX_KEYWORDS     200
 typedef   struct cKEYWORDS tKEYWORDS;
 struct    cKEYWORDS {
    char      name  [30];
    char      usage;
 };
-tKEYWORDS  s_keywords [MAX_CKEYWORDS] = {
+tKEYWORDS  s_keywords [MAX_KEYWORDS] = {
    /*---(beg)--------------------*/
    { "beg-of-keywords"        , '-' },
    /*---(preprocessor)-----------*/
@@ -316,14 +316,14 @@ yRPN__precedence   (void)
    int       i         = 0;
    for (i = 0; i < MAX_PREC; ++i) {
       if  (strcmp (precedence[i].token, "end"     ) == 0)  break;
-      if  (strcmp (precedence[i].token, rpn.token ) != 0)  continue;
-      rpn.prec  = precedence[i].prec;
-      rpn.dir   = precedence[i].dir;
-      rpn.arity = precedence[i].arity;
+      if  (strcmp (precedence[i].token, rpn.t_name) != 0)  continue;
+      rpn.t_prec  = precedence[i].prec;
+      rpn.t_dir   = precedence[i].dir;
+      rpn.t_arity = precedence[i].arity;
       return  0;
    }
    /*---(complete)----------------*/
-   rpn.prec  = S_PREC_FAIL;
+   rpn.t_prec  = S_PREC_FAIL;
    return -1;
 }
 
@@ -351,12 +351,12 @@ char             /* [------] put current item on normal output ---------------*/
 yRPN__normal       (int a_pos)
 {
    char      x_token [zRPN_MAX_LEN];
-   /*> if (rpn.type == S_TTYPE_GROUP)  return 0;                                                <*/
-   /*> if (rpn.type == S_TTYPE_OPER && strcmp(rpn.token, ",") == 0)  return 0;                 <*/
-   /*> printf ("found a comma, skipping  %c, %c, %s\n", zRPN_lang, rpn.type, rpn.token);    <* 
-    *> if (zRPN_lang == S_LANG_GYGES && rpn.type == S_TTYPE_OPER && strcmp(rpn.token, ",") == 0)  return 0;   <* 
+   /*> if (rpn.t_type == S_TTYPE_GROUP)  return 0;                                                <*/
+   /*> if (rpn.t_type == S_TTYPE_OPER && strcmp(rpn.t_name, ",") == 0)  return 0;                 <*/
+   /*> printf ("found a comma, skipping  %c, %c, %s\n", zRPN_lang, rpn.t_type, rpn.t_name);    <* 
+    *> if (zRPN_lang == S_LANG_GYGES && rpn.t_type == S_TTYPE_OPER && strcmp(rpn.t_name, ",") == 0)  return 0;   <* 
     *> printf ("just didn't skip\n");                                                       <*/
-   sprintf (x_token, "%c,%04d,%s%s", rpn.type, a_pos, rpn.token, zRPN_divtech);
+   sprintf (x_token, "%c,%04d,%s%s", rpn.t_type, a_pos, rpn.t_name, zRPN_divtech);
    strncat (rpn.normal, x_token, zRPN_MAX_LEN);
    ++rpn.nnormal;
    zRPN_DEBUG  printf("      RPN__normal     :: (---) %s\n", x_token);
@@ -373,7 +373,7 @@ static void        o___STACK___________o () { return; }
 char             /* [------] push current token to stack ---------------------*/
 yRPN__push         (void)
 {
-   snprintf (rpn.stack[rpn.nstack], zRPN_MAX_LEN, "%c,%c,%s", rpn.type, rpn.prec, rpn.token);
+   snprintf (rpn.stack[rpn.nstack], zRPN_MAX_LEN, "%c,%c,%s", rpn.t_type, rpn.t_prec, rpn.t_name);
    ++rpn.nstack;
    zRPN_DEBUG  printf("      RPN__push       :: (%3d) %s\n", rpn.nstack, rpn.stack [rpn.nstack - 1]);
    return 0;
@@ -384,15 +384,15 @@ yRPN__peek         (void)
 {
    /*---(handle empty stack)-------------*/
    if (rpn.nstack <= 0) {
-      rpn.t_prec  = zRPN_END;
-      strncpy (rpn.t_token, zRPN_NADA, 15);
+      rpn.p_prec  = zRPN_END;
+      strncpy (rpn.t_token, YRPN_TOKEN_NULL, 15);
       zRPN_DEBUG  printf("      RPN__peek       :: empty stack\n");
       return zRPN_ERR_EMPTY_STACK;
    }
    /*---(normal stack)-------------------*/
    else {
-      rpn.t_type  = rpn.stack[rpn.nstack - 1][0];
-      rpn.t_prec  = rpn.stack[rpn.nstack - 1][2];
+      rpn.p_type  = rpn.stack[rpn.nstack - 1][0];
+      rpn.p_prec  = rpn.stack[rpn.nstack - 1][2];
       strncpy (rpn.t_token, rpn.stack[rpn.nstack - 1] + 4, zRPN_MAX_LEN);
       zRPN_DEBUG  printf("      RPN__peek       :: (%3d) %s\n", rpn.nstack, rpn.stack [rpn.nstack - 1]);
    }
@@ -446,23 +446,88 @@ yRPN__save         (void)
 {
    char      x_token [zRPN_MAX_LEN];
    ++rpn.count;
-   sprintf (x_token, "%c,%s%s", rpn.type, rpn.token, zRPN_divtech);
+   sprintf (x_token, "%c,%s%s", rpn.t_type, rpn.t_name, zRPN_divtech);
    strncat (rpn.detail, x_token, zRPN_MAX_LEN);
-   sprintf (x_token, "%s%s", rpn.token, zRPN_divider);
+   sprintf (x_token, "%s%s", rpn.t_name, zRPN_divider);
    strncat (rpn.output, x_token, zRPN_MAX_LEN);
-   zRPN_DEBUG  printf("      RPN__save       :: (---) %c,%c,%s\n", rpn.type, rpn.prec, rpn.token);
+   zRPN_DEBUG  printf("      RPN__save       :: (---) %c,%c,%s\n", rpn.t_type, rpn.t_prec, rpn.t_name);
    return 0;
 }
 
 char       /*----: save a token to the tokens output -------------------------*/
 yRPN__token        (void)
 {
-   strncat (rpn.tokens, rpn.token   , zRPN_MAX_LEN);
+   strncat (rpn.tokens, rpn.t_name   , zRPN_MAX_LEN);
    strncat (rpn.tokens, zRPN_divider, zRPN_MAX_LEN);
-   zRPN_DEBUG  printf("      RPN__token      :: (---) %s\n", rpn.token);
+   zRPN_DEBUG  printf("      RPN__token      :: (---) %s\n", rpn.t_name);
    return 0;
 }
 
+
+
+/*====================------------------------------------====================*/
+/*===----                       token helpers                          ----===*/
+/*====================------------------------------------====================*/
+static void        o___HELPERS_________________o (void) {;}
+
+char         /*--> set token to error --------------------[--------[--------]-*/
+yRPN__token_error    (void)
+{
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, S_LEN_TOKEN);
+   rpn.t_len    = 0;
+   rpn.t_type   = S_TTYPE_ERROR;
+   rpn.t_prec   = S_PREC_NONE;
+   return 0;
+}
+
+char         /*--> add a char to current token -----------[--------[--------]-*/
+yRPN__token_add      (char a_type, int *a_pos)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   char        x_ch        =    0;     /* current character                   */
+   char        x_bad       =  '-';
+   /*---(header)------------------------*/
+   DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_schar   (a_type);
+   DEBUG_YRPN_M  yLOG_sint    (*a_pos);
+   DEBUG_YRPN_M  yLOG_sint    (rpn.nworking);
+   /*---(defense)-----------------------*/
+   --rce;  if (*a_pos >= rpn.nworking) {
+      DEBUG_YRPN_M  yLOG_snote   ("past max");
+      DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(get character)-----------------*/
+   x_ch  = rpn.working [*a_pos];
+   DEBUG_YRPN_M  yLOG_schar   (x_ch);
+   --rce;  switch (a_type) {
+   case S_TTYPE_KEYW   :
+      DEBUG_YRPN_M  yLOG_snote   ("v_lower");
+      if (strchr (v_lower, x_ch) == 0)  x_bad == 'y';
+      break;
+   default             :
+      DEBUG_YRPN_M  yLOG_snote   ("illegal type");
+      DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(stop if bad)-------------------*/
+   --rce;  if (x_bad == 'y') {
+      DEBUG_YRPN_M  yLOG_snote   ("illegal char");
+      DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(add to token name)-------------*/
+   rpn.t_name [rpn.t_len]    = x_ch;
+   rpn.t_name [++rpn.t_len]  = '\0';
+   DEBUG_YRPN_M  yLOG_snote   (rpn.t_name);
+   DEBUG_YRPN_M  yLOG_sint    (rpn.t_len);
+   ++(*a_pos);
+   DEBUG_YRPN_M  yLOG_sint    (*a_pos);
+   /*---(prepare for next char)-------*/
+   DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
+   return 0;
+}
 
 
 /*====================------------------------------------====================*/
@@ -470,124 +535,121 @@ yRPN__token        (void)
 /*====================------------------------------------====================*/
 static void        o___C_LANG__________________o (void) {;}
 
-int        /* ---- : save off keywords ---------------------------------------*/
+int          /*--> check for keyword ---------------------[--------[--------]-*/
 yRPN__keywords     (int  a_pos)
 {  /*---(design notes)--------------------------------------------------------*/
-   /* symbols are only lowercase alphanumerics plus underscore.               */
-   /*---(locals)-------*-----------------*/
-   char      rce       =  -10;         /* return code for errors              */
-   int       x_pos     = a_pos;        /* updated position in input           */
-   int       x_len     = 0;            /* keyword/token length                */
-   int       i         = 0;            /* iterator for keywords               */
-   int       x_key     = -1;           /* index of keyword                    */
-   int       rc        = 0;
+   /* keywords are only lowercase alphanumerics.                              */
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   char        rc          =    0;
+   int         x_pos       =    0;     /* updated position in input           */
+   int         x_len       =    0;     /* keyword/token length                */
+   int         i           =    0;     /* iterator for keywords               */
+   int         x_key       =   -1;     /* index of keyword                    */
+   char        x_ch        =    0;     /* current character                   */
+   /*---(header)------------------------*/
+   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(defenses)-----------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type   = S_TTYPE_ERROR;
-   rpn.ntoken = 0;
-   --rce;  if (zRPN_lang == S_LANG_GYGES)                 return rce;
-   --rce;  if (a_pos <  0)                                return rce;
-   --rce;  if (a_pos >= rpn.nworking)                     return rce;
-   --rce;  if (strchr(v_lower, rpn.working[a_pos]) == 0)  return rce;
-   /*---(prepare)------------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = S_TTYPE_CKEY;
-   rpn.prec = S_PREC_NONE;
-   zRPN_DEBUG  printf("   s_keywords--------------\n");
-   rpn.ntoken = 0;
-   /*---(accumulate characters)------------*/
-   while (x_pos < rpn.nworking) {
-      /*---(test for right characters)-----*/
-      if (strchr(v_lower, rpn.working[x_pos]) == 0)  break;
-      /*---(normal name)-------------------*/
-      rpn.token[x_len]    = rpn.working[x_pos];
-      rpn.token[++x_len]  = '\0';
-      /*---(output)----------------------*/
-      zRPN_DEBUG  printf("          (%02d) <<%s>>\n", x_len, rpn.token);
-      /*---(prepare for next char)-------*/
-      ++x_pos;
+   yRPN__token_error ();
+   --rce;  if (zRPN_lang == S_LANG_GYGES) {
+      DEBUG_YRPN    yLOG_note    ("skip in gyges mode");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
    }
-   rpn.ntoken = x_len;
+   DEBUG_YRPN    yLOG_value   ("a_pos"     , a_pos);
+   --rce;  if (a_pos <  0) {
+      DEBUG_YRPN    yLOG_note    ("start can not be negative");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(accumulate characters)------------*/
+   rpn.t_type   = S_TTYPE_KEYW;
+   x_pos        = a_pos;  /* starting point */
+   while (yRPN__token_add (S_TTYPE_KEYW, &x_pos) == 0);
    /*---(try to match keyword)-------------*/
-   for (i = 0; i < MAX_CKEYWORDS; ++i) {
-      if  (strcmp (s_keywords [i].name, "end-of-keywords") == 0) break;
-      if  (strcmp (s_keywords [i].name, rpn.token ) != 0)        continue;
+   DEBUG_YRPN    yLOG_note    ("search keywords");
+   for (i = 0; i < MAX_KEYWORDS; ++i) {
+      if  (strcmp (s_keywords [i].name, "end-of-keywords") == 0)  break;
+      if  (strcmp (s_keywords [i].name, rpn.t_name ) != 0)        continue;
       x_key = i;
+      DEBUG_YRPN    yLOG_value   ("found"     , x_key);
       break;
    }
+   DEBUG_YRPN    yLOG_info    ("token name", rpn.t_name);
    /*---(handle misses)--------------------*/
    --rce;  if (x_key < 0) {
-      strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-      rpn.type   = S_TTYPE_ERROR;
-      rpn.ntoken = 0;
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("keyword not found");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(mark includes)--------------------*/
+   DEBUG_YRPN    yLOG_note    ("check for preprocessor keywords");
    if (preproc == 'y') {
-      if (strcmp (rpn.token, "include") == 0)  preproc = S_PPROC_INCL;
-      else                                     preproc = 'o';
+      if (strcmp (rpn.t_name, "include") == 0)  preproc = S_PPROC_INCL;
+      else                                      preproc = S_PPROC_OTHER;
    }
-   /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
-   yRPN__token ();
-   yRPN__save  ();
-   yRPN__normal (a_pos);
+   /*---(save)-----------------------------*/
+   DEBUG_YRPN    yLOG_note    ("put token directly to output");
+   yRPN__token  ();         /* strait to tokens list                          */
+   yRPN__save   ();         /* strait to shunted and output lists (no stack)  */
+   yRPN__normal (a_pos);    /* strait to normal list                          */
    rpn.lops = 'y';
    /*---(complete)-------------------------*/
+   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
 }
 
 int        /* ---- : save off type declarations ------------------------------*/
 yRPN__types        (int  a_pos)
-{
-   /*---(design notes)-------------------*/
-   /*
-    *  symbols begin with a letter and contain alphanumerics plus underscore.
-    *
-    */
+{  /*---(design notes)--------------------------------------------------------*/
+   /* types are only lowercase alphanumerics plus underscore.                 */
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   int         x_pos       =    0;     /* updated position in input           */
+   int         x_len       =    0;     /* keyword/token length                */
+   int         i           =    0;     /* iterator for keywords               */
+   int         x_key       =   -1;     /* index of keyword                    */
+
    /*---(locals)-------*-------------------*/
-   char      rce       =  -10;
-   int       i         = a_pos;
    int       j         = 0;
-   char      post      = 'n';
-   int       rc        = 0;
    /*---(defense: spreadsheet)-----------*/
    MODE_GYGES      return a_pos;
    /*---(prepare)------------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = S_TTYPE_TYPE;
-   rpn.prec = S_PREC_NONE;
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   rpn.t_type = S_TTYPE_TYPE;
+   rpn.t_prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    --rce;  if (i >= rpn.nworking)                     return rce;
    --rce;  if (strchr(v_lower, rpn.working[i]) == 0)  return rce;
    /*---(main loop)------------------------*/
    zRPN_DEBUG  printf("   ctypes------------------\n");
-   rpn.ntoken = 0;
+   rpn.t_len  = 0;
    while (i < rpn.nworking) {
       /*---(test for right characters)-----*/
       if (rpn.working[i] == '_')                    return a_pos;
       if (strchr(v_lower   , rpn.working[i]) == 0)  break;
       /*---(normal name)-------------------*/
-      rpn.token[j]     = rpn.working[i];
-      rpn.token[j + 1] = '\0';
-      ++rpn.ntoken;
+      rpn.t_name[j]     = rpn.working[i];
+      rpn.t_name[j + 1] = '\0';
+      ++rpn.t_len ;
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.ntoken, rpn.token);
+      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
       /*---(prepare for next char)-------*/
       ++i;
       ++j;
    }
    for (j = 0; j < MAX_TYPES; ++j) {
       if  (strcmp (ctypes [j].name, "end-of-types") == 0) {
-         strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-         rpn.type = S_TTYPE_ERROR;
-         rpn.ntoken = 0;
+         strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+         rpn.t_type = S_TTYPE_ERROR;
+         rpn.t_len  = 0;
          return zRPN_ERR_UNKNOWN_TYPE;
       }
-      if  (strcmp (ctypes [j].name, rpn.token ) == 0) break;
+      if  (strcmp (ctypes [j].name, rpn.t_name ) == 0) break;
    }
    /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
+   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
    yRPN__token ();
    yRPN__save  ();
    yRPN__normal (a_pos);
@@ -617,39 +679,39 @@ yRPN__constants    (int  a_pos)
    char      post      = 'n';
    int       rc        = 0;
    /*---(prepare)------------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = S_TTYPE_CONST;
-   rpn.prec = S_PREC_NONE;
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   rpn.t_type = S_TTYPE_CONST;
+   rpn.t_prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    if (zRPN_lang      != S_LANG_GYGES)        return  zRPN_ERR_NOT_SPREADSHEET;
    if (i              >= rpn.nworking)        return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (strchr(v_alpha, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_START_ALPHA;
    /*---(main loop)------------------------*/
    zRPN_DEBUG  printf("   constant---------------\n");
-   rpn.ntoken = 0;
+   rpn.t_len  = 0;
    while (i < rpn.nworking) {
       /*---(test for right characters)-----*/
       if (strchr(v_alphanum, rpn.working[i]) == 0)  break;
       /*---(normal name)-------------------*/
-      rpn.token[j]     = rpn.working[i];
-      rpn.token[j + 1] = '\0';
-      ++rpn.ntoken;
+      rpn.t_name[j]     = rpn.working[i];
+      rpn.t_name[j + 1] = '\0';
+      ++rpn.t_len ;
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.ntoken, rpn.token);
+      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
       /*---(prepare for next char)-------*/
       ++i;
       ++j;
    }
    for (j = 0; j < MAX_CONST; ++j) {
       if  (strcmp (constants [j].name, "end-of-const") == 0) {
-         strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-         rpn.ntoken = 0;
+         strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+         rpn.t_len  = 0;
          return zRPN_ERR_UNKNOWN_CONSTANT;
       }
-      if  (strcmp (constants [j].name, rpn.token ) == 0) break;
+      if  (strcmp (constants [j].name, rpn.t_name ) == 0) break;
    }
    /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
+   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
    yRPN__token ();
    yRPN__save  ();
    yRPN__normal (a_pos);
@@ -672,22 +734,22 @@ yRPN__chars        (int  a_pos)
    int       j         = 0;
    char      prev      = ' ';
    /*---(prepare)------------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = S_TTYPE_CHAR;
-   rpn.prec = S_PREC_NONE;
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   rpn.t_type = S_TTYPE_CHAR;
+   rpn.t_prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    if (i              >= rpn.nworking)    return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (rpn.working[i] != '\''        )    return  zRPN_ERR_NO_STARTING_QUOTE;
    /*---(main loop)----------------------*/
    zRPN_DEBUG  printf("   character--------------\n");
-   rpn.ntoken = 0;
+   rpn.t_len  = 0;
    while (i < rpn.nworking) {
       /*---(normal name)-----------------*/
-      rpn.token[j]     = rpn.working[i];
-      rpn.token[j + 1] = '\0';
-      ++rpn.ntoken;
+      rpn.t_name[j]     = rpn.working[i];
+      rpn.t_name[j + 1] = '\0';
+      ++rpn.t_len ;
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.ntoken, rpn.token);
+      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
       /*---(test for end)----------------*/
       if (rpn.working[i] == '\'' && j > 0 && prev != '\\')  break;
       /*---(prepare for next char)-------*/
@@ -697,18 +759,18 @@ yRPN__chars        (int  a_pos)
    }
    /*---(check for long enough)----------*/
    if (i  != a_pos + 2) {
-      strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-      rpn.ntoken = 0;
+      strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+      rpn.t_len  = 0;
       return  zRPN_ERR_LITERAL_TOO_SHORT;
    }
    /*---(check for final quote)----------*/
    if (rpn.working[i] != '\'') {
-      strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-      rpn.ntoken = 0;
+      strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+      rpn.t_len  = 0;
       return  zRPN_ERR_NO_ENDING_QUOTE;
    }
    /*---(display)------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
+   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
    /*---(finish off)---------------------*/
    yRPN__token ();
    yRPN__save  ();
@@ -739,21 +801,21 @@ yRPN__strings      (int  a_pos)
    if (a_pos >= rpn.nworking)                                   return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (rpn.working[a_pos] != '\"' && rpn.working[a_pos] != '<') return  zRPN_ERR_NO_STARTING_QUOTE;
    /*---(prepare)------------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = S_TTYPE_STR;
-   rpn.prec = S_PREC_NONE;
-   rpn.ntoken = 0;
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   rpn.t_type = S_TTYPE_STR;
+   rpn.t_prec = S_PREC_NONE;
+   rpn.t_len  = 0;
    zRPN_DEBUG  printf("   string-----------------\n");
    /*---(accumulate characters)------------*/
-   zRPN_DEBUG  printf("      start             (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
+   zRPN_DEBUG  printf("      start             (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
    while (x_pos < rpn.nworking) {
       zRPN_DEBUG  printf("      %02d) testing %c", j, rpn.working[x_pos]);
       /*---(normal name)-----------------*/
-      rpn.token[x_len]    = rpn.working[x_pos];
-      rpn.token[++x_len]  = '\0';
-      ++rpn.ntoken;
+      rpn.t_name[x_len]    = rpn.working[x_pos];
+      rpn.t_name[++x_len]  = '\0';
+      ++rpn.t_len ;
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("          (%02d) <<%s>>\n", x_len, rpn.token);
+      zRPN_DEBUG  printf("          (%02d) <<%s>>\n", x_len, rpn.t_name);
       /*---(test for end)----------------*/
       if (rpn.working[x_pos] == '\"' && j > 0 && prev != '\\')  break;
       if (preproc == S_PPROC_INCL && rpn.working[x_pos] == '>')          break;
@@ -762,21 +824,21 @@ yRPN__strings      (int  a_pos)
       ++x_pos;
       ++j;
    }
-   rpn.ntoken = x_pos;
+   rpn.t_len  = x_pos;
    /*---(check for long enough)----------*/
    if (x_pos  <= a_pos + 1) {
-      strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-      rpn.ntoken = 0;
+      strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+      rpn.t_len  = 0;
       return  zRPN_ERR_LITERAL_TOO_SHORT;
    }
    /*---(check for final quote)----------*/
    if (rpn.working[x_pos] != '\"' && rpn.working[x_pos] != '>') {
-      strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-      rpn.ntoken = 0;
+      strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+      rpn.t_len  = 0;
       return  zRPN_ERR_NO_ENDING_QUOTE;
    }
    /*---(display)------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
+   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
    /*---(finish off)---------------------*/
    yRPN__token ();
    yRPN__save  ();
@@ -802,14 +864,14 @@ yRPN__symbols      (int   a_pos)
    char      post      = 'n';
    int       rc        = 0;
    /*---(prepare)------------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = S_TTYPE_SYM;
-   rpn.prec = S_PREC_NONE;
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   rpn.t_type = S_TTYPE_SYM;
+   rpn.t_prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    if (i              >= rpn.nworking)        return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (strchr(v_alpha, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_START_ALPHA;
    /*---(main loop)------------------------*/
-   rpn.ntoken = 0;
+   rpn.t_len  = 0;
    while (i < rpn.nworking) {
       /*---(clear whitespace)--------------*/
       if (rpn.working[i] == ' ')  {
@@ -819,8 +881,8 @@ yRPN__symbols      (int   a_pos)
       }
       /*---(function marker)---------------*/
       if (rpn.working[i] == '(') {
-         rpn.type = S_TTYPE_FUNC;
-         rpn.prec = S_PREC_FUNC;
+         rpn.t_type = S_TTYPE_FUNC;
+         rpn.t_prec = S_PREC_FUNC;
          yRPN__push();
          yRPN__normal (a_pos);
          break;
@@ -829,18 +891,18 @@ yRPN__symbols      (int   a_pos)
       if (post == 'y')                              break;
       if (strchr(v_alphanum, rpn.working[i]) == 0)  break;
       /*---(normal name)-------------------*/
-      rpn.token[j]     = rpn.working[i];
-      rpn.token[j + 1] = '\0';
-      ++rpn.ntoken;
+      rpn.t_name[j]     = rpn.working[i];
+      rpn.t_name[j + 1] = '\0';
+      ++rpn.t_len ;
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.ntoken, rpn.token);
+      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
       /*---(prepare for next char)-------*/
       ++i;
       ++j;
    }
    /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
-   if (rpn.type == S_TTYPE_SYM)  {
+   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
+   if (rpn.t_type == S_TTYPE_SYM)  {
       yRPN__save();
       yRPN__normal (a_pos);
    }
@@ -866,9 +928,9 @@ yRPN__numbers      (int  a_pos)
    int       j         = 0;
    int       points    = 0;
    /*---(prepare)------------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type   = S_TTYPE_ERROR;
-   rpn.prec   = S_PREC_NONE;
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   rpn.t_type   = S_TTYPE_ERROR;
+   rpn.t_prec   = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    if (i              >= rpn.nworking) {
       DEBUG_OPER  yLOG_exit    (__FUNCTION__);
@@ -883,61 +945,61 @@ yRPN__numbers      (int  a_pos)
       return  zRPN_ERR_NOT_START_NUMBER;
    }
    /*---(main loop)------------------------*/
-   rpn.type   = 'I';
-   rpn.ntoken = 0;
+   rpn.t_type   = 'I';
+   rpn.t_len  = 0;
    while (i < rpn.nworking) {
       /*---(test for right characters)-----*/
       if (rpn.working[i] == '.') {
          ++points;
          if (points > 1) {
-            strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-            rpn.type   = 'e';
+            strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+            rpn.t_type   = 'e';
             DEBUG_OPER  yLOG_exit    (__FUNCTION__);
             return  zRPN_ERR_MULTIPLE_DECIMALS;
-         } else if (rpn.type == 'I') {
-            rpn.type = 'F';
+         } else if (rpn.t_type == 'I') {
+            rpn.t_type = 'F';
          } else {
-            strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-            rpn.type   = 'e';
+            strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+            rpn.t_type   = 'e';
             DEBUG_OPER  yLOG_exit    (__FUNCTION__);
             return  zRPN_ERR_DECIMALS_NOT_ALLOWED;
          }
-      } else if (j == 1 && rpn.working[i] == 'x' && rpn.type == 'I') {
+      } else if (j == 1 && rpn.working[i] == 'x' && rpn.t_type == 'I') {
          zRPN_DEBUG  printf ("      switching to hex constant mode\n");
-         rpn.type = 'X';
-      } else if (j == 1 && rpn.working[i] == 'b' && rpn.type == 'I') {
+         rpn.t_type = 'X';
+      } else if (j == 1 && rpn.working[i] == 'b' && rpn.t_type == 'I') {
          zRPN_DEBUG  printf ("      switching to binary constant mode\n");
-         rpn.type = 'B';
+         rpn.t_type = 'B';
       } else {
-         if      (rpn.type == S_TTYPE_INT   && strchr(v_number  , rpn.working[i]) == 0)  break;
-         else if (rpn.type == S_TTYPE_FLOAT && strchr(v_number  , rpn.working[i]) == 0)  break;
-         else if (rpn.type == S_TTYPE_HEX   && strchr(v_hex     , rpn.working[i]) == 0)  break;
-         else if (rpn.type == S_TTYPE_BIN   && strchr(v_binary  , rpn.working[i]) == 0)  break;
-         else if (rpn.type == S_TTYPE_OCT   && strchr(v_octal   , rpn.working[i]) == 0)  break;
+         if      (rpn.t_type == S_TTYPE_INT   && strchr(v_number  , rpn.working[i]) == 0)  break;
+         else if (rpn.t_type == S_TTYPE_FLOAT && strchr(v_number  , rpn.working[i]) == 0)  break;
+         else if (rpn.t_type == S_TTYPE_HEX   && strchr(v_hex     , rpn.working[i]) == 0)  break;
+         else if (rpn.t_type == S_TTYPE_BIN   && strchr(v_binary  , rpn.working[i]) == 0)  break;
+         else if (rpn.t_type == S_TTYPE_OCT   && strchr(v_octal   , rpn.working[i]) == 0)  break;
       }
       /*---(normal number)-----------------*/
-      rpn.token[j]     = rpn.working[i];
-      rpn.token[j + 1] = '\0';
-      ++rpn.ntoken;
+      rpn.t_name[j]     = rpn.working[i];
+      rpn.t_name[j + 1] = '\0';
+      ++rpn.t_len ;
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.ntoken, rpn.token);
+      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
       /*---(prepare for next char)-------*/
       ++i;
       ++j;
    }
    /*---(check for octal)------------------*/
-   if (rpn.type == S_TTYPE_INT && rpn.ntoken > 1 && rpn.token [0] == '0') {
+   if (rpn.t_type == S_TTYPE_INT && rpn.t_len  > 1 && rpn.t_name [0] == '0') {
       zRPN_DEBUG  printf ("      recast as an octal onstant\n");
-      rpn.type = S_TTYPE_OCT;
+      rpn.t_type = S_TTYPE_OCT;
    }
    /*---(check for no payload)-------------*/
-   if ((strchr (S_TTYPE_BINHEX, rpn.type) != 0) && rpn.ntoken < 3) {
+   if ((strchr (S_TTYPE_BINHEX, rpn.t_type) != 0) && rpn.t_len  < 3) {
       zRPN_DEBUG  printf ("      special format (0x or 0b) has no payload)\n");
-      strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-      rpn.type   = S_TTYPE_ERROR;
+      strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+      rpn.t_type   = S_TTYPE_ERROR;
    }
    /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
+   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
    yRPN__token ();
    yRPN__save  ();
    yRPN__normal (a_pos);
@@ -964,9 +1026,9 @@ yRPN__operators    (int  a_pos)
    int       j         = 0;
    int       rc        = 0;
    /*---(prepare)------------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = S_TTYPE_OPER;
-   rpn.prec = S_PREC_NONE;
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   rpn.t_type = S_TTYPE_OPER;
+   rpn.t_prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    DEBUG_OPER  yLOG_value   ("nworking"  , rpn.nworking);
    if (i              >= rpn.nworking) {
@@ -979,64 +1041,64 @@ yRPN__operators    (int  a_pos)
       return  zRPN_ERR_NOT_START_OPERATOR;
    }
    /*---(main loop)------------------------*/
-   rpn.ntoken = 0;
+   rpn.t_len  = 0;
    while (i < rpn.nworking && j < 2) {
       DEBUG_OPER  yLOG_complex ("current"   , "i=%3d, j=%3d, ch=%c", i, j, rpn.working[i]);
       /*---(test for right chars)-------------*/
       if (strchr(v_operator, rpn.working[i]) == 0)  break;
       if (zRPN_lang != S_LANG_GYGES && rpn.count == 0 && rpn.working[i] == '#')   preproc = 'y';
       /*---(add to token)------------------*/
-      rpn.token[j]     = rpn.working[i];
-      rpn.token[j + 1] = '\0';
-      ++rpn.ntoken;
-      DEBUG_OPER  yLOG_complex ("token"     , "len=%3d, str=%s", rpn.ntoken, rpn.token);
+      rpn.t_name[j]     = rpn.working[i];
+      rpn.t_name[j + 1] = '\0';
+      ++rpn.t_len ;
+      DEBUG_OPER  yLOG_complex ("token"     , "len=%3d, str=%s", rpn.t_len , rpn.t_name);
       /*---(check for too long)---------------*/
       yRPN__precedence ();
-      if (j > 0 && rpn.prec == S_PREC_FAIL) {
-         rpn.token[j]     = '\0';
-         --rpn.ntoken;
+      if (j > 0 && rpn.t_prec == S_PREC_FAIL) {
+         rpn.t_name[j]     = '\0';
+         --rpn.t_len ;
          --j;
          --i;
          break;
       }
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.ntoken, rpn.token);
+      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
       /*---(prepare for next char)-------*/
       ++i;
       ++j;
    }
    /*---(check size)-----------------------*/
-   if (rpn.ntoken <= 0) {
+   if (rpn.t_len  <= 0) {
       DEBUG_OPER  yLOG_exit    (__FUNCTION__);
       return  zRPN_ERR_ZERO_LEN_TOKEN;
    }
-   if (rpn.ntoken >  3) {
+   if (rpn.t_len  >  3) {
       DEBUG_OPER  yLOG_exit    (__FUNCTION__);
       return  zRPN_ERR_OPERATOR_TOO_LONG;
    }
    /*---(check for unary)------------------*/
    if (rpn.lops == 'y') {
-      if        (strcmp (rpn.token, "+") == 0)  { strcpy (rpn.token, "+:"); rpn.ntoken = 2;
-      } else if (strcmp (rpn.token, "-") == 0)  { strcpy (rpn.token, "-:"); rpn.ntoken = 2;
-      } else if (strcmp (rpn.token, "*") == 0)  { strcpy (rpn.token, "*:"); rpn.ntoken = 2;
-      } else if (strcmp (rpn.token, "&") == 0)  { strcpy (rpn.token, "&:"); rpn.ntoken = 2;
+      if        (strcmp (rpn.t_name, "+") == 0)  { strcpy (rpn.t_name, "+:"); rpn.t_len  = 2;
+      } else if (strcmp (rpn.t_name, "-") == 0)  { strcpy (rpn.t_name, "-:"); rpn.t_len  = 2;
+      } else if (strcmp (rpn.t_name, "*") == 0)  { strcpy (rpn.t_name, "*:"); rpn.t_len  = 2;
+      } else if (strcmp (rpn.t_name, "&") == 0)  { strcpy (rpn.t_name, "&:"); rpn.t_len  = 2;
       }
    }
    /*---(end)------------------------------*/
-   DEBUG_OPER  yLOG_complex ("final"     , "str=%-3.3s, en=%3d, dir=%c, arity=%d, prec=%c", rpn.token, rpn.ntoken, rpn.dir, rpn.arity, rpn.prec);
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
+   DEBUG_OPER  yLOG_complex ("final"     , "str=%-3.3s, en=%3d, dir=%c, arity=%d, prec=%c", rpn.t_name, rpn.t_len , rpn.t_dir, rpn.t_arity, rpn.t_prec);
+   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
    yRPN__token ();
    /*---(handle it)------------------------*/
    yRPN__precedence ();
    yRPN__peek ();
-   DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.prec, rpn.t_prec);
-   zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.prec, rpn.t_prec);
-   if ( (rpn.dir == S_LEFT && rpn.prec >= rpn.t_prec) ||
-         (rpn.dir == S_RIGHT && rpn.prec >  rpn.t_prec)) {
-      while ((rpn.dir == S_LEFT && rpn.prec >= rpn.t_prec) ||
-            (rpn.dir == S_RIGHT && rpn.prec >  rpn.t_prec)) {
+   DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.t_prec, rpn.p_prec);
+   zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.t_prec, rpn.p_prec);
+   if ( (rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||
+         (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {
+      while ((rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||
+            (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {
          /*> if (rpn__last != 'z') RPN__pops();                                       <*/
-         if (rpn.t_prec == 'z') break;
+         if (rpn.p_prec == 'z') break;
          yRPN__pops();
          yRPN__peek();
       }
@@ -1068,57 +1130,57 @@ yRPN__grouping     (int  a_pos)
    char      x_match   = ' ';
    char      x_fake    = 'n';
    /*---(prepare)------------------------*/
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.token[0] = rpn.working[i];
-   rpn.token[1] = '\0';
-   rpn.type     = S_TTYPE_GROUP;
-   rpn.prec     = S_PREC_NONE;
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   rpn.t_name[0] = rpn.working[i];
+   rpn.t_name[1] = '\0';
+   rpn.t_type     = S_TTYPE_GROUP;
+   rpn.t_prec     = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    if (i              >= rpn.nworking)           return  zRPN_ERR_INPUT_NOT_AVAIL;
    if (strchr(v_paren   , rpn.working[i]) == 0)  return  zRPN_ERR_NOT_GROUPING;
    /*---(main loop)------------------------*/
-   rpn.ntoken = 1;
+   rpn.t_len  = 1;
    ++i;
    /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
+   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
    /*---(handle it)------------------------*/
    yRPN__precedence ();
-   zRPN_DEBUG  printf("      prec = %c\n", rpn.prec);
+   zRPN_DEBUG  printf("      prec = %c\n", rpn.t_prec);
    /*---(open bracket)---------------------*/
-   if (rpn.token[0] == '[') {
+   if (rpn.t_name[0] == '[') {
       yRPN__token ();
-      /*> strcpy (rpn.token, "]*");                                                   <*/
-      strcpy (rpn.token, "]");
-      rpn.type         = S_TTYPE_OPER;
+      /*> strcpy (rpn.t_name, "]*");                                                   <*/
+      strcpy (rpn.t_name, "]");
+      rpn.t_type         = S_TTYPE_OPER;
       yRPN__push();
-      strcpy (rpn.token, "[");
+      strcpy (rpn.t_name, "[");
       yRPN__normal (a_pos);
       x_fake = 'y';
-      strcpy (rpn.token, "(");
-      rpn.type         = S_TTYPE_GROUP;
+      strcpy (rpn.t_name, "(");
+      rpn.t_type         = S_TTYPE_GROUP;
       yRPN__precedence ();
    }
    /*---(open paren)-----------------------*/
-   if (rpn.token[0] == '(') {
+   if (rpn.t_name[0] == '(') {
       yRPN__token ();
       yRPN__push();
       if (x_fake == 'n')  yRPN__normal (a_pos);
       rpn.lops = 'y';
    }
    /*---(close bracket)-------------------*/
-   if (rpn.token[0] == ']') {
+   if (rpn.t_name[0] == ']') {
       yRPN__token ();
-      strcpy (rpn.token, ")");
-      rpn.type         = S_TTYPE_GROUP;
+      strcpy (rpn.t_name, ")");
+      rpn.t_type         = S_TTYPE_GROUP;
       yRPN__precedence ();
       x_fake = 'y';
    }
    /*---(close paren)----------------------*/
-   if (rpn.token[0] == ')') {
+   if (rpn.t_name[0] == ')') {
       yRPN__token ();
       if (x_fake == 'n')  yRPN__normal (a_pos);
       rc = yRPN__peek();
-      while (rc >= 0  &&  rpn.t_prec != 'd' + 16) {
+      while (rc >= 0  &&  rpn.p_prec != 'd' + 16) {
          yRPN__pops();
          rc = yRPN__peek();
       }
@@ -1132,10 +1194,10 @@ yRPN__grouping     (int  a_pos)
       rpn.lops = 'n';
    }
    /*---(comma)----------------------------*/
-   else if (strncmp(rpn.token, ",", 1) == 0) {
+   else if (strncmp(rpn.t_name, ",", 1) == 0) {
       yRPN__token ();
       rc = yRPN__peek();
-      while (rc >= 0  &&  rpn.t_prec != 'd' + 16) {
+      while (rc >= 0  &&  rpn.p_prec != 'd' + 16) {
          yRPN__pops();
          rc = yRPN__peek();
       }
@@ -1144,7 +1206,7 @@ yRPN__grouping     (int  a_pos)
          /*> return rc;                                                               <*/
       }
       if (zRPN_lang != S_LANG_GYGES) {
-         rpn.type = S_TTYPE_OPER;
+         rpn.t_type = S_TTYPE_OPER;
          yRPN__save ();
          yRPN__normal (a_pos);
          rpn.lops = 'y';
@@ -1292,9 +1354,9 @@ yRPN__addresses    (int  a_pos)
    int       len       = 0;
    /*---(prepare)------------------------*/
    zRPN_DEBUG  printf("entering yRPN_addresses");
-   strncpy (rpn.token, zRPN_NADA, zRPN_MAX_LEN);
-   rpn.type = S_TTYPE_ADDR;
-   rpn.prec = S_PREC_NONE;
+   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   rpn.t_type = S_TTYPE_ADDR;
+   rpn.t_prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
    zRPN_DEBUG  printf("entering defenses");
    if (zRPN_lang       != S_LANG_GYGES)         return  zRPN_ERR_NOT_SPREADSHEET;
@@ -1303,38 +1365,38 @@ yRPN__addresses    (int  a_pos)
    /*---(main loop)------------------------*/
    zRPN_DEBUG  printf("passed defenses");
    zRPN_DEBUG  printf("   address----------------\n");
-   rpn.ntoken = 0;
+   rpn.t_len  = 0;
    while (i < rpn.nworking) {
       /*---(test for right characters)-----*/
       if (strchr(v_address , rpn.working[i]) == 0)  break;
       /*---(normal number)-----------------*/
-      rpn.token[j]     = rpn.working[i];
-      rpn.token[j + 1] = '\0';
-      ++rpn.ntoken;
+      rpn.t_name[j]     = rpn.working[i];
+      rpn.t_name[j + 1] = '\0';
+      ++rpn.t_len ;
       /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.ntoken, rpn.token);
+      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
       /*---(prepare for next char)-------*/
       ++i;
       ++j;
    }
    /*---(check size)-----------------------*/
-   len = strlen(rpn.token);
+   len = strlen(rpn.t_name);
    if (len <= 0) return -1;
    /*---(handle it)------------------------*/
-   rc = yRPN__cells (rpn.token, NULL, NULL, NULL, NULL);
+   rc = yRPN__cells (rpn.t_name, NULL, NULL, NULL, NULL);
    zRPN_DEBUG  printf("\n");
    if (rc >= 0)  {
-      strcpy  (rpn.token, s_addr);
+      strcpy  (rpn.t_name, s_addr);
    } else if (rc < 0)  {
-      strcpy  (rpn.token, zRPN_NADA);
-      rpn.ntoken = 0;
+      strcpy  (rpn.t_name, YRPN_TOKEN_NULL);
+      rpn.t_len  = 0;
       return  zRPN_ERR_BAD_ADDRESS;
    }
    yRPN__token ();
    yRPN__save();
    yRPN__normal (a_pos);
    /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.ntoken, rpn.token);
+   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
    rpn.lops = 'n';
    /*---(complete)-------------------------*/
    zRPN_DEBUG  printf("exiting yRPN_addresses");
@@ -1364,7 +1426,7 @@ yRPN__load         (
    /*---(save the input)-----------------*/
    strncpy (rpn.source  , a_source , zRPN_MAX_LEN);
    rpn.nsource  = strlen (rpn.source);
-   if (rpn.source[0]  == '\0') strncpy (rpn.source  , zRPN_NADA, zRPN_MAX_LEN);
+   if (rpn.source[0]  == '\0') strncpy (rpn.source  , YRPN_TOKEN_NULL, zRPN_MAX_LEN);
    zRPN_DEBUG  printf("   source  (%02d) <<%s>>\n", rpn.nsource , rpn.source );
    /*---(set the working string)---------*/
    strncpy (rpn.working , rpn.source , zRPN_MAX_LEN);
@@ -1379,7 +1441,7 @@ yRPN__load         (
    zRPN_DEBUG  printf("   output  (%02d) <<%s>>\n", rpn.noutput , rpn.output );
    /*---(set the working vars)-----------*/
    rpn.nnormal  = 0;
-   rpn.type     = S_TTYPE_ERROR;
+   rpn.t_type     = S_TTYPE_ERROR;
    rpn.nstack   = 0;
    rpn.depth    = 0;
    rpn.count    = 0;
@@ -1618,7 +1680,7 @@ yRPN_convert       (char *a_source)
       zRPN_DEBUG  printf ("FATAL %4d : %s\n", rc, zRPN_ERRORS [ -rc - 100]);
       rpn.noutput = 0;
       rpn.count   = 0;
-      strcpy (rpn.output, zRPN_NADA);
+      strcpy (rpn.output, YRPN_TOKEN_NULL);
       /*> return  strndup (rpn.output, zRPN_MAX_LEN);                                 <*/
       /*> return  rpn.output;                                                         <*/
       DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
@@ -1632,7 +1694,7 @@ yRPN_convert       (char *a_source)
          zRPN_DEBUG  printf ("FATAL %4d : %s\n", zRPN_ERR_UNBALANCED_PARENS, "unbalanced parentheses\n");
          rpn.noutput = 0;
          rpn.count   = 0;
-         strcpy (rpn.output, zRPN_NADA);
+         strcpy (rpn.output, YRPN_TOKEN_NULL);
          /*> return  strndup (rpn.output, zRPN_MAX_LEN);                              <*/
          /*> return  rpn.output;                                                      <*/
          DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
@@ -1689,11 +1751,11 @@ yRPN_accessor      (char *a_question, int a_item)
    if        (strcmp (a_question, "source"    )     == 0) {
       snprintf (unit_answer, LEN_TEXT, "source string    : %.50s", rpn.source);
    } else if (strcmp (a_question, "token"     )     == 0) {
-      snprintf (unit_answer, LEN_TEXT, "current token    : %.50s", rpn.token);
+      snprintf (unit_answer, LEN_TEXT, "current token    : %.50s", rpn.t_name);
    } else if (strcmp (a_question, "precedence")     == 0) {
-      snprintf (unit_answer, LEN_TEXT, "precedence       : %c"   , rpn.prec);
+      snprintf (unit_answer, LEN_TEXT, "precedence       : %c"   , rpn.t_prec);
    } else if (strcmp (a_question, "type"      )     == 0) {
-      snprintf (unit_answer, LEN_TEXT, "current type     : %c"   , rpn.type);
+      snprintf (unit_answer, LEN_TEXT, "current type     : %c"   , rpn.t_type);
    } else if (strcmp (a_question, "count"     )     == 0) {
       snprintf (unit_answer, LEN_TEXT, "token count      : %d"   , rpn.count);
    } else if (strcmp (a_question, "output"    )     == 0) {
@@ -1714,6 +1776,32 @@ yRPN_accessor      (char *a_question, int a_item)
    /*---(complete)-----------------------*/
    return unit_answer;
 }
+
+char       /*----: set up programgents/debugging -----------------------------*/
+yRPN__testquiet     (void)
+{
+   char       *x_args [2]  = { "yRPN_debug","@@quiet" };
+   yURG_logger (2, x_args);
+   yURG_urgs   (2, x_args);
+   return 0;
+}
+
+char       /*----: set up programgents/debugging -----------------------------*/
+yRPN__testloud      (void)
+{
+   char       *x_args [3]  = { "yRPN_debug","@@kitchen","@@YRPN" };
+   yURG_logger (3, x_args);
+   yURG_urgs   (3, x_args);
+   return 0;
+}
+
+char       /*----: set up program urgents/debugging --------------------------*/
+yRPN__testend       (void)
+{
+   DEBUG_TOPS   yLOG_end     ();
+   return 0;
+}
+
 
 
 /*============================----end-of-source---============================*/

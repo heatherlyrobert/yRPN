@@ -1,32 +1,11 @@
-." heatherly hand crafted (like a dope)
-."
-." sections, break up the document into pieces
-."   .SH <str>   begin a new section
-."   .SS <str>   begin a new sub-section
-."
-." paragraphs, if not special formatting is used, these are unnecessary
-."   .PP         before a set of contiguous lines will run them together into
-."               a single paragraph -- helps if macros separate by accident
-."   .RS <n>     start a paragraph indented by <n> characters (i use 3 mostly)
-."   .RE         end that relative paragraph
-."   .IP <str>   uses <str> as an outdent and the next line is indented
-."   .TP         tag paragraph which has a more controllable outdent than .IP
-."   .HP         start hanging paragraph where all following lines are indented
-."
-."
-."
-."
-."
-
-
-.TH ySCHED 3 2011-Aug "linux" "heatherly custom tools manual"
-
+.TH yRPN 3 2011-Aug "linux" "heatherly custom tools manual"
 
 .SH NAME
-ySCHED \- simple, elegant, and powerful kernighan scheduling grammar
+yRPN \- simple, clean infix to reverse polish notation conversion
+
 .SH SYNOPSIS
 .nf
-.B #include  <ySCHED.h>
+.B #include  <yRPN.h>
 .sp
 .R  ---preparation---------------------------------
 .R  set a specific date for evaluating entries...

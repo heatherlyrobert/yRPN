@@ -137,13 +137,13 @@
 
 
 /*===[[ HEADER GUARD ]]=======================================================*/
-#ifndef   zRPN_PUBLIC  
-#define   zRPN_PUBLIC        loaded
+#ifndef   YRPN_PUBLIC  
+#define   YRPN_PUBLIC        loaded
 
 
 
 /*===[[ CONSTANTS ]]======================================*/
-#define   zRPN_NADA      "((null))"
+#define   YRPN_TOKEN_NULL    "((null))"
 
 
 

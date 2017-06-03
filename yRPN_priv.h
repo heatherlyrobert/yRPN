@@ -2,20 +2,34 @@
 #ifndef zRPN_PRIVATE  
 #define zRPN_PRIVATE         loaded
 
-#include    <stdio.h>
-#include    <string.h>
-#include    <stdlib.h>
-#include    <ctype.h>
-#include    <yLOG.h>         /* CUSTOM : heatherly program logging            */
 
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7e"
-#define   zRPN_VER_TXT       "updated and cleaned yRPN__keywords and its unit test"
+#define   zRPN_VER_NUM       "0.7f"
+#define   zRPN_VER_TXT       "added yURG and lots of verbosity to keywords"
+
+
+
+/*===[[ HEADERS ]]========================================*/
+/*---(ansi-c standard)-------------------*/
+#include    <stdio.h>        /* CLIBC   standard input/output                 */
+#include    <stdlib.h>       /* CLIBC   standard general purpose              */
+#include    <string.h>       /* CLIBC   standard string handling              */
+#include    <ctype.h>
+
+/*---(heatherly made)--------------------*/
+#include    <yURG.h>         /* CUSTOM  heatherly urgent processing           */
+#include    <yLOG.h>         /* CUSTOM  heatherly program logging             */
+#include    <ySTR.h>         /* CUSTOM  heatherly string handling             */
+#include    <yVAR.h>         /* CUSTOM  heatherly variable testing            */
+
+
+
 
 
 #define   zRPN_MAX_LEN       2000
+#define   S_MAX_STACK         100
 
 extern char     *v_alphanum;
 extern char     *v_alpha;
@@ -28,15 +42,17 @@ extern char     *v_address;
 
 extern char      zRPN_olddebug;
 
-/*---(DEBUGGING)----------------------*/
+/*---(debugging)----------------------*/
 #define      S_DEBUG_NO         'n'
 #define      S_DEBUG_YES        'y'
-
+/*---(lengths)------------------------*/
+#define      S_LEN_OUTPUT     2000
+#define      S_LEN_TOKEN        20
 /*---(token types)--------------------*/
 /*---(grouping)--------*/
 #define      S_TTYPE_GROUP      '('
 /*---(lower)-----------*/
-#define      S_TTYPE_CKEY       'k'
+#define      S_TTYPE_KEYW       'k'
 #define      S_TTYPE_ERROR      'e'
 #define      S_TTYPE_TYPE       't'
 #define      S_TTYPE_CONST      'n'
@@ -63,9 +79,10 @@ extern char      zRPN_olddebug;
 /*---(evalulation direction)----------*/
 #define      S_LEFT             'l'
 #define      S_RIGHT            'r'
-
+/*---(preprocessor)-------------------*/
 #define      S_PPROC_INCL       'i'
 #define      S_PPROC_OTHER      'o'
+
 
 
 typedef  struct cRPN_DEBUG   tRPN_DEBUG;
@@ -79,7 +96,6 @@ struct cRPN_DEBUG {
 tRPN_DEBUG  zRPN_debug;
 
 #define   zRPN_DEBUG       if ('n' == 'y')
-#define   DEBUG_TOPS       if (zRPN_debug.tops == 'y')
 #define   DEBUG_OPER       if (zRPN_debug.oper == 'y')
 
 #define PRIV      static
@@ -87,39 +103,38 @@ tRPN_DEBUG  zRPN_debug;
 
 typedef   struct cRPN  tRPN;
 struct  cRPN {
-   /*---(infix format)-----+-----------+-*/
-   char        source      [zRPN_MAX_LEN];  /* source infix string (const)    */
+   /*---(infix format)-------------------*/
+   char        source      [S_LEN_OUTPUT];  /* source infix string (const)    */
    int         nsource;                     /* length of source infix string  */
-   /*---(working areas)----+-----------+-*/
-   char        working     [zRPN_MAX_LEN];  /* copy of source for parsing     */
+   /*---(working areas)------------------*/
+   char        working     [S_LEN_OUTPUT];  /* copy of source for parsing     */
    int         nworking;                    /* position in working string     */
-   /*---(working areas)----+-----------+-*/
-   char        type;                        /* category of token              */
-   char        prec;                        /* precidence                     */
-   char        dir;                         /* direction of evaluation        */
-   char        arity;                       /* unary, binary, etc.            */
-   char        token       [zRPN_MAX_LEN];  /* current token                  */
-   int         ntoken;
-   /*---(stack)------------+-----------+-*/
-   char        stack       [zRPN_MAX_LEN][zRPN_MAX_LEN];
+   /*---(working areas)------------------*/
+   char        t_token     [S_LEN_TOKEN];   /* current token (full)           */
+   char        t_type;                      /* current token type             */
+   char        t_name      [S_LEN_TOKEN];   /* current token name             */
+   int         t_len;                       /* current token length           */
+   char        t_prec;                      /* current token precidence       */
+   char        t_dir;                       /* current token dir of eval      */
+   char        t_arity;                     /* current token unary, binary,.. */
+   /*---(stack)--------------------------*/
+   char        stack       [S_MAX_STACK][S_LEN_TOKEN];
    int         nstack;
    int         depth;  
-   char        t_type;
-   char        t_prec;
-   char        t_token     [zRPN_MAX_LEN];
+   char        p_type;
+   char        p_prec;
    char        cdepth;
    char        mdepth;
    char        lops;
-   /*---(postfix format)---+-----------+-*/
-   char        output      [zRPN_MAX_LEN];
-   char        detail      [zRPN_MAX_LEN];
-   char        normal      [zRPN_MAX_LEN];
-   char        tokens      [zRPN_MAX_LEN];
-   char        micro       [zRPN_MAX_LEN];
+   /*---(postfix format)-----------------*/
+   char        detail      [S_LEN_OUTPUT];
+   char        output      [S_LEN_OUTPUT];
    int         noutput;
+   char        tokens      [S_LEN_OUTPUT];
+   char        normal      [S_LEN_OUTPUT];
    int         nnormal;
    int         count;
-   /*---(other)------------+-----------+-*/
+   /*---(other)--------------------------*/
    char        about       [500];
 };
 extern  tRPN      rpn;
