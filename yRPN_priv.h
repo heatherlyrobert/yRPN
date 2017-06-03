@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7i"
-#define   zRPN_VER_TXT       "updated yRPN__chars and unit test to be much harder ;)"
+#define   zRPN_VER_NUM       "0.7j"
+#define   zRPN_VER_TXT       "updated funcvar and constants, including full units ;)"
 
 
 
@@ -34,7 +34,7 @@
 extern char     *v_alphanum;
 extern char     *v_alpha;
 extern char     *v_lower;
-extern char     *v_caps;
+extern char     *v_upnum;
 extern char     *v_number;
 extern char     *v_paren;
 extern char     *v_operator;
@@ -59,7 +59,7 @@ extern char      zRPN_olddebug;
 #define      S_TTYPE_OPER       'o'
 #define      S_TTYPE_FUNC       'f'
 #define      S_TTYPE_ADDR       '@'
-#define      S_TTYPE_SYM        'v'
+#define      S_TTYPE_VARS       'v'
 /*---(upper)-----------*/
 #define      S_TTYPE_CHAR       'C'
 #define      S_TTYPE_STR        'S'
@@ -196,7 +196,7 @@ int        /* ---- : save off string literals --------------------------------*/
 yRPN__strings      (int   a_pos);
 
 int        /* ---- : save off symbol names -----------------------------------*/
-yRPN__symbols      (int   a_pos);
+yRPN__funcvar      (int   a_pos);
 
 int        /* ---- : save off numbers ----------------------------------------*/
 yRPN__numbers      (int   a_pos);

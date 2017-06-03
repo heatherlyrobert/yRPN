@@ -7,8 +7,8 @@
 
 char     *v_alphanum  = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
 char     *v_alpha     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_";
+char     *v_upnum     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
 char     *v_lower     = "abcdefghijklmnopqrstuvwxyz";
-char     *v_caps      = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 char     *v_number    = "0123456789";
 char     *v_hex       = "0123456789abcdefABCDEF";
 char     *v_octal     = "01234567";
@@ -47,33 +47,18 @@ char    zRPN_ERRORS [100][50] = {
 
 tRPN      rpn;
 
-typedef   struct cPREC tPREC;
-struct    cPREC {
+
+
+/*===[[ OPERATORS ]]==========================================================*/
+typedef   struct cOPER tOPER;
+struct    cOPER {
    char      prec;
    char      token [5];
    char      dir;
    char      arity;                    /* how many arguments it takes         */
 };
-
-/*---(design notes)--------------------*/
-/*
- *  how do i deal with prefix versus suffix ++ and -- ?
- *
- *  how to deal with unary +/- from normal +/- ?
- *
- *  how to deal with array subscripting ?
- *
- *  how to deal with casting widh (<type>) ?
- *
- *  how to deal with multiplication versus indirection with splat ?
- *
- *  how to deal with address-of and bitwise-and with ampersand ?
- *
- *  how to deal with trinary conditional ?
- *
- */
-#define   MAX_PREC    200
-tPREC     precedence [MAX_PREC] = {
+#define   MAX_OPER    200
+tOPER     s_opers [MAX_OPER] = {
    /*-prec------token----dir-arity-*/
    /*---(spreadsheet)------------*/
    { 'd' +  0,  ".."    , S_LEFT ,   2 },    /* cell range                        */
@@ -157,23 +142,29 @@ tPREC     precedence [MAX_PREC] = {
    { '-'     ,  "end"   , '-',   0 },
 };
 
-#define     zBEG_PAREN     'd' + 16
 
+
+/*===[[ HIGH-VALUE CONSTANTS ]]===============================================*/
 #define   MAX_CONST   200
 typedef   struct cCONST tCONST;
 struct    cCONST {
    char      name  [30];
    double    value;
 };
-tCONST    constants [MAX_CONST] = {
+tCONST    s_consts [MAX_CONST] = {
    /*---(spreadsheet)------------*/
    { "TRUE"                   , 1.0                },
    { "FALSE"                  , 0.0                },
    { "NULL"                   , 0.0                },
    { "PI"                     , 3.1415927          },
-   { "end-of-const"           , 0.0                },
+   { "DEG2RAD"                , 0.0                },
+   { "RAD2DEG"                , 0.0                },
+   { ""                       , 0.0                },
 };
 
+
+
+/*===[[ STANDARD C TYPES ]]===================================================*/
 #define   MAX_TYPES   200
 typedef   struct cTYPES tTYPES;
 struct    cTYPES {
@@ -210,6 +201,9 @@ tTYPES    s_types [MAX_TYPES] = {
    { ""                       , '-'                },
 };
 
+
+
+/*===[[ STANDARD C KEYWORDS ]]================================================*/
 #define   MAX_KEYWORDS     200
 typedef   struct cKEYWORDS tKEYWORDS;
 struct    cKEYWORDS {
@@ -313,12 +307,12 @@ char       /* ---- : identify the symbol precedence --------------------------*/
 yRPN__precedence   (void)
 {
    int       i         = 0;
-   for (i = 0; i < MAX_PREC; ++i) {
-      if  (strcmp (precedence[i].token, "end"     ) == 0)  break;
-      if  (strcmp (precedence[i].token, rpn.t_name) != 0)  continue;
-      rpn.t_prec  = precedence[i].prec;
-      rpn.t_dir   = precedence[i].dir;
-      rpn.t_arity = precedence[i].arity;
+   for (i = 0; i < MAX_OPER; ++i) {
+      if  (strcmp (s_opers[i].token, "end"     ) == 0)  break;
+      if  (strcmp (s_opers[i].token, rpn.t_name) != 0)  continue;
+      rpn.t_prec  = s_opers[i].prec;
+      rpn.t_dir   = s_opers[i].dir;
+      rpn.t_arity = s_opers[i].arity;
       return  0;
    }
    /*---(complete)----------------*/
@@ -330,10 +324,10 @@ char       /* ---- : identify the symbol arity -------------------------------*/
 yRPN_arity         (char *a_op)
 {
    int       i         = 0;
-   for (i = 0; i < MAX_PREC; ++i) {
-      if  (strcmp (precedence[i].token, "end"     ) == 0)  break;
-      if  (strcmp (precedence[i].token, a_op      ) != 0)  continue;
-      return  precedence[i].arity;
+   for (i = 0; i < MAX_OPER; ++i) {
+      if  (strcmp (s_opers[i].token, "end"     ) == 0)  break;
+      if  (strcmp (s_opers[i].token, a_op      ) != 0)  continue;
+      return  s_opers[i].arity;
    }
    /*---(complete)----------------*/
    return -1;
@@ -480,7 +474,7 @@ yRPN__token_error    (void)
 }
 
 char         /*--> add a char to current token -----------[--------[--------]-*/
-yRPN__token_add      (char a_type, int *a_pos)
+yRPN__token_add      (int *a_pos)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         =  -10;     /* return code for errors              */
@@ -492,7 +486,7 @@ yRPN__token_add      (char a_type, int *a_pos)
    char       *x_psuf      = "\">";
    /*---(header)------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
-   DEBUG_YRPN_M  yLOG_schar   (a_type);
+   DEBUG_YRPN_M  yLOG_schar   (rpn.t_type);
    DEBUG_YRPN_M  yLOG_sint    (*a_pos);
    DEBUG_YRPN_M  yLOG_sint    (rpn.nworking);
    /*---(defense)-----------------------*/
@@ -507,10 +501,22 @@ yRPN__token_add      (char a_type, int *a_pos)
    if (rpn.t_len > 0 && rpn.t_name [rpn.t_len - 1] == '\\')  x_esc = 'y';
    DEBUG_YRPN_M  yLOG_schar   (x_esc);
    /*---(check character)---------------*/
-   --rce;  switch (a_type) {
+   --rce;  switch (rpn.t_type) {
    case S_TTYPE_KEYW   : case S_TTYPE_TYPE   :
       DEBUG_YRPN_M  yLOG_snote   ("v_lower");
       if (strchr (v_lower, x_ch) == 0)                          x_bad = 'y';
+      break;
+      /*---(done)------------------------*/
+   case S_TTYPE_CONST  :
+      DEBUG_YRPN_M  yLOG_snote   ("v_upnum");
+      if (rpn.t_len == 0 && (x_ch < 'A' || x_ch > 'Z'))         x_bad = 'y';
+      if (strchr (v_upnum, x_ch) == 0)                          x_bad = 'y';
+      break;
+      /*---(done)------------------------*/
+   case S_TTYPE_VARS   : case S_TTYPE_FUNC   :
+      DEBUG_YRPN_M  yLOG_snote   ("v_alphanum");
+      if (rpn.t_len == 0 && strchr (v_alpha, x_ch) == 0)        x_bad = 'y';
+      if (strchr (v_alphanum, x_ch) == 0)                       x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_STR    :
@@ -570,11 +576,37 @@ yRPN__token_add      (char a_type, int *a_pos)
    return 0;
 }
 
-char         /*--> add a char to current token -----------[--------[--------]-*/
-yRPN__token_done     (char a_pos)
+char         /*--> check what comes next -----------------[--------[--------]-*/
+yRPN__token_next     (int a_pos)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   char        x_ch        =    0;     /* current character                   */
+   int         x_pos       =    0;     /* updated position in input           */
+   /*---(skip whitespace)----------------*/
+   x_pos = a_pos;
+   while (x_pos <= rpn.nworking && rpn.working [x_pos] == ' ')  ++x_pos;
+   /*---(classify)-----------------------*/
+   if (rpn.working [x_pos] == '(')  return  S_TTYPE_FUNC;
+   else                             return  S_TTYPE_VARS;
+   /*---(complete)-----------------------*/
+   return 0;
+}
+
+char         /*--> save token to output ------------------[--------[--------]-*/
+yRPN__token_save     (char a_pos)
 {
    yRPN__token  ();         /* strait to tokens list                          */
    yRPN__save   ();         /* strait to shunted and output lists (no stack)  */
+   yRPN__normal (a_pos);    /* strait to normal list                          */
+   return 0;
+}
+
+char         /*--> push token on stack -------------------[--------[--------]-*/
+yRPN__token_push     (char a_pos)
+{
+   yRPN__token  ();         /* strait to tokens list                          */
+   yRPN__push   ();         /* move token to stack                            */
    yRPN__normal (a_pos);    /* strait to normal list                          */
    return 0;
 }
@@ -613,7 +645,7 @@ yRPN__keywords       (int  a_pos)
    DEBUG_YRPN    yLOG_note    ("accumulate characters");
    rpn.t_type   = S_TTYPE_KEYW;
    x_pos        = a_pos;  /* starting point */
-   while (yRPN__token_add (S_TTYPE_KEYW, &x_pos) == 0);
+   while (yRPN__token_add (&x_pos) == 0);
    /*---(try to match keyword)-------------*/
    DEBUG_YRPN    yLOG_note    ("search keywords");
    for (i = 0; i < MAX_KEYWORDS; ++i) {
@@ -639,8 +671,8 @@ yRPN__keywords       (int  a_pos)
       else                                      rpn.pproc = S_PPROC_OTHER;
    }
    /*---(save)-----------------------------*/
-   DEBUG_YRPN    yLOG_note    ("put token directly to output");
-   yRPN__token_done    (a_pos);
+   DEBUG_YRPN    yLOG_note    ("put keyword directly to output");
+   yRPN__token_save    (a_pos);
    rpn.lops = 'y';
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
@@ -675,7 +707,7 @@ yRPN__types          (int  a_pos)
    DEBUG_YRPN    yLOG_note    ("accumulate characters");
    rpn.t_type   = S_TTYPE_TYPE;
    x_pos        = a_pos;  /* starting point */
-   while (yRPN__token_add (S_TTYPE_TYPE, &x_pos) == 0);
+   while (yRPN__token_add (&x_pos) == 0);
    DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
    /*---(try to match types)---------------*/
    DEBUG_YRPN    yLOG_note    ("search types");
@@ -696,8 +728,8 @@ yRPN__types          (int  a_pos)
       return rce;
    }
    /*---(save)-----------------------------*/
-   DEBUG_YRPN    yLOG_note    ("put token directly to output");
-   yRPN__token_done    (a_pos);
+   DEBUG_YRPN    yLOG_note    ("put c type directly to output");
+   yRPN__token_save    (a_pos);
    rpn.lops = 'y';
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
@@ -735,7 +767,7 @@ yRPN__strings        (int  a_pos)
    DEBUG_YRPN    yLOG_note    ("accumulate characters");
    rpn.t_type   = S_TTYPE_STR;
    x_pos        = a_pos;  /* starting point */
-   while (yRPN__token_add (S_TTYPE_STR, &x_pos) == 0);
+   while (yRPN__token_add (&x_pos) == 0);
    DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
    /*---(check if long enough)-------------*/
    DEBUG_YRPN    yLOG_value   ("rpn.t_len" , rpn.t_len);
@@ -760,8 +792,8 @@ yRPN__strings        (int  a_pos)
       return rce;
    }
    /*---(save)-----------------------------*/
-   DEBUG_YRPN    yLOG_note    ("put token directly to output");
-   yRPN__token_done    (a_pos);
+   DEBUG_YRPN    yLOG_note    ("put string literal directly to output");
+   yRPN__token_save    (a_pos);
    rpn.lops = 'n';
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
@@ -792,7 +824,7 @@ yRPN__chars          (int  a_pos)
    DEBUG_YRPN    yLOG_note    ("accumulate characters");
    rpn.t_type   = S_TTYPE_CHAR;
    x_pos        = a_pos;  /* starting point */
-   while (yRPN__token_add (S_TTYPE_CHAR, &x_pos) == 0);
+   while (yRPN__token_add (&x_pos) == 0);
    DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
    /*---(check if long enough)-------------*/
    DEBUG_YRPN    yLOG_value   ("rpn.t_len" , rpn.t_len);
@@ -823,10 +855,119 @@ yRPN__chars          (int  a_pos)
       return rce;
    }
    /*---(save)-----------------------------*/
-   DEBUG_YRPN    yLOG_note    ("put token directly to output");
-   yRPN__token_done    (a_pos);
+   DEBUG_YRPN    yLOG_note    ("put char literal directly to output");
+   yRPN__token_save    (a_pos);
    rpn.lops = 'n';
    /*---(complete)-----------------------*/
+   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
+   return x_pos;
+}
+
+
+
+/*====================------------------------------------====================*/
+/*===----                       symbol handling                        ----===*/
+/*====================------------------------------------====================*/
+static void        o___SYMBOLS_________________o (void) {;}
+
+int          /*--> check for constants -------------------[--------[--------]-*/
+yRPN__constants      (int  a_pos)
+{  /*---(design notes)--------------------------------------------------------*/
+   /* constants only contain alphnanumerics plus the underscore.              */
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   int         x_pos       =    0;     /* updated position in input           */
+   int         i           =    0;     /* iterator for keywords               */
+   int         x_found     =   -1;     /* index of keyword                    */
+   /*---(header)------------------------*/
+   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
+   /*---(defenses)-----------------------*/
+   yRPN__token_error ();
+   DEBUG_YRPN    yLOG_value   ("a_pos"     , a_pos);
+   --rce;  if (a_pos <  0) {
+      DEBUG_YRPN    yLOG_note    ("start can not be negative");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(accumulate characters)------------*/
+   DEBUG_YRPN    yLOG_note    ("accumulate characters");
+   rpn.t_type   = S_TTYPE_CONST;
+   x_pos        = a_pos;  /* starting point */
+   while (yRPN__token_add (&x_pos) == 0);
+   DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
+   /*---(try to match constants)-----------*/
+   DEBUG_YRPN    yLOG_note    ("search constants");
+   for (i = 0; i < MAX_CONST; ++i) {
+      if  (s_consts [i].name [0] == '\0')                   break;
+      if  (s_consts [i].name [0] != rpn.t_name [0])         continue;
+      if  (strcmp (s_consts [i].name, rpn.t_name ) != 0)    continue;
+      x_found = i;
+      DEBUG_YRPN    yLOG_value   ("x_found"   , x_found);
+      break;
+   }
+   DEBUG_YRPN    yLOG_info    ("token name", rpn.t_name);
+   /*---(handle misses)--------------------*/
+   --rce;  if (x_found < 0) {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("type not found");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(save)-----------------------------*/
+   DEBUG_YRPN    yLOG_note    ("put constant directly to output");
+   yRPN__token_save    (a_pos);
+   rpn.lops = 'n';
+   /*---(complete)-------------------------*/
+   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
+   return x_pos;
+}
+
+int          /*--> check for symbol names ----------------[--------[--------]-*/
+yRPN__funcvar      (int   a_pos)
+{  /*---(design notes)--------------------------------------------------------*/
+   /* func/vars only contain alphnanumerics plus the underscore.              */
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   int         x_pos       =    0;     /* updated position in input           */
+   int         i           =    0;     /* iterator for keywords               */
+   int         x_found     =   -1;     /* index of keyword                    */
+   /*---(header)------------------------*/
+   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
+   /*---(defenses)-----------------------*/
+   yRPN__token_error ();
+   DEBUG_YRPN    yLOG_value   ("a_pos"     , a_pos);
+   --rce;  if (a_pos <  0) {
+      DEBUG_YRPN    yLOG_note    ("start can not be negative");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(accumulate characters)------------*/
+   DEBUG_YRPN    yLOG_note    ("accumulate characters");
+   rpn.t_type   = S_TTYPE_VARS;
+   x_pos        = a_pos;  /* starting point */
+   while (yRPN__token_add (&x_pos) == 0);
+   DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
+   /*---(check if long enough)-------------*/
+   DEBUG_YRPN    yLOG_value   ("rpn.t_len" , rpn.t_len);
+   --rce;  if (rpn.t_len <  1) {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("name too short");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(check func vs vars)---------------*/
+   rpn.t_type   = yRPN__token_next (x_pos);
+   /*---(save)-----------------------------*/
+   if (rpn.t_type == S_TTYPE_FUNC) {
+      DEBUG_YRPN    yLOG_note    ("put function on stack");
+      rpn.t_prec = S_PREC_FUNC;
+      yRPN__token_push    (a_pos);
+   } else {
+      DEBUG_YRPN    yLOG_note    ("put variable directly to output");
+      yRPN__token_save    (a_pos);
+   }
+   rpn.lops = 'n';
+   /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
 }
@@ -838,131 +979,12 @@ yRPN__chars          (int  a_pos)
 /*====================------------------------------------====================*/
 static void        o___TOKENS__________________o (void) {;}
 
-int        /* ---- : save off constants --------------------------------------*/
-yRPN__constants    (int  a_pos)
-{
-   /*---(design notes)-------------------*/
-   /*
-    *  symbols begin with a letter and contain alphanumerics plus underscore.
-    *
-    */
-   /*---(locals)-------*-------------------*/
-   int       i         = a_pos;
-   int       j         = 0;
-   char      post      = 'n';
-   int       rc        = 0;
-   /*---(prepare)------------------------*/
-   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-   rpn.t_type = S_TTYPE_CONST;
-   rpn.t_prec = S_PREC_NONE;
-   /*---(defenses)-----------------------*/
-   if (zRPN_lang      != S_LANG_GYGES)        return  zRPN_ERR_NOT_SPREADSHEET;
-   if (i              >= rpn.nworking)        return  zRPN_ERR_INPUT_NOT_AVAIL;
-   if (strchr(v_alpha, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_START_ALPHA;
-   /*---(main loop)------------------------*/
-   zRPN_DEBUG  printf("   constant---------------\n");
-   rpn.t_len  = 0;
-   while (i < rpn.nworking) {
-      /*---(test for right characters)-----*/
-      if (strchr(v_alphanum, rpn.working[i]) == 0)  break;
-      /*---(normal name)-------------------*/
-      rpn.t_name[j]     = rpn.working[i];
-      rpn.t_name[j + 1] = '\0';
-      ++rpn.t_len ;
-      /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
-      /*---(prepare for next char)-------*/
-      ++i;
-      ++j;
-   }
-   for (j = 0; j < MAX_CONST; ++j) {
-      if  (strcmp (constants [j].name, "end-of-const") == 0) {
-         strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-         rpn.t_len  = 0;
-         return zRPN_ERR_UNKNOWN_CONSTANT;
-      }
-      if  (strcmp (constants [j].name, rpn.t_name ) == 0) break;
-   }
-   /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
-   yRPN__token ();
-   yRPN__save  ();
-   yRPN__normal (a_pos);
-   rpn.lops = 'n';
-   /*---(complete)-------------------------*/
-   return i;
-}
-
 int        /* ---- : save off string literals --------------------------------*/
 yRPN__text         (int  a_pos)
 {
    strcat (rpn.tokens, rpn.working + a_pos);
    strcat (rpn.tokens, " ");
    return strlen (rpn.working);
-}
-
-int        /* ---- : save off symbol names -----------------------------------*/
-yRPN__symbols      (int   a_pos)
-{
-   /*---(design notes)-------------------*/
-   /*
-    *  symbols begin with a letter and contain alphanumerics plus underscore.
-    *
-    */
-   /*---(begin)--------------------------*/
-   zRPN_DEBUG  printf("   symbol-----------------\n");
-   /*---(locals)-------*-------------------*/
-   int       i         = a_pos;
-   int       j         = 0;
-   char      post      = 'n';
-   int       rc        = 0;
-   /*---(prepare)------------------------*/
-   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-   rpn.t_type = S_TTYPE_SYM;
-   rpn.t_prec = S_PREC_NONE;
-   /*---(defenses)-----------------------*/
-   if (i              >= rpn.nworking)        return  zRPN_ERR_INPUT_NOT_AVAIL;
-   if (strchr(v_alpha, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_START_ALPHA;
-   /*---(main loop)------------------------*/
-   rpn.t_len  = 0;
-   while (i < rpn.nworking) {
-      /*---(clear whitespace)--------------*/
-      if (rpn.working[i] == ' ')  {
-         post = 'y';
-         ++i;
-         continue;
-      }
-      /*---(function marker)---------------*/
-      if (rpn.working[i] == '(') {
-         rpn.t_type = S_TTYPE_FUNC;
-         rpn.t_prec = S_PREC_FUNC;
-         yRPN__push();
-         yRPN__normal (a_pos);
-         break;
-      }
-      /*---(test for right characters)-----*/
-      if (post == 'y')                              break;
-      if (strchr(v_alphanum, rpn.working[i]) == 0)  break;
-      /*---(normal name)-------------------*/
-      rpn.t_name[j]     = rpn.working[i];
-      rpn.t_name[j + 1] = '\0';
-      ++rpn.t_len ;
-      /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
-      /*---(prepare for next char)-------*/
-      ++i;
-      ++j;
-   }
-   /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
-   if (rpn.t_type == S_TTYPE_SYM)  {
-      yRPN__save();
-      yRPN__normal (a_pos);
-   }
-   yRPN__token ();
-   rpn.lops = 'n';
-   /*---(complete)-------------------------*/
-   return i;
 }
 
 int        /* ---- : save off numbers ----------------------------------------*/
@@ -1067,7 +1089,7 @@ yRPN__operators    (int  a_pos)
 {
    /*---(design notes)-------------------*/
    /*
-    *  operators can have a wild number of forms and presidences
+    *  operators can have a wild number of forms and precedences
     *
     */
    /*---(begin)--------------------------*/
@@ -1172,7 +1194,7 @@ yRPN__grouping     (int  a_pos)
 {
    /*---(design notes)-------------------*/
    /*
-    *  operators can have a wild number of forms and presidences
+    *  operators can have a wild number of forms and precedences
     *
     */
    /*---(begin)--------------------------*/
@@ -1708,7 +1730,7 @@ yRPN_convert       (char *a_source)
       if (rc <= i && strchr(v_lower    , x_ch) != 0)          rc = yRPN__keywords   (i);
       if (rc <= i && strchr(v_lower    , x_ch) != 0)          rc = yRPN__types      (i);
       if (rc <= i && strchr(v_alpha    , x_ch) != 0)          rc = yRPN__constants  (i);
-      if (rc <= i && strchr(v_alpha    , x_ch) != 0)          rc = yRPN__symbols    (i);
+      if (rc <= i && strchr(v_alpha    , x_ch) != 0)          rc = yRPN__funcvar    (i);
       if (rc <= i && strchr(v_number   , x_ch) != 0)          rc = yRPN__numbers    (i);
       if (rc <= i && strchr(v_paren    , x_ch) != 0)          rc = yRPN__grouping   (i);
       if (rc <= i && strchr(v_operator , x_ch) != 0)          rc = yRPN__operators  (i);
