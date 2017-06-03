@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7f"
-#define   zRPN_VER_TXT       "added yURG and lots of verbosity to keywords"
+#define   zRPN_VER_NUM       "0.7g"
+#define   zRPN_VER_TXT       "updated yRPN__type unit test to be much harder ;)"
 
 
 
@@ -53,8 +53,8 @@ extern char      zRPN_olddebug;
 #define      S_TTYPE_GROUP      '('
 /*---(lower)-----------*/
 #define      S_TTYPE_KEYW       'k'
-#define      S_TTYPE_ERROR      'e'
 #define      S_TTYPE_TYPE       't'
+#define      S_TTYPE_ERROR      'e'
 #define      S_TTYPE_CONST      'n'
 #define      S_TTYPE_OPER       'o'
 #define      S_TTYPE_FUNC       'f'
