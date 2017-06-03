@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7g"
-#define   zRPN_VER_TXT       "updated yRPN__keywords unit test to be much harder ;)"
+#define   zRPN_VER_NUM       "0.7h"
+#define   zRPN_VER_TXT       "updated yRPN__strings and unit test to be much harder ;)"
 
 
 
@@ -47,7 +47,7 @@ extern char      zRPN_olddebug;
 #define      S_DEBUG_YES        'y'
 /*---(lengths)------------------------*/
 #define      S_LEN_OUTPUT     2000
-#define      S_LEN_TOKEN        20
+#define      S_LEN_TOKEN       200
 /*---(token types)--------------------*/
 /*---(grouping)--------*/
 #define      S_TTYPE_GROUP      '('
@@ -80,6 +80,8 @@ extern char      zRPN_olddebug;
 #define      S_LEFT             'l'
 #define      S_RIGHT            'r'
 /*---(preprocessor)-------------------*/
+#define      S_PPROC_NO         '-'
+#define      S_PPROC_YES        'y'
 #define      S_PPROC_INCL       'i'
 #define      S_PPROC_OTHER      'o'
 
@@ -126,6 +128,7 @@ struct  cRPN {
    char        cdepth;
    char        mdepth;
    char        lops;
+   char        pproc;                       /* pre-processor modes           */
    /*---(postfix format)-----------------*/
    char        detail      [S_LEN_OUTPUT];
    char        output      [S_LEN_OUTPUT];

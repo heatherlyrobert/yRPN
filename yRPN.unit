@@ -11,6 +11,9 @@ SCRP          string literal interpretation (all)                          yRP
    COND       setup some testing variables                                                                                                                                                                          
      exec     prepare for testing                  yRPN__testquiet                                                                     i_equal     0                                                            
      code     set the compiler mode                zRPN_lang    = S_LANG_C;
+     code     set the pre-processor mode           rpn.pproc    = S_PPROC_NO;
+
+   GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
    COND       try a single string literal                                                                                                                                                                                     
      exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                                      
@@ -18,41 +21,41 @@ SCRP          string literal interpretation (all)                          yRP
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"testing\"                                         
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"testing\"                                         
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
 
-   COND       try a longer expression starting with a literal                                                                                                                                                                 
-     exec     load the string                      yRPN__load            "\"testing\" + 24"                                            i_equal     14                                                                     
-     exec     check the literal                    yRPN__strings         0                                                             i_equal     9                                                                      
-     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"testing\" + 24                                    
-     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"testing\"                                         
+   COND       try a longer string literal                                                                                                                                                                                     
+     exec     load the string                      yRPN__load            "\"testing in my unit test\""                                 i_equal     25                                                                     
+     exec     check the literal                    yRPN__strings         0                                                             i_equal     25                                                                     
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"testing in my unit test\"                         
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"testing in my unit test\"                         
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
 
-   COND       try an integer                                                                                                                                                                                                  
-     exec     load the string                      yRPN__load            "45"                                                          i_equal     2                                                                      
-     exec     check the literal                    yRPN__strings         0                                                             i_lesser    0                                                                      
-     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : 45                                                  
-     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                            
+   COND       try a short string literal                                                                                                                                                                                      
+     exec     load the string                      yRPN__load            "\"a\""                                                       i_equal     3                                                                      
+     exec     check the literal                    yRPN__strings         0                                                             i_equal     3                                                                      
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"a\"                                               
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"a\"                                               
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
 
-   COND       try a unquoted string                                                                                                                                                                                           
-     exec     load the string                      yRPN__load            "testing"                                                     i_equal     7                                                                      
-     exec     check the literal                    yRPN__strings         0                                                             i_lesser    0                                                                      
-     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : testing                                             
-     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                            
+   COND       try an emtpy string literal                                                                                                                                                                                     
+     exec     load the string                      yRPN__load            "\"\""                                                        i_equal     2                                                                      
+     exec     check the literal                    yRPN__strings         0                                                             i_equal     2                                                                      
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"\"                                                
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"\"                                                
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
 
-   COND       try a longer expression not starting with a literal                                                                                                                                                             
-     exec     load the string                      yRPN__load            "24 + \"testing\""                                            i_equal     14                                                                     
-     exec     check the literal                    yRPN__strings         0                                                             i_lesser    0                                                                      
-     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : 24 + \"testing\"                                    
-     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                            
-     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+   GROUP      v21  attempt embedded escapes                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
-   COND       try an empty source                                                                                                                                                                                             
-     exec     load the string                      yRPN__load            ""                                                            i_equal     0                                                                      
-     exec     check the literal                    yRPN__strings         0                                                             i_lesser    0                                                                      
-     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : ((null))                                            
-     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                            
+   COND       try an embedded quote                                                                                                                                                                                           
+     exec     load the string                      yRPN__load            "\"test\\\"one\""                                             i_equal     11                                                                     
+     exec     check the literal                    yRPN__strings         0                                                             i_equal     11                                                                     
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"test\\\"one\"                                     
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"test\\\"one\"                                     
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
 
    COND       try an embedded double quote                                                                                                                                                                                    
      exec     load the string                      yRPN__load            "\"test\\\"ing\""                                             i_equal     11                                                                     
@@ -88,20 +91,6 @@ SCRP          string literal interpretation (all)                          yRP
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"testing\\\"\"                                     
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"testing\\\"\"                                     
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
- 
-   COND       try leaving off the closing quote                                                                                                                                                                               
-     exec     load the string                      yRPN__load            "\"testing"                                                   i_equal     8                                                                      
-     exec     check the literal                    yRPN__strings         0                                                             i_lesser    0                                                                      
-     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"testing                                           
-     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                            
-     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
-
-   COND       try an embedded bell                                                                                                                                                                                            
-     exec     load the string                      yRPN__load            "\"test\\aing\""                                              i_equal     11                                                                     
-     exec     check the literal                    yRPN__strings         0                                                             i_equal     11                                                                     
-     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"test\\aing\"                                      
-     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"test\\aing\"                                      
-     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
 
    COND       try embedded hex code                                                                                                                                                                                           
      exec     load the string                      yRPN__load            "\"one\\x57two\""                                             i_equal     12                                                                     
@@ -110,12 +99,142 @@ SCRP          string literal interpretation (all)                          yRP
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"one\\x57two\"                                     
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
 
+   GROUP      v21  attempt basic mistakes                                       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       try an integer                                                                                                                                                                                                  
+     exec     load the string                      yRPN__load            "45"                                                          i_equal     2                                                                      
+     exec     check the literal                    yRPN__strings         0                                                             i_lesser    0                                                                      
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : 45                                                  
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                            
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
+
+   COND       try a unquoted string                                                                                                                                                                                           
+     exec     load the string                      yRPN__load            "testing"                                                     i_equal     7                                                                      
+     exec     check the literal                    yRPN__strings         0                                                             i_lesser    0                                                                      
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : testing                                             
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                            
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
+
+   COND       quote with no ending quote                                                                                                                                                                                      
+     exec     load the string                      yRPN__load            "\"testing"                                                   i_equal     8                                                                      
+     exec     check the literal                    yRPN__strings         0                                                             i_lesser    0                                                                      
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"testing                                           
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                            
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
+
    COND       try literal without closing quote                                                                                                                                                                               
      exec     load the string                      yRPN__load            "\""                                                          i_equal     1                                                                      
      exec     check the literal                    yRPN__strings         0                                                             i_lesser    0                                                                      
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"                                                  
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                            
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+
+   GROUP      v21  try harder mistakes                                          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       try if the position is advanced                                                                                                                                                                       
+     exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                            
+     exec     check the type                       yRPN__strings         1                                                             i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"     ,   0                                            s_equal     source string    : \"testing\"                               
+     get      review the token                     yRPN_accessor         "token"      ,   0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       try if advanced to right start                                                                                                                                                                        
+     exec     load the string                      yRPN__load            "test\"testing\""                                             i_equal     13                                                           
+     exec     check the type                       yRPN__strings         4                                                             i_equal     13                                                           
+     get      review the source                    yRPN_accessor         "source"     ,   0                                            s_equal     source string    : test\"testing\"                           
+     get      review the token                     yRPN_accessor         "token"      ,   0                                            s_equal     current token    : \"testing\"                               
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                         
+
+   COND       try on a blank load                                                                                                                                                                                   
+     exec     load the string                      yRPN__load            ""                                                            i_equal     0                                                            
+     exec     check the type                       yRPN__strings         0                                                             i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"     ,   0                                            s_equal     source string    : ((null))                                  
+     get      review the token                     yRPN_accessor         "token"      ,   0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       try with the position to advanced                                                                                                                                                                     
+     exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                            
+     exec     check the type                       yRPN__strings         15                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"     ,   0                                            s_equal     source string    : \"testing\"                               
+     get      review the token                     yRPN_accessor         "token"      ,   0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       try with a negative position                                                                                                                                                                          
+     exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                            
+     exec     check the type                       yRPN__strings         -5                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"     ,   0                                            s_equal     source string    : \"testing\"                               
+     get      review the token                     yRPN_accessor         "token"      ,   0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       do a valid one again                                                                                                                                                                                  
+     exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                                      
+     exec     check the literal                    yRPN__strings         0                                                             i_equal     9                                                                      
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    : \"testing\"                                         
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"testing\"                                         
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
+
+   GROUP      v21  find in a larger context                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       check initial spaces                                                                                                                                                                                  
+     exec     load the string                      yRPN__load            "  int short_ \"cluster vO\"id char\", \"happy\""             i_equal     42                                                           
+     exec     check the type                       yRPN__strings         0                                                             i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ \"cluster vO\"id char\", \"happy\"     
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       check the first entry                                                                                                                                                                                 
+     exec     check the type                       yRPN__strings         2                                                             i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ \"cluster vO\"id char\", \"happy\"     
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       check the quoted entry                                                                                                                                                                                
+     exec     check the type                       yRPN__strings         13                                                            i_equal     25                                                           
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ \"cluster vO\"id char\", \"happy\"     
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"cluster vO\"                            
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                         
+
+   COND       check the inside the first quoted entry                                                                                                                                                               
+     exec     check the type                       yRPN__strings         18                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ \"cluster vO\"id char\", \"happy\"     
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       check the second quoted entry                                                                                                                                                                         
+     exec     check the type                       yRPN__strings         32                                                            i_equal     36                                                           
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ \"cluster vO\"id char\", \"happy\"     
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \", \"
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                         
+
+   COND       check the third quoted entry                                                                                                                                                                          
+     exec     check the type                       yRPN__strings         35                                                            i_equal     42                                                           
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ \"cluster vO\"id char\", \"happy\"     
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : \"happy\"                                 
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                         
+
+   COND       check after the third quoted entry                                                                                                                                                                    
+     exec     check the type                       yRPN__strings         43                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ \"cluster vO\"id char\", \"happy\"     
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   GROUP      v21  complete                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
    COND       clean-up                                                                                                                                                                                              
      exec     wrap-up for testing                  yRPN__testend                                                                       i_equal     0                                                            
