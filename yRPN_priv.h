@@ -7,7 +7,7 @@
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
 #define   zRPN_VER_NUM       "0.7g"
-#define   zRPN_VER_TXT       "updated yRPN__type unit test to be much harder ;)"
+#define   zRPN_VER_TXT       "updated yRPN__keywords unit test to be much harder ;)"
 
 
 

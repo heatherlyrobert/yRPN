@@ -436,7 +436,6 @@ SCRP          finding c variable types             yRPN__types               
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
 
    COND       check the first entry                                                                                                                                                                                 
-     exec     load the string                      yRPN__load            "  int short_ cluster vOid char,"                             i_equal     31                                                           
      exec     check the type                       yRPN__types           2                                                             i_equal     5                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ cluster vOid char,           
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : int                                       
@@ -444,7 +443,6 @@ SCRP          finding c variable types             yRPN__types               
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : t                                         
 
    COND       check the second entry                                                                                                                                                                                
-     exec     load the string                      yRPN__load            "  int short_ cluster vOid char,"                             i_equal     31                                                           
      exec     check the type                       yRPN__types           6                                                             i_equal     11                                                           
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ cluster vOid char,           
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : short                                     
@@ -452,7 +450,6 @@ SCRP          finding c variable types             yRPN__types               
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : t                                         
 
    COND       check the just before third entry                                                                                                                                                                     
-     exec     load the string                      yRPN__load            "  int short_ cluster vOid char,"                             i_equal     31                                                           
      exec     check the type                       yRPN__types           11                                                            i_lesser    0                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ cluster vOid char,           
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
@@ -460,7 +457,6 @@ SCRP          finding c variable types             yRPN__types               
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
 
    COND       check the third entry                                                                                                                                                                                 
-     exec     load the string                      yRPN__load            "  int short_ cluster vOid char,"                             i_equal     31                                                           
      exec     check the type                       yRPN__types           13                                                            i_lesser    0                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ cluster vOid char,           
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
@@ -468,7 +464,6 @@ SCRP          finding c variable types             yRPN__types               
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
 
    COND       check the fourth entry                                                                                                                                                                                
-     exec     load the string                      yRPN__load            "  int short_ cluster vOid char,"                             i_equal     31                                                           
      exec     check the type                       yRPN__types           21                                                            i_lesser    0                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ cluster vOid char,           
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
@@ -476,7 +471,6 @@ SCRP          finding c variable types             yRPN__types               
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
 
    COND       check the fifth entry                                                                                                                                                                                 
-     exec     load the string                      yRPN__load            "  int short_ cluster vOid char,"                             i_equal     31                                                           
      exec     check the type                       yRPN__types           26                                                            i_equal     30                                                           
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ cluster vOid char,           
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : char                                      
@@ -484,7 +478,6 @@ SCRP          finding c variable types             yRPN__types               
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : t                                         
 
    COND       check after the fifth entry                                                                                                                                                                           
-     exec     load the string                      yRPN__load            "  int short_ cluster vOid char,"                             i_equal     31                                                           
      exec     check the type                       yRPN__types           29                                                            i_lesser    0                                                            
      get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   int short_ cluster vOid char,           
      get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
@@ -503,6 +496,8 @@ SCRP          finding c keywords                   yRPN__keywords            
    COND       setup some testing variables                                                                                                                                                                          
      exec     prepare for testing                  yRPN__testquiet                                                                     i_equal     0                                                            
      code     set the compiler mode                zRPN_lang    = S_LANG_C;
+
+   GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
    COND       try a common keyword                                                                                                                                                                                  
      exec     load the string                      yRPN__load            "if"                                                          i_equal     2                                                            
@@ -536,6 +531,8 @@ SCRP          finding c keywords                   yRPN__keywords            
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : k                                         
 
+   GROUP      v21  attempt basic mistakes                                       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
    COND       try a misspelled one (error)                                                                                                                                                                          
      exec     load the string                      yRPN__load            "braek"                                                       i_equal     5                                                            
      exec     check the type                       yRPN__keywords        0                                                             i_lesser    0                                                            
@@ -559,6 +556,8 @@ SCRP          finding c keywords                   yRPN__keywords            
      get      review the token                     yRPN_accessor         "token"      ,   0                                            s_equal     current token    : continue                                  
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : k                                         
+
+   GROUP      v21  try harder mistakes                                          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
    COND       try if the position is advanced                                                                                                                                                                       
      exec     load the string                      yRPN__load            "continue"                                                    i_equal     8                                                            
@@ -617,6 +616,67 @@ SCRP          finding c keywords                   yRPN__keywords            
      get      review the token                     yRPN_accessor         "token"      ,   0                                            s_equal     current token    : continue                                  
      get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : k                                         
+
+   GROUP      v21  find in a larger context                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       check initial spaces                                                                                                                                                                                  
+     exec     load the string                      yRPN__load            "  break case/  tuesday cOntinue if,"                         i_equal     35                                                           
+     exec     check the type                       yRPN__keywords        0                                                             i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   break case/  tuesday cOntinue if,       
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       check the first entry                                                                                                                                                                                 
+     exec     check the type                       yRPN__keywords        2                                                             i_equal     7                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   break case/  tuesday cOntinue if,       
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : break                                     
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : k                                         
+
+   COND       check the second entry                                                                                                                                                                                
+     exec     check the type                       yRPN__keywords        8                                                             i_equal     12                                                           
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   break case/  tuesday cOntinue if,       
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : case                                      
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : k                                         
+
+   COND       check the just before third entry                                                                                                                                                                     
+     exec     check the type                       yRPN__keywords        14                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   break case/  tuesday cOntinue if,       
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       check the third entry                                                                                                                                                                                 
+     exec     check the type                       yRPN__keywords        15                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   break case/  tuesday cOntinue if,       
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       check the fourth entry                                                                                                                                                                                
+     exec     check the type                       yRPN__keywords        23                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   break case/  tuesday cOntinue if,       
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   COND       check the fifth entry                                                                                                                                                                                 
+     exec     check the type                       yRPN__keywords        32                                                            i_equal     34                                                           
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   break case/  tuesday cOntinue if,       
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : if                                        
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : k                                         
+
+   COND       check after the fifth entry                                                                                                                                                                           
+     exec     check the type                       yRPN__keywords        24                                                            i_lesser    0                                                            
+     get      review the source                    yRPN_accessor         "source"   ,     0                                            s_equal     source string    :   break case/  tuesday cOntinue if,       
+     get      review the token                     yRPN_accessor         "token"    ,     0                                            s_equal     current token    : ((null))                                  
+     get      review the precedence                yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
+     get      review the type                      yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+
+   GROUP      v21  complete                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
    COND       clean-up                                                                                                                                                                                              
      exec     wrap-up for testing                  yRPN__testend                                                                       i_equal     0                                                            
