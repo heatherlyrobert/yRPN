@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7q"
-#define   zRPN_VER_TXT       "added all output and stack review to const and vars units"
+#define   zRPN_VER_NUM       "0.7h"
+#define   zRPN_VER_TXT       "added all output and stack review to type and keyword units"
 
 
 
