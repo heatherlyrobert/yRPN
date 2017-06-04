@@ -2137,13 +2137,25 @@ yRPN_accessor      (char *a_question, int a_item)
       snprintf (unit_answer, S_LEN_OUTPUT, "stack depth      : %d"    , rpn.n_stack);
    } else if (strcmp (a_question, "stack_list")     == 0) {
       snprintf (unit_answer, S_LEN_OUTPUT, "stack details    :");
-      for (i = 0; i < rpn.n_stack && i < 6; ++i) {
+      for (i = 0; i < rpn.n_stack; ++i) {
          strlcat (unit_answer, rpn.stack [i], S_LEN_OUTPUT);
+      }
+   } else if (strcmp (a_question, "stack_terse")    == 0) {
+      snprintf (unit_answer, S_LEN_OUTPUT, "stack terse      :");
+      for (i = 0; i < rpn.n_stack && i < 6; ++i) {
+         sprintf (x_temp     , " %c%c", rpn.stack [i][0], rpn.stack [i][2]);
+         strlcat (unit_answer, x_temp       , S_LEN_OUTPUT);
       }
    } else if (strcmp (a_question, "stack_type")     == 0) {
       snprintf (unit_answer, S_LEN_OUTPUT, "stack types      :");
       for (i = 0; i < rpn.n_stack && i < 6; ++i) {
-         sprintf (x_temp     , S_LEN_LABEL, " %c", rpn.stack [i][0]);
+         sprintf (x_temp     , " %c", rpn.stack [i][0]);
+         strlcat (unit_answer, x_temp       , S_LEN_OUTPUT);
+      }
+   } else if (strcmp (a_question, "stack_prec")     == 0) {
+      snprintf (unit_answer, S_LEN_OUTPUT, "stack precs      :");
+      for (i = 0; i < rpn.n_stack && i < 6; ++i) {
+         sprintf (x_temp     , " %c", rpn.stack [i][2]);
          strlcat (unit_answer, x_temp       , S_LEN_OUTPUT);
       }
    } else if (strcmp (a_question, "address"   )     == 0) {

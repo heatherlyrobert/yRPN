@@ -29,7 +29,7 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing\"                                       
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                                  
      get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
-     get      stack  -- types                      yRPN_accessor         "stack_type" ,   0                                            s_equal     stack types      :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a longer string literal                                                                                                                                                                                     
      exec     load the string                      yRPN__load            "\"testing in my unit test\""                                 i_equal     25                                                                     
@@ -44,6 +44,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"testing in my unit test\"                         
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing in my unit test\"                       
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a short string literal                                                                                                                                                                                      
      exec     load the string                      yRPN__load            "\"a\""                                                       i_equal     3                                                                      
@@ -58,6 +60,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"a\"                                               
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"a\"                                             
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try an emtpy string literal                                                                                                                                                                                     
      exec     load the string                      yRPN__load            "\"\""                                                        i_equal     2                                                                      
@@ -72,6 +76,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"\"                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"\"                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    GROUP      v21  attempt embedded escapes                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -88,6 +94,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"test\\\"one\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"test\\\"one\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try an embedded double quote                                                                                                                                                                                    
      exec     load the string                      yRPN__load            "\"test\\\"ing\""                                             i_equal     11                                                                     
@@ -101,6 +109,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"test\\\"ing\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"test\\\"ing\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try an embedded newline                                                                                                                                                                                         
      exec     load the string                      yRPN__load            "\"test\\ning\""                                              i_equal     11                                                                     
@@ -114,6 +124,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"test\\ning\"                                      
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"test\\ning\"                                    
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try an embedded single quote                                                                                                                                                                                    
      exec     load the string                      yRPN__load            "\"test'ing\""                                                i_equal     10                                                                     
@@ -127,6 +139,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"test'ing\"                                        
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"test'ing\"                                      
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a leading embedded double quote                                                                                                                                                                             
      exec     load the string                      yRPN__load            "\"\\\"testing\""                                             i_equal     11                                                                     
@@ -140,6 +154,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"\\\"testing\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"\\\"testing\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a trailing embedded double quote                                                                                                                                                                            
      exec     load the string                      yRPN__load            "\"testing\\\"\""                                             i_equal     11                                                                     
@@ -153,6 +169,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"testing\\\"\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing\\\"\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try embedded hex code                                                                                                                                                                                           
      exec     load the string                      yRPN__load            "\"one\\x57two\""                                             i_equal     12                                                                     
@@ -166,6 +184,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"one\\x57two\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"one\\x57two\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    GROUP      v21  attempt basic mistakes                                       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -182,6 +202,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a unquoted string                                                                                                                                                                                           
      exec     load the string                      yRPN__load            "testing"                                                     i_equal     7                                                                      
@@ -196,6 +218,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       quote with no ending quote                                                                                                                                                                                      
      exec     load the string                      yRPN__load            "\"testing"                                                   i_equal     8                                                                      
@@ -210,6 +234,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try literal without closing quote                                                                                                                                                                               
      exec     load the string                      yRPN__load            "\""                                                          i_equal     1                                                                      
@@ -224,6 +250,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    GROUP      v21  try harder mistakes                                          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -240,6 +268,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try if advanced to right start                                                                                                                                                                        
      exec     load the string                      yRPN__load            "test\"testing\""                                             i_equal     13                                                           
@@ -254,6 +284,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"testing\"                                          
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing\"                                        
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try on a blank load                                                                                                                                                                                   
      exec     load the string                      yRPN__load            ""                                                            i_equal     0                                                            
@@ -268,6 +300,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try with the position to advanced                                                                                                                                                                     
      exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                            
@@ -282,6 +316,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try with a negative position                                                                                                                                                                          
      exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                            
@@ -296,6 +332,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       do a valid one again                                                                                                                                                                                  
      exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                                      
@@ -310,6 +348,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"testing\"                                          
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing\"                                        
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    GROUP      v21  find in a larger context                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -326,6 +366,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the first entry                                                                                                                                                                                 
      exec     load the string                      yRPN__load            "  int short_ \"cluster vO\"id char\", \"happy\""             i_equal     42                                                           
@@ -340,6 +382,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the quoted entry                                                                                                                                                                                
      exec     load the string                      yRPN__load            "  int short_ \"cluster vO\"id char\", \"happy\""             i_equal     42                                                           
@@ -354,6 +398,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"cluster vO\"                                       
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"cluster vO\"                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the inside the first quoted entry                                                                                                                                                               
      exec     load the string                      yRPN__load            "  int short_ \"cluster vO\"id char\", \"happy\""             i_equal     42                                                           
@@ -368,6 +414,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the second quoted entry                                                                                                                                                                         
      exec     load the string                      yRPN__load            "  int short_ \"cluster vO\"id char\", \"happy\""             i_equal     42                                                           
@@ -382,6 +430,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\", \"                                               
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\", \"                                             
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the third quoted entry                                                                                                                                                                          
      exec     load the string                      yRPN__load            "  int short_ \"cluster vO\"id char\", \"happy\""             i_equal     42                                                           
@@ -396,6 +446,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"happy\"                                            
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"happy\"                                          
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check after the third quoted entry                                                                                                                                                                    
      exec     load the string                      yRPN__load            "  int short_ \"cluster vO\"id char\", \"happy\""             i_equal     42                                                           
@@ -410,6 +462,8 @@ SCRP          string literal interpretation                                yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    GROUP      v21  complete                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -1821,8 +1875,8 @@ SCRP          operator intrepratation              yRPN__operators           
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                    
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                    
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 1                                                  
-     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
-     get      stack  -- types                      yRPN_accessor         "stack_type" ,   0                                            s_equal     stack types      :                                                     
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    : o,g,/                                               
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      : og                                                  
 
    COND       try a boolean operator                                                                                                                                                                                
      exec     load the string                      yRPN__load            "<"                                                           i_equal     1                                                            
