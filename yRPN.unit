@@ -23,8 +23,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"testing\"                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"testing\"                                         
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"testing\"                                         
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing\"                                       
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                                  
@@ -39,8 +40,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"testing in my unit test\"                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"testing in my unit test\"                         
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"testing in my unit test\"                         
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing in my unit test\"                       
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -53,8 +55,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"a\"                                               
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"a\"                                               
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"a\"                                               
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"a\"                                             
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -67,8 +70,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"\"                                                
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"\"                                                
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"\"                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"\"                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -83,8 +87,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"test\\\"one\"                                     
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"test\\\"one\"                                     
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"test\\\"one\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"test\\\"one\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -96,8 +101,9 @@ SCRP          string literal interpretation                                yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\"test\\\"ing\"                                     
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"test\\\"ing\"                                     
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"test\\\"ing\"                                     
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"test\\\"ing\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"test\\\"ing\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -109,8 +115,9 @@ SCRP          string literal interpretation                                yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\"test\\ning\"                                      
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"test\\ning\"                                      
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"test\\ning\"                                      
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"test\\ning\"                                      
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"test\\ning\"                                    
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -122,8 +129,9 @@ SCRP          string literal interpretation                                yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\"test'ing\"                                        
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"test'ing\"                                        
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"test'ing\"                                        
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"test'ing\"                                        
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"test'ing\"                                      
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -135,8 +143,9 @@ SCRP          string literal interpretation                                yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\"\\\"testing\"                                     
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"\\\"testing\"                                     
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"\\\"testing\"                                     
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"\\\"testing\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"\\\"testing\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -148,8 +157,9 @@ SCRP          string literal interpretation                                yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\"testing\\\"\"                                     
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"testing\\\"\"                                     
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"testing\\\"\"                                     
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"testing\\\"\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing\\\"\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -161,8 +171,9 @@ SCRP          string literal interpretation                                yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\"one\\x57two\"                                     
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"one\\x57two\"                                     
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"one\\x57two\"                                     
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"one\\x57two\"                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"one\\x57two\"                                   
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -177,8 +188,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -191,8 +203,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -205,8 +218,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -219,8 +233,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -235,8 +250,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -249,8 +265,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"testing\"                                       
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"testing\"                                       
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"testing\"                                          
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing\"                                        
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -263,8 +280,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -277,8 +295,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -291,8 +310,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -305,8 +325,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"testing\"                                       
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"testing\"                                       
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"testing\"                                          
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"testing\"                                        
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -321,8 +342,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -335,8 +357,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -349,8 +372,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"cluster vO\"                                    
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"cluster vO\"                                    
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"cluster vO\"                                       
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"cluster vO\"                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -363,8 +387,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -377,8 +402,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\", \"                                            
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\", \"                                            
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\", \"                                               
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\", \"                                             
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -391,8 +417,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : S                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\"happy\"                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\"happy\"                                         
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\"happy\"                                            
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :S,\"happy\"                                          
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -405,8 +432,9 @@ SCRP          string literal interpretation                                yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                  
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                  
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                     
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                     
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -437,8 +465,9 @@ SCRP          character literal interpretation                             yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\' \'                                             
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\' \'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\' \'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\' \'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -451,8 +480,9 @@ SCRP          character literal interpretation                             yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\'p\'                                             
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\'p\'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'p\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'p\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -465,8 +495,9 @@ SCRP          character literal interpretation                             yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\'1\'                                             
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\'1\'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'1\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'1\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -479,8 +510,9 @@ SCRP          character literal interpretation                             yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\'\t\'                                             
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\'\t\'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'\t\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'\t\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -493,8 +525,9 @@ SCRP          character literal interpretation                             yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\'(\'                                             
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\'(\'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'(\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'(\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -507,8 +540,9 @@ SCRP          character literal interpretation                             yRP
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                                   
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 1                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :\'\"\'                                             
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\'\"\'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'\"\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'\"\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
@@ -1816,8 +1850,9 @@ SCRP          operator intrepratation              yRPN__operators           
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : g                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : o                                         
      exec     finish the output                    yRPN__output_done                                                                   i_equal     0                                                                      
-     get      output -- token count                yRPN_accessor         "count"      ,   0                                            s_equal     token count      : 0                                                   
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     tokenization     :                                                    
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                    
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                    
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                    
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 1                                                  
@@ -2260,100 +2295,100 @@ SCRP          simple expressions (compilier)       yRPN_convert              
    COND       try a simple equation                                                                                                                                                                                 
      exec     check the operator                   yRPN_convert          "a+b"                                                         s_not       ""                                                           
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :a+b                                       
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b +                                     
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a v,b o,+                               
 
    COND       try a simple assignment from equation                                                                                                                                                                 
      exec     check the operator                   yRPN_convert          "b = a + 5"                                                   s_not       ""                                                           
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :b = a + 5                                 
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a 5 + =                                 
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,b v,a I,5 o,+ o,=                       
 
    COND       try a multipication                                                                                                                                                                                   
      exec     check the operator                   yRPN_convert          "b = 10 * 30"                                                 s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b 10 30 * =                               
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,b I,10 I,30 o,* o,=                     
 
    COND       compound assignment                                                                                                                                                                                   
      exec     check the operator                   yRPN_convert          "b = a = 125"                                                 s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a 125 = =                               
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,b v,a I,125 o,= o,=                     
 
    COND       verify add/subtract are of equal precedence                                                                                                                                                           
      exec     check the operator                   yRPN_convert          "10 - 3 + 2"                                                  s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :10 3 - 2 +                                
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :I,10 I,3 o,- I,2 o,+                      
 
    COND       verify add/subtract are of equal precedence, again                                                                                                                                                    
      exec     check the operator                   yRPN_convert          "a = 3 + 4 - 2 + 7"                                           s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 9                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 9                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a 3 4 + 2 - 7 + =                         
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a I,3 I,4 o,+ I,2 o,- I,7 o,+ o,=       
 
    COND       CSCI270 : example one                                                                                                                                                                                 
      exec     check the operator                   yRPN_convert          "a+b*c-d/e*f"                                                 s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 11                                        
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 11                                        
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b c * + d e / f * -                     
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a v,b v,c o,* o,+ v,d v,e o,/ v,f o,* o,-  
 
    COND       CSCI270 : example two                                                                                                                                                                                 
      exec     check the operator                   yRPN_convert          "(a+b*c-d)/(e*f)"                                             s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 11                                        
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 11                                        
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b c * + d - e f * /                     
 
    COND       CSCI270 : variation                                                                                                                                                                                   
      exec     check the operator                   yRPN_convert          "a * (b + c) - d / e"                                         s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 9                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 9                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b c + * d e / -                         
 
    COND       combination of addition and division                                                                                                                                                                  
      exec     check the operator                   yRPN_convert          "a + b / c"                                                   s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b c / +                                 
 
    COND       combination of addition and multipication with parens                                                                                                                                                 
      exec     check the operator                   yRPN_convert          "a + b * (c + d)"                                             s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 7                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 7                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b c d + * +                             
 
    COND       combination of addition and multipication                                                                                                                                                             
      exec     check the operator                   yRPN_convert          "a + b * c - d"                                               s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 7                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 7                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b c * + d -                             
 
    COND       temple cis223 : example one                                                                                                                                                                           
      exec     check the operator                   yRPN_convert          "x - y * a + b / c"                                           s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 9                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 9                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :x y a * - b c / +                         
 
    COND       temple cis223 : example two                                                                                                                                                                           
      exec     check the operator                   yRPN_convert          "3+5*6-7*(8+5)"                                               s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 11                                        
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 11                                        
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :3 5 6 * + 7 8 5 + * -                     
 
    COND       art of assemply : example one                                                                                                                                                                         
      exec     check the operator                   yRPN_convert          "x = ((y-z)*a) - ( a + b * c)/3.14159"                        s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 15                                        
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 15                                        
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :x y z - a * a b c * + 3.14159 / - =       
 
    COND       art of assemply : example two                                                                                                                                                                         
      exec     check the operator                   yRPN_convert          "a = (x * y - z + t)/2.0"                                     s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 11                                        
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 11                                        
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a x y * z - t + 2.0 / =                   
 
    COND       unbalanced parens : no ending paren                                                                                                                                                                   
      exec     check the operator                   yRPN_convert          "(a + b"                                                      p_null      0                                                            
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 0                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 0                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :((null))                                  
 
    COND       unbalanced parens : no beginning paren                                                                                                                                                                
      exec     check the operator                   yRPN_convert          "a + b)"                                                      p_null      0                                                            
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 0                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 0                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :((null))                                  
 
    COND       clean-up                                                                                                                                                                                              
@@ -2372,52 +2407,52 @@ SCRP          unary operators (compilier)          yRPN_convert              
 
    COND       internal plus                                                                                                                                                                                         
      exec     check the operator                   yRPN_convert          "a + + b"                                                     s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 4                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 4                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b +: +                                  
 
    COND       internal minus                                                                                                                                                                                        
      exec     check the operator                   yRPN_convert          "a + - b"                                                     s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 4                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 4                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b -: +                                  
 
    COND       double negative                                                                                                                                                                                       
      exec     check the operator                   yRPN_convert          "a + - - b"                                                   s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b -: -: +                               
 
    COND       leading minus                                                                                                                                                                                         
      exec     check the operator                   yRPN_convert          "-b"                                                          s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b -:                                      
 
    COND       leading minus outside parentheses                                                                                                                                                                     
      exec     check the operator                   yRPN_convert          "-(b)"                                                        s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b -:                                      
 
    COND       leading minus before expression                                                                                                                                                                       
      exec     check the operator                   yRPN_convert          "-b*c+a"                                                      s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 6                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 6                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b -: c * a +                              
 
    COND       leading minus outside parentheses                                                                                                                                                                     
      exec     check the operator                   yRPN_convert          "- (b + a)"                                                   s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 4                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 4                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a + -:                                  
 
    COND       using the logical not                                                                                                                                                                                 
      exec     check the operator                   yRPN_convert          "!b"                                                          s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b !                                       
 
    COND       using the logical not with an assignment                                                                                                                                                              
      exec     check the operator                   yRPN_convert          "=!b"                                                         s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b ! =                                     
 
    COND       using an unary plus with an assignment                                                                                                                                                                
      exec     check the operator                   yRPN_convert          "=+b"                                                         s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b +: =                                    
 
    COND       clean-up                                                                                                                                                                                              
@@ -2436,27 +2471,27 @@ SCRP          pointer operations (compilier)       yRPN_convert              
 
    COND       variable address-of                                                                                                                                                                                   
      exec     feed in the expression               yRPN_convert          "&a"                                                          s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a &:                                      
 
    COND       dereferencing a pointer                                                                                                                                                                               
      exec     feed in the expression               yRPN_convert          "*b"                                                          s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b *:                                      
 
    COND       both reference and dereference                                                                                                                                                                        
      exec     feed in the expression               yRPN_convert          "b=*&a"                                                       s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a &: *: =                               
 
    COND       more complicated combination                                                                                                                                                                          
      exec     feed in the expression               yRPN_convert          "b=!++*&a"                                                    s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 7                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 7                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a &: *: ++ ! =                          
 
    COND       more complicated combination with parens                                                                                                                                                              
      exec     feed in the expression               yRPN_convert          "b=!(++(*(&a)))"                                              s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 7                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 7                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a &: *: ++ ! =                          
 
    COND       clean-up                                                                                                                                                                                              
@@ -2475,32 +2510,32 @@ SCRP          bitwise operations (compilier)       yRPN_convert              
 
    COND       simple bitwise AND                                                                                                                                                                                    
      exec     feed in the expression               yRPN_convert          "a & 1"                                                       s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a 1 &                                     
 
    COND       simple bitwise OR                                                                                                                                                                                     
      exec     feed in the expression               yRPN_convert          "a | 1"                                                       s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a 1 |                                     
 
    COND       simple bitwise XOR                                                                                                                                                                                    
      exec     feed in the expression               yRPN_convert          "a ^ 1"                                                       s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a 1 ^                                     
 
    COND       simple bitwise NOT                                                                                                                                                                                    
      exec     feed in the expression               yRPN_convert          "~a"                                                          s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a ~                                       
 
    COND       bitwise versus comparison                                                                                                                                                                             
      exec     feed in the expression               yRPN_convert          "(a & 1 == c >> 2)"                                           s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 7                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 7                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a 1 c 2 >> == &                           
 
    COND       bitwise versus comparison with parens                                                                                                                                                                 
      exec     feed in the expression               yRPN_convert          "((a & 1) == (c >> 2))"                                       s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 7                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 7                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a 1 & c 2 >> ==                           
 
    COND       clean-up                                                                                                                                                                                              
@@ -2519,64 +2554,64 @@ SCRP          simple functions (spreadsheet)       yRPN_convert              
 
    COND       try a simple, one-parameter function                                                                                                                                                                  
      exec     check the operator                   yRPN_convert          "sin (a)"                                                     s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a sin                                     
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a p,sin                                 
 
    COND       try two formulas with an operator between                                                                                                                                                             
      exec     check the operator                   yRPN_convert          "sin (a) * cos (b)"                                           s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a sin b cos *                             
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a p,sin v,b p,cos o,*                   
 
    COND       try a two-parameter function                                                                                                                                                                          
      exec     check the operator                   yRPN_convert          "logger(var1, 35)"                                            s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :var1 35 logger                            
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,var1 I,35 p,logger                      
 
    COND       try a four-parameter function                                                                                                                                                                         
      exec     check the operator                   yRPN_convert          "g_arc (12.2, 15.8, 30, t)"                                   s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :12.2 15.8 30 t g_arc                      
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :F,12.2 F,15.8 I,30 v,t p,g_arc            
 
    COND       try a one-parameter with a string literal                                                                                                                                                             
      exec     check the operator                   yRPN_convert          "puts (\"testing\")"                                          s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :\"testing\" puts                          
      get      review the postfix output            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :S,\"testing\" p,puts                      
 
    COND       try a one-parameter with a string literal with spaces                                                                                                                                                 
      exec     check the operator                   yRPN_convert          "puts (\"test one two three\")"                               s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :\"test one two three\" puts               
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :S,\"test one two three\" p,puts           
 
    COND       try a one-parameter with a constant literal                                                                                                                                                           
      exec     check the operator                   yRPN_convert          "putchar (' ')"                                               s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :' ' putchar                               
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :C,' ' p,putchar                           
 
    COND       function with no arguments                                                                                                                                                                            
      exec     check the operator                   yRPN_convert          "a = func()"                                                  s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a func =                                  
 
    COND       assignments and equality                                                                                                                                                                              
      exec     check the operator                   yRPN_convert          "a = func() == 3"                                             s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a func 3 == =                             
 
    COND       assignments and equality with parens                                                                                                                                                                  
      exec     check the operator                   yRPN_convert          "(a = func()) == 3"                                           s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a func = 3 ==                             
 
    COND       functions using other functions values                                                                                                                                                                
      exec     check the operator                   yRPN_convert          "strncpy (x_dst, x_src, strlen (x_src))"                      s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :x_dst x_src x_src strlen strncpy          
 
    COND       clean-up                                                                                                                                                                                              
@@ -2595,64 +2630,64 @@ SCRP          simple functions (compilier)         yRPN_convert              
 
    COND       try a simple, one-parameter function                                                                                                                                                                  
      exec     check the operator                   yRPN_convert          "sin (a)"                                                     s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a sin                                     
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a p,sin                                 
 
    COND       try two formulas with an operator between                                                                                                                                                             
      exec     check the operator                   yRPN_convert          "sin (a) * cos (b)"                                           s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a sin b cos *                             
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a p,sin v,b p,cos o,*                   
 
    COND       try a two-parameter function                                                                                                                                                                          
      exec     check the operator                   yRPN_convert          "logger(var1, 35)"                                            s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :var1 35 logger                            
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,var1 I,35 p,logger                      
 
    COND       try a four-parameter function                                                                                                                                                                         
      exec     check the operator                   yRPN_convert          "g_arc (12.2, 15.8, 30, t)"                                   s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :12.2 15.8 30 t g_arc                      
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :F,12.2 F,15.8 I,30 v,t p,g_arc            
 
    COND       try a one-parameter with a string literal                                                                                                                                                             
      exec     check the operator                   yRPN_convert          "puts (\"testing\")"                                          s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :\"testing\" puts                          
      get      review the postfix output            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :S,\"testing\" p,puts                      
 
    COND       try a one-parameter with a string literal with spaces                                                                                                                                                 
      exec     check the operator                   yRPN_convert          "puts (\"test one two three\")"                               s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :\"test one two three\" puts               
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :S,\"test one two three\" p,puts           
 
    COND       try a one-parameter with a constant literal                                                                                                                                                           
      exec     check the operator                   yRPN_convert          "putchar (' ')"                                               s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :' ' putchar                               
      get      review the postfix detail            yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :C,' ' p,putchar                           
 
    COND       function with no arguments                                                                                                                                                                            
      exec     check the operator                   yRPN_convert          "a = func()"                                                  s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a func =                                  
 
    COND       assignments and equality                                                                                                                                                                              
      exec     check the operator                   yRPN_convert          "a = func() == 3"                                             s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a func 3 == =                             
 
    COND       assignments and equality with parens                                                                                                                                                                  
      exec     check the operator                   yRPN_convert          "(a = func()) == 3"                                           s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a func = 3 ==                             
 
    COND       functions using other functions values                                                                                                                                                                
      exec     check the operator                   yRPN_convert          "strncpy (x_dst, x_src, strlen (x_src))"                      s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 5                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 5                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :x_dst x_src x_src strlen strncpy          
 
    COND       clean-up                                                                                                                                                                                              
@@ -2671,22 +2706,22 @@ SCRP          simple declarations (compilier)      yRPN_convert              
 
    COND       try a variable declaration                                                                                                                                                                            
      exec     check the operator                   yRPN_convert          "int     first"                                               s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 2                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 2                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int first                                 
 
    COND       try a multiple declaration                                                                                                                                                                            
      exec     check the operator                   yRPN_convert          "int     first, second"                                       s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 3                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 3                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int first second                          
 
    COND       try a declaration with initializer                                                                                                                                                                    
      exec     check the operator                   yRPN_convert          "int     first  = 2145"                                       s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 4                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 4                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int first 2145 =                          
 
    COND       try a declaration with initializer, and another                                                                                                                                                       
      exec     check the operator                   yRPN_convert          "int     first  = 2145, second = 5150"                        s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 7                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 7                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int first 2145 = second 5150 =            
 
    COND       clean-up                                                                                                                                                                                              
@@ -2862,19 +2897,19 @@ SCRP          calculation depth                    yRPN_convert              
 
    COND       CSCI270 : variation                                                                                                                                                                                   
      exec     check the operator                   yRPN_convert          "a * (b + c) - d / e"                                         s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 9                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 9                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a, b, c, +, *, d, e, /, -                 
      get      review the postfix output            yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 3                                         
 
    COND       art of assemply : example one                                                                                                                                                                         
      exec     check the operator                   yRPN_convert          "((y-z)*a) - ( a + b * c)/3.14159"                            s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 13                                        
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 13                                        
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :y, z, -, a, *, a, b, c, *, +, 3.14159, /, - 
      get      review the postfix output            yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 4                                         
 
    COND       art of assemply : example two                                                                                                                                                                         
      exec     check the operator                   yRPN_convert          "(x * y - z + t)/2.0"                                         s_not       ""                                                           
-     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     token count      : 9                                         
+     get      token extracted  count               yRPN_accessor         "count"    ,     0                                            s_equal     infix count      : 9                                         
      get      review the postfix output            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :x, y, *, z, -, t, +, 2.0, /               
      get      review the postfix output            yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 2                                         
 
@@ -2894,41 +2929,41 @@ SCRP          tokenizing                           yRPN_tokens               
 
    COND       try variable definitions                                                                                                                                                                              
      exec     single definition                    yRPN_tokens           "int a"                                                       s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :int a                                     
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :int a                                     
      exec     compound types                       yRPN_tokens           "short int b"                                                 s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :short int b                               
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :short int b                               
      exec     pointer type                         yRPN_tokens           "char *c"                                                     s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :char *: c                                 
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :char *: c                                 
      exec     with assignment                      yRPN_tokens           "long d = 3000"                                               s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :long d = 3000                             
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :long d = 3000                             
      exec     with float assignment                yRPN_tokens           "double e = 3.1415927"                                        s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :double e = 3.1415927                      
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :double e = 3.1415927                      
      exec     with expression assignment           yRPN_tokens           "float test = 23.5 * 42.8"                                    s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :float test = 23.5 * 42.8                  
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :float test = 23.5 * 42.8                  
      exec     a constant                           yRPN_tokens           "const int g = 30"                                            s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :const int g = 30                          
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :const int g = 30                          
      exec     function pointer                     yRPN_tokens           "char (*func3) (void)"                                        s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :char ( *: func3 ) ( void )                
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :char ( *: func3 ) ( void )                
 
    COND       try expressions                                                                                                                                                                                       
      exec     simple expression                    yRPN_tokens           "a = b * c"                                                   s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :a = b * c                                 
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :a = b * c                                 
      exec     with numbers also                    yRPN_tokens           "a = b * c + 30"                                              s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :a = b * c + 30                            
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :a = b * c + 30                            
      exec     with parenthesis                     yRPN_tokens           "a = b * (c + 30)"                                            s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :a = b * ( c + 30 )                        
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :a = b * ( c + 30 )                        
      exec     deeper parentheses                   yRPN_tokens           "a = (b * (c + 30))"                                          s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :a = ( b * ( c + 30 ) )                    
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :a = ( b * ( c + 30 ) )                    
 
    COND       try functions                                                                                                                                                                                         
      exec     no parameters                        yRPN_tokens           "pi()"                                                        s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :pi ( )                                    
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :pi ( )                                    
      exec     with a single variable parameter     yRPN_tokens           "strlen (c)"                                                  s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :strlen ( c )                              
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :strlen ( c )                              
      exec     with a two variable parameters       yRPN_tokens           "atan2 (a, b)"                                                s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :atan2 ( a , b )                           
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :atan2 ( a , b )                           
      exec     with a slew of parameters            yRPN_tokens           "func2 (\"this is a test\", a, b, c, d)"                      s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :func2 ( \"this is a test\" , a , b , c , d ) 
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :func2 ( \"this is a test\" , a , b , c , d ) 
 
    COND       clean-up                                                                                                                                                                                              
      code     set the debug off                    zRPN_olddebug= 'n';
@@ -2946,23 +2981,23 @@ SCRP          preprocessor content                 yRPN_tokens               
 
    COND       try includes                                                                                                                                                                                          
      exec     local header                         yRPN_tokens           "#include \"local.h\""                                        s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :# include \"local.h\"                     
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :# include \"local.h\"                     
      exec     global header                        yRPN_tokens           "#include <stdio.h>"                                          s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :# include <stdio.h>                       
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :# include <stdio.h>                       
      exec     global header in sub directory       yRPN_tokens           "#include <sys/ctypes.h>"                                     s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :# include <sys/ctypes.h>                  
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :# include <sys/ctypes.h>                  
      exec     indentation before hash              yRPN_tokens           "    #include <stdio.h>"                                      s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :# include <stdio.h>                       
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :# include <stdio.h>                       
      exec     indentation after hash               yRPN_tokens           "#    include <stdio.h>"                                      s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :# include <stdio.h>                       
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :# include <stdio.h>                       
 
    COND       try defines                                                                                                                                                                                           
      exec     very simple                          yRPN_tokens           "#define BIG_MAN   little"                                    s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :# define  BIG_MAN   little                
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :# define  BIG_MAN   little                
      exec     string                               yRPN_tokens           "#define BIG_MAN   \"test string\""                           s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :# define  BIG_MAN   \"test string\"       
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :# define  BIG_MAN   \"test string\"       
      exec     function like macro                  yRPN_tokens           "#define F(x,y)  func2 ( y, x)"                               s_not       ""                                                           
-     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     tokenization     :# define  F(x,y)  func2 ( y, x)           
+     get        token extracted s                  yRPN_accessor         "tokens"   ,     0                                            s_equal     infix output     :# define  F(x,y)  func2 ( y, x)           
 
    COND       clean-up                                                                                                                                                                                              
      code     set the debug off                    zRPN_olddebug= 'n';

@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7l"
-#define   zRPN_VER_TXT       "cleaned up global names"
+#define   zRPN_VER_NUM       "0.7m"
+#define   zRPN_VER_TXT       "cleaned up naming on unit testing types"
 
 
 
@@ -137,6 +137,7 @@ struct  cRPN {
    /*---(infix output)-------------------*/
    char        tokens      [S_LEN_OUTPUT];
    char        normal      [S_LEN_OUTPUT];
+   int         n_tokens; 
    /*---(postfix output)-----------------*/
    char        shuntd      [S_LEN_OUTPUT];
    char        detail      [S_LEN_OUTPUT];

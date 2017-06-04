@@ -338,9 +338,9 @@ yRPN_arity         (char *a_op)
 
 
 /*====================------------------------------------====================*/
-/*===----                        normal output                         ----===*/
+/*===----                         infix output                         ----===*/
 /*====================------------------------------------====================*/
-static void        o___NORMAL__________o () { return; }
+static void        o___INFIX___________o () { return; }
 
 char             /* [------] put current item on normal output ---------------*/
 yRPN__normal       (int a_pos)
@@ -355,6 +355,17 @@ yRPN__normal       (int a_pos)
    strncat (rpn.normal, x_token, zRPN_MAX_LEN);
    ++rpn.l_normal;
    zRPN_DEBUG  printf("      RPN__normal     :: (---) %s\n", x_token);
+   return 0;
+}
+
+char       /*----: save a token to the tokens output -------------------------*/
+yRPN__token        (void)
+{
+   char          x_div     [S_LEN_LABEL];
+   strncat (rpn.tokens, rpn.t_name   , S_LEN_TOKEN);
+   strncat (rpn.tokens, zRPN_divider, S_LEN_TOKEN);
+   ++rpn.n_tokens;
+   zRPN_DEBUG  printf("      RPN__token      :: (---) %s\n", rpn.t_name);
    return 0;
 }
 
@@ -415,7 +426,6 @@ yRPN__toss         (void)
 char             /* [------] pop and save the top of the stack ---------------*/
 yRPN__pops         (void)
 {
-   char      xprec;
    char      x_token[S_LEN_TOKEN];
    /*---(handle empty stack)-------------*/
    if (rpn.n_stack <= 0) {
@@ -423,16 +433,14 @@ yRPN__pops         (void)
       return zRPN_ERR_EMPTY_STACK;
    }
    /*---(normal stack)-------------------*/
-   else {
-      zRPN_DEBUG  printf("      RPN__pops       :: (%3d) %s\n", rpn.n_stack, rpn.stack [rpn.n_stack - 1]);
-      --rpn.n_stack;
-      ++rpn.n_shuntd;
-      sprintf (x_token, "%c,%s%s", rpn.stack[rpn.n_stack][0], rpn.stack[rpn.n_stack] + 4, zRPN_divtech);
-      strncat (rpn.detail, x_token, S_LEN_TOKEN);
-      sprintf (x_token, "%s%s", rpn.stack[rpn.n_stack] + 4, zRPN_divider);
-      strncat (rpn.shuntd, x_token, S_LEN_TOKEN);
-      xprec = rpn.stack[rpn.n_stack][2];
-   }
+   zRPN_DEBUG  printf("      RPN__pops       :: (%3d) %s\n", rpn.n_stack, rpn.stack [rpn.n_stack - 1]);
+   --rpn.n_stack;
+   ++rpn.n_shuntd;
+   sprintf (x_token, "%c,%s%s", rpn.stack[rpn.n_stack][0], rpn.stack[rpn.n_stack] + 4, zRPN_divtech);
+   strncat (rpn.detail, x_token, S_LEN_TOKEN);
+   sprintf (x_token, "%s%s", rpn.stack[rpn.n_stack] + 4, zRPN_divider);
+   strncat (rpn.shuntd, x_token, S_LEN_TOKEN);
+   rpn.l_shuntd = strlen (rpn.shuntd);
    return 0;
 }
 
@@ -445,17 +453,8 @@ yRPN__save         (void)
    strncat (rpn.detail, x_token, S_LEN_TOKEN);
    sprintf (x_token, "%s%s", rpn.t_name, zRPN_divider);
    strncat (rpn.shuntd, x_token, S_LEN_TOKEN);
+   rpn.l_shuntd = strlen (rpn.shuntd);
    zRPN_DEBUG  printf("      RPN__save       :: (---) %c,%c,%s\n", rpn.t_type, rpn.t_prec, rpn.t_name);
-   return 0;
-}
-
-char       /*----: save a token to the tokens output -------------------------*/
-yRPN__token        (void)
-{
-   char          x_div     [S_LEN_LABEL];
-   strncat (rpn.tokens, rpn.t_name   , S_LEN_TOKEN);
-   strncat (rpn.tokens, zRPN_divider, S_LEN_TOKEN);
-   zRPN_DEBUG  printf("      RPN__token      :: (---) %s\n", rpn.t_name);
    return 0;
 }
 
@@ -1732,7 +1731,8 @@ yRPN__load         (char *a_source)   /* source infix string                    
    rpn.l_shuntd   = 0;
    rpn.l_normal   = 0;
    rpn.n_shuntd   = 0;
-   DEBUG_YRPN    yLOG_sint    (rpn.l_shuntd);
+   rpn.n_tokens   = 0;
+   DEBUG_YRPN    yLOG_sint    (rpn.n_shuntd);
    /*---(set the token vars)-------------*/
    DEBUG_YRPN    yLOG_snote   ("token vars");
    strncpy (rpn.t_name  , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
@@ -2010,8 +2010,8 @@ yRPN_convert       (char *a_source)
    /*---(handle errors)------------------*/
    if (rc < 0) {
       zRPN_DEBUG  printf ("FATAL %4d : %s\n", rc, zRPN_ERRORS [ -rc - 100]);
-      rpn.l_shuntd = 0;
-      rpn.n_shuntd   = 0;
+      rpn.l_shuntd  = 0;
+      rpn.n_shuntd  = 0;
       strcpy (rpn.shuntd, YRPN_TOKEN_NULL);
       /*> return  strndup (rpn.shuntd, zRPN_MAX_LEN);                                 <*/
       /*> return  rpn.shuntd;                                                         <*/
@@ -2024,8 +2024,8 @@ yRPN_convert       (char *a_source)
       yRPN__peek();
       if (strcmp(rpn.t_token, "(") == 0) {
          zRPN_DEBUG  printf ("FATAL %4d : %s\n", zRPN_ERR_UNBALANCED_PARENS, "unbalanced parentheses\n");
-         rpn.l_shuntd = 0;
-         rpn.n_shuntd   = 0;
+         rpn.l_shuntd  = 0;
+         rpn.n_shuntd  = 0;
          strcpy (rpn.shuntd, YRPN_TOKEN_NULL);
          /*> return  strndup (rpn.shuntd, zRPN_MAX_LEN);                              <*/
          /*> return  rpn.shuntd;                                                      <*/
@@ -2084,23 +2084,25 @@ yRPN_accessor      (char *a_question, int a_item)
    char        x_temp      [S_LEN_LABEL];
    /*---(sheet focus)--------------------*/
    if        (strcmp (a_question, "source"    )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "source string    :%.50s", rpn.source);
+      snprintf (unit_answer, S_LEN_OUTPUT, "source string    :%.50s"  , rpn.source);
    } else if (strcmp (a_question, "token"     )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "current token    :%.50s", rpn.t_name);
+      snprintf (unit_answer, S_LEN_OUTPUT, "current token    :%.50s"  , rpn.t_name);
    } else if (strcmp (a_question, "precedence")     == 0) {
       snprintf (unit_answer, S_LEN_OUTPUT, "precedence       : %c"    , rpn.t_prec);
    } else if (strcmp (a_question, "type"      )     == 0) {
       snprintf (unit_answer, S_LEN_OUTPUT, "current type     : %c"    , rpn.t_type);
-   } else if (strcmp (a_question, "n_shuntd"     )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "token n_shuntd      : %d"    , rpn.n_shuntd);
-   } else if (strcmp (a_question, "output"    )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "postfix output   :%.50s", rpn.shuntd);
-   } else if (strcmp (a_question, "detail"    )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "postfix detail   :%.50s", rpn.detail);
+   } else if (strcmp (a_question, "n_tokens"     )     == 0) {
+      snprintf (unit_answer, S_LEN_OUTPUT, "infix count      : %d"    , rpn.n_tokens);
    } else if (strcmp (a_question, "tokens"    )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "tokenization     :%.50s", rpn.tokens);
+      snprintf (unit_answer, S_LEN_OUTPUT, "infix output     :%.50s"  , rpn.tokens);
+   } else if (strcmp (a_question, "n_detail"     )     == 0) {
+      snprintf (unit_answer, S_LEN_OUTPUT, "postfix count    : %d"    , rpn.n_shuntd);
+   } else if (strcmp (a_question, "output"    )     == 0) {
+      snprintf (unit_answer, S_LEN_OUTPUT, "postfix output   :%.50s"  , rpn.shuntd);
+   } else if (strcmp (a_question, "detail"    )     == 0) {
+      snprintf (unit_answer, S_LEN_OUTPUT, "postfix detail   :%.50s"  , rpn.detail);
    } else if (strcmp (a_question, "depth"     )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "stack depth      : %d"    , rpn.depth);
+      snprintf (unit_answer, S_LEN_OUTPUT, "stack depth      : %d"    , rpn.n_stack);
    } else if (strcmp (a_question, "stack_list")     == 0) {
       snprintf (unit_answer, S_LEN_OUTPUT, "stack details    :");
       for (i = 0; i < rpn.n_stack && i < 6; ++i) {
