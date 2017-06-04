@@ -24,8 +24,8 @@ char      zRPN_olddebug = 'n';
 
 char      zRPN_lang   = S_LANG_C;
 
-char      zRPN_divider [5] = " ";
-char      zRPN_divtech [5] = " ";
+static char s_divider [5] = " ";
+static char s_divtech [5] = " ";
 
 char    zRPN_ERRORS [100][50] = {
    "input not long enough",
@@ -345,14 +345,21 @@ static void        o___INFIX___________o () { return; }
 char             /* [------] put current item on normal output ---------------*/
 yRPN__normal       (int a_pos)
 {
-   char      x_token [zRPN_MAX_LEN];
+   /*---(locals)-----------+-----------+-*/
+   char        x_div       [S_LEN_LABEL];
+   char        x_token     [S_LEN_TOKEN];
+   /*---(shuntd output)------------------*/
+   if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
+   else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
+   /*---(add token)----------------------*/
+   strlcat (rpn.normal, x_div      , S_LEN_OUTPUT);
    /*> if (rpn.t_type == S_TTYPE_GROUP)  return 0;                                                <*/
    /*> if (rpn.t_type == S_TTYPE_OPER && strcmp(rpn.t_name, ",") == 0)  return 0;                 <*/
    /*> printf ("found a comma, skipping  %c, %c, %s\n", zRPN_lang, rpn.t_type, rpn.t_name);    <* 
     *> if (zRPN_lang == S_LANG_GYGES && rpn.t_type == S_TTYPE_OPER && strcmp(rpn.t_name, ",") == 0)  return 0;   <* 
     *> printf ("just didn't skip\n");                                                       <*/
-   sprintf (x_token, "%c,%04d,%s%s", rpn.t_type, a_pos, rpn.t_name, zRPN_divtech);
-   strncat (rpn.normal, x_token, zRPN_MAX_LEN);
+   sprintf (x_token, "%c,%04d,%s", rpn.t_type, a_pos, rpn.t_name);
+   strlcat (rpn.normal, x_token    , S_LEN_OUTPUT);
    ++rpn.l_normal;
    zRPN_DEBUG  printf("      RPN__normal     :: (---) %s\n", x_token);
    return 0;
@@ -361,11 +368,17 @@ yRPN__normal       (int a_pos)
 char       /*----: save a token to the tokens output -------------------------*/
 yRPN__token        (void)
 {
-   char          x_div     [S_LEN_LABEL];
-   strncat (rpn.tokens, rpn.t_name   , S_LEN_TOKEN);
-   strncat (rpn.tokens, zRPN_divider, S_LEN_TOKEN);
+   /*---(locals)-----------+-----------+-*/
+   char        x_div       [S_LEN_LABEL];
+   /*---(adapt divider)------------------*/
+   if (rpn.n_tokens == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
+   else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
+   /*---(add token)----------------------*/
+   strlcat (rpn.tokens, x_div      , S_LEN_OUTPUT);
+   strlcat (rpn.tokens, rpn.t_name , S_LEN_OUTPUT);
+   /*---(update counters)----------------*/
    ++rpn.n_tokens;
-   zRPN_DEBUG  printf("      RPN__token      :: (---) %s\n", rpn.t_name);
+   /*---(complete)-----------------------*/
    return 0;
 }
 
@@ -426,35 +439,54 @@ yRPN__toss         (void)
 char             /* [------] pop and save the top of the stack ---------------*/
 yRPN__pops         (void)
 {
-   char      x_token[S_LEN_TOKEN];
+   /*---(locals)-----------+-----------+-*/
+   char        x_div       [S_LEN_LABEL];
+   char        x_token     [S_LEN_TOKEN];
    /*---(handle empty stack)-------------*/
    if (rpn.n_stack <= 0) {
-      zRPN_DEBUG  printf("      RPN__pops       :: FATAL empty stack\n");
       return zRPN_ERR_EMPTY_STACK;
    }
-   /*---(normal stack)-------------------*/
-   zRPN_DEBUG  printf("      RPN__pops       :: (%3d) %s\n", rpn.n_stack, rpn.stack [rpn.n_stack - 1]);
+   /*---(adjust stack)-------------------*/
    --rpn.n_stack;
+   /*---(shuntd output)------------------*/
+   if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
+   else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
+   strlcat (rpn.shuntd, x_div           , S_LEN_OUTPUT);
+   strlcat (rpn.shuntd, rpn.stack[rpn.n_stack] + 4, S_LEN_OUTPUT);
+   /*---(normal stack)-------------------*/
+   if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
+   else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
+   strlcat (rpn.detail, x_div           , S_LEN_OUTPUT);
+   sprintf (x_token, "%c,%s", rpn.stack[rpn.n_stack][0], rpn.stack[rpn.n_stack] + 4);
+   strlcat (rpn.detail, x_token         , S_LEN_OUTPUT);
+   /*---(update counters)----------------*/
    ++rpn.n_shuntd;
-   sprintf (x_token, "%c,%s%s", rpn.stack[rpn.n_stack][0], rpn.stack[rpn.n_stack] + 4, zRPN_divtech);
-   strncat (rpn.detail, x_token, S_LEN_TOKEN);
-   sprintf (x_token, "%s%s", rpn.stack[rpn.n_stack] + 4, zRPN_divider);
-   strncat (rpn.shuntd, x_token, S_LEN_TOKEN);
    rpn.l_shuntd = strlen (rpn.shuntd);
+   /*---(complete)-----------------------*/
    return 0;
 }
 
 char             /* [------] save current item to final output ---------------*/
 yRPN__save         (void)
 {
-   char      x_token [S_LEN_TOKEN];
+   /*---(locals)-----------+-----------+-*/
+   char        x_div       [S_LEN_LABEL];
+   char        x_token     [S_LEN_TOKEN];
+   /*---(shuntd output)------------------*/
+   if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
+   else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
+   strlcat (rpn.shuntd, x_div           , S_LEN_OUTPUT);
+   strlcat (rpn.shuntd, rpn.t_name      , S_LEN_OUTPUT);
+   /*---(normal stack)-------------------*/
+   if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
+   else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
+   strlcat (rpn.detail, x_div           , S_LEN_OUTPUT);
+   sprintf (x_token, "%c,%s", rpn.t_type, rpn.t_name);
+   strlcat (rpn.detail, x_token         , S_LEN_OUTPUT);
+   /*---(update counters)----------------*/
    ++rpn.n_shuntd;
-   sprintf (x_token, "%c,%s%s", rpn.t_type, rpn.t_name, zRPN_divtech);
-   strncat (rpn.detail, x_token, S_LEN_TOKEN);
-   sprintf (x_token, "%s%s", rpn.t_name, zRPN_divider);
-   strncat (rpn.shuntd, x_token, S_LEN_TOKEN);
    rpn.l_shuntd = strlen (rpn.shuntd);
-   zRPN_DEBUG  printf("      RPN__save       :: (---) %c,%c,%s\n", rpn.t_type, rpn.t_prec, rpn.t_name);
+   /*---(complete)-----------------------*/
    return 0;
 }
 
@@ -1759,7 +1791,7 @@ char       /* ---- : set c human readable ------------------------------------*/
 yRPN__chuman       (void)
 {
    zRPN_lang    = S_LANG_C;
-   strcpy (zRPN_divider, " ");
+   strcpy (s_divider, " ");
    return 0;
 }
 
@@ -1767,7 +1799,7 @@ char       /* ---- : set spreadsheet human readable --------------------------*/
 yRPN__shuman       (int *a_ntoken)
 {
    zRPN_lang    = S_LANG_GYGES;
-   strcpy (zRPN_divider, " ");
+   strcpy (s_divider, " ");
    return 0;
 }
 
@@ -1775,8 +1807,8 @@ char       /* ---- : set c internal ------------------------------------------*/
 yRPN_compiler      (void)
 {
    zRPN_lang    = S_LANG_C;
-   strcpy (zRPN_divider, ", ");
-   strcpy (zRPN_divtech, "\x1F");
+   strcpy (s_divider, ", ");
+   strcpy (s_divtech, "\x1F");
    return 0;
 }
 
@@ -1790,7 +1822,7 @@ yRPN_spreadsheet   (
    char       *x_rpn       = NULL;          /* return string of rpn notation  */
    /*---(prepare flags)------------------*/
    zRPN_lang    = S_LANG_GYGES;
-   strcpy (zRPN_divider, ",");
+   strcpy (s_divider, ",");
    /*---(convert)------------------------*/
    x_rpn = yRPN_convert (a_source);
    zRPN_DEBUG  printf("   ready   = <<%s>>\n", x_rpn);
@@ -1809,7 +1841,7 @@ yRPN_stokens       (char *a_source)
 {
    char     *x_rpn = NULL;
    zRPN_lang    = S_LANG_GYGES;
-   strcpy (zRPN_divider, " ");
+   strcpy (s_divider, " ");
    x_rpn = yRPN_convert (a_source);
    if (x_rpn == NULL)   return NULL;
    return rpn.tokens;
@@ -1820,8 +1852,8 @@ yRPN_normal        (char *a_source, char *a_normal, int *a_ntoken)
 {
    char     *x_rpn = NULL;
    zRPN_lang    = S_LANG_C;
-   strcpy (zRPN_divider, ", ");
-   strcpy (zRPN_divtech, "\x1F");
+   strcpy (s_divider, ", ");
+   strcpy (s_divtech, "\x1F");
    x_rpn = yRPN_convert (a_source);
    if (x_rpn == NULL)  {
       if (a_normal != NULL) strcpy (a_normal, "");
@@ -1838,8 +1870,8 @@ yRPN_detail        (char *a_source, char *a_detail, int *a_ntoken)
 {
    char     *x_rpn = NULL;
    zRPN_lang    = S_LANG_C;
-   strcpy (zRPN_divider, ", ");
-   strcpy (zRPN_divtech, "\x1F");
+   strcpy (s_divider, ", ");
+   strcpy (s_divtech, "\x1F");
    x_rpn = yRPN_convert (a_source);
    if (x_rpn == NULL)  {
       if (a_detail != NULL) strcpy (a_detail, "");
@@ -1856,7 +1888,7 @@ yRPN_techtoken     (char *a_source)
 {
    char     *x_rpn = NULL;
    zRPN_lang    = S_LANG_C;
-   strcpy (zRPN_divider, "\x1F");
+   strcpy (s_divider, "\x1F");
    x_rpn = yRPN_convert (a_source);
    if (x_rpn == NULL)   return NULL;
    return rpn.tokens;
@@ -1867,7 +1899,7 @@ yRPN_tokens        (char *a_source)
 {
    char     *x_rpn = NULL;
    zRPN_lang    = S_LANG_C;
-   strcpy (zRPN_divider, " ");
+   strcpy (s_divider, " ");
    x_rpn = yRPN_convert (a_source);
    if (x_rpn == NULL)   return NULL;
    return rpn.tokens;
@@ -1895,7 +1927,7 @@ yRPN__depth        (void)
    /*> yLOG_note   (x_detail);                                                        <*/
    /*> yLOG_note   ("after copy");                                                    <*/
    /*---(run through the tokens)---------*/
-   /*> p = strtok_r (x_detail, zRPN_divider, &s);                                     <*/
+   /*> p = strtok_r (x_detail, s_divider, &s);                                     <*/
    p = strtok_r (x_detail, " ", &s);
    printf ("p = %p\n", p);
    /*> int lenny = strlen(p);                                                         <* 
@@ -1906,7 +1938,7 @@ yRPN__depth        (void)
       else              ++x_curr;
       if (x_curr > x_max)  x_max = x_curr;
       printf ("token = %-10s, x_curr = %2d, x_max = %2d\n", p, x_curr, x_max);
-      p = strtok_r (NULL, zRPN_divider, &s);
+      p = strtok_r (NULL, s_divider, &s);
    }
    /*> yLOG_note   ("after loop");                                                    <*/
    rpn.depth = x_max;
@@ -1921,14 +1953,14 @@ yRPN__output_done    (void)
    /*---(locals)-----------+-----------+-*/
    int         x_len       = 0;
    /*---(drop the trailing space)--------*/
-   x_len = strlen (rpn.shuntd) - strlen (zRPN_divider);
-   rpn.shuntd [x_len] = '\0';
-   x_len = strlen (rpn.detail) - strlen (zRPN_divtech);
-   rpn.detail [x_len] = '\0';
-   x_len = strlen (rpn.normal) - strlen (zRPN_divtech);
-   rpn.normal[x_len] = '\0';
-   x_len = strlen (rpn.tokens) - 1;
-   rpn.tokens [x_len] = '\0';
+   /*> x_len = strlen (rpn.shuntd) - strlen (s_divider);                              <* 
+    *> rpn.shuntd [x_len] = '\0';                                                     <*/
+   /*> x_len = strlen (rpn.detail) - strlen (s_divtech);                              <* 
+    *> rpn.detail [x_len] = '\0';                                                     <*/
+   /*> x_len = strlen (rpn.normal) - strlen (s_divtech);                              <* 
+    *> rpn.normal[x_len] = '\0';                                                      <*/
+   /*> x_len = strlen (rpn.tokens) - 1;                                               <* 
+    *> rpn.tokens [x_len] = '\0';                                                     <*/
    /*---(output)-------------------------*/
    zRPN_DEBUG  printf("   shunted = <<%s>>\n", rpn.shuntd);
    zRPN_DEBUG  printf("   detail  = <<%s>>\n", rpn.detail);
@@ -2036,12 +2068,12 @@ yRPN_convert       (char *a_source)
    }
    zRPN_DEBUG  printf("      done\n");
    /*---(drop the trailing space)--------*/
-   /*> len = strlen(rpn.shuntd) - strlen(zRPN_divider);                                         <* 
+   /*> len = strlen(rpn.shuntd) - strlen(s_divider);                                         <* 
     *> rpn.shuntd[len] = '\0';                                                                  <* 
     *> zRPN_DEBUG  printf("      done 2\n");                                                    <* 
-    *> len = strlen(rpn.detail) - strlen(zRPN_divtech);                                         <* 
+    *> len = strlen(rpn.detail) - strlen(s_divtech);                                         <* 
     *> rpn.detail[len] = '\0';                                                                  <* 
-    *> len = strlen(rpn.normal) - strlen(zRPN_divtech);                                         <* 
+    *> len = strlen(rpn.normal) - strlen(s_divtech);                                         <* 
     *> rpn.normal[len] = '\0';                                                                  <* 
     *> zRPN_DEBUG  printf("      done 3\n");                                                    <* 
     *> /+> yRPN__depth();                                                                 <+/   <* 

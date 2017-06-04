@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7m"
-#define   zRPN_VER_TXT       "cleaned up naming on unit testing types"
+#define   zRPN_VER_NUM       "0.7n"
+#define   zRPN_VER_TXT       "fixed dividers on all output and cleaned that code"
 
 
 
