@@ -3,399 +3,43 @@
 .SH NAME
 yRPN \- simple, clean infix to reverse polish notation conversion
 
-.SH SYNOPSIS
-.nf
-.B #include  <yRPN.h>
-.sp
-.R  ---preparation---------------------------------
-.R  set a specific date for evaluating entries...
-.BI "char  " "rc " " = ySCHED_setdate ( int " "a_year" ", int " "a_month" ", int " "a_day" " );"
-.sp
-.R  clear out global effective dates before each file is read...
-.BI "char  " "rc " " = ySCHED_reset   ( void );"
-.sp
-.R  ---evaluation----------------------------------
-.R  parse a scheduling grammar string into current values...
-.BI "char  " "rc " " = ySCHED_parse   ( char* " "a_recd" " );"
-.sp
-.R  test the current parsed record at a specific time...
-.BI "int   " "dur" " = ySCHED_test    ( int " "a_hour" ", int " "a_minute" " );"
-.sp
-.R  ---storage-------------------------------------
-.R  saving the most recent parsed record to a structure...
-.BI "char  " "rc " " = ySCHED_save    ( tSCHED* " "a_sched" " );"
-.sp
-.R  loading ySCHED from a saved set of values...
-.BI "char  " "rc " " = ySCHED_load    ( tSCHED* " "a_sched" " );"
-.nf
-
-
 .SH OVERVIEW
-ySCHED is a set of shared functions providing flexible, reliable, and
-consistent access to scheduling grammar interpretation.  its purpose is
-to take a complex and foundational capability and provide a shared service
-that can be tested, maintained, and documented once to avoid migrations and
-allow all programs to use the full range of features.
+yRPN is a library focused solely and only on supporting high-end programs
+execute calculations as quickly and unambiguously as possible.  humans work in
+infix notation, e.g., "a+b", which is very intuitive.  but, it is potentially
+ambiguous a computing nightmare.  reverse polish notation is clear, unambiguous,
+and sequences computing very efficiently.  but, it is not very human-compatible.
+
+
+.SH PROCESS
+when performing this conversion, all tokens can essentially be grouped into
+three classes.
+
+.B class one.  
+these are the nouns (objects) that are acted upon.  move them straight from
+input to output -- no changes, no reordering, no fussing.  this list includes...
+   -- keywords   : break, if, while, ...
+   -- types      : short, int, extern, ...
+   -- strings    : "testing", "markup", "output", ...
+   -- chars      : 'a', '0', '-', ...
+   -- numbers    : 56, 10.3674, 0xfe, 0b0110, 0755, ...
+   -- constants  : PI, DEG2RAD, FALSE, ...
+   -- variables  : a, tokens, x_pos, ...
+
+.B class two.  
+these are the verbs (actions) that act upon the nouns.  push them onto the
+stack and work some magic with reordering as they come back off.  this list
+includes...
+   -- functions  : strcat(), yLOG_enter(), main(), ...
+   -- operators  : +, /, ==, &, ...
+
+.B class three.  
+these are the grouping symbols that help alter or clarify the evaluation
+sequence.  the default presedence (priority) of symbols is excellent, but
+not always what you would intend.  grouping allows you to force different
+evaluation orders.
 
-ySCHED focuses only on...
-   - kernighan inspired scheduling grammar from his cron (1978)
-   - extended with adaptations from vixie-cron, perl libs, etc.
-   - expanded to handle non-script scheduling (clarity & accuracy)
-   - given additional simplifiers and constants for readability
-   - added a couple clever bits because we own our version
 
-above all, ySCHED is meant to enable technical power users access to the
-best that it can provide, not to make it easy for novices.
-
-ySCHED will simultaneously interpret the standard cron entry format as well
-as support the addition of our two additional fields.  the only concern would
-be a slightly different interpretation of the day/dow combination.
-
-
-.SH DESCRIPTION
-ySCHED consists of six externally accessible functions.
-
-.B ySCHED_setdate
-is necessary to calculate certain parsing statistics,
-including the number of days in the month and what day of the week the
-month starts on.  it takes three integers and returns a success code
-(0 means all good).
-   - year is since 2000
-   - month is 1-12
-   - day is 1-n depending on the month
-
-.B ySCHED_reset
-at the very beginning of use and between the runs on each input file, a call
-to this function resets the global effective dates to allow global validity,
-holiday, vacation, and blackout dates.  call it when each file is first
-openned.
-
-.B ySCHED_parse
-takes a scheduling string as described below and figures out what it means
-given the information from ySCHED_setdate.  it takes just a c-string and
-returns a success code (0 means all good).
-
-.B ySCHED_test
-detirmines if a given entry is value/should run at a particular hour and minute.
-it takes two integers, one for hour and the other for minute, and returns the
-duration of the job in minutes if its valid (or negative of not the right time).
-   - hour is 0-23 (military time)
-   - minute is 0-59
-
-.B ySCHED_save
-to keep from having to reread the record from the source file, you can save
-the current values into a standard data structure for later use, meaning loading
-back into the program with the load function.
-
-.B ySCHED_load
-places the saved values back into ySCHED as the current values as if it was
-just read and parsed.
-
-
-.SH RECORD LAYOUT
-
-.B ySCHED
-is powerful and elegant because it was designed by the master, kernighan, as
-part of the original cron in 1978.   since then, it has been tweaked slightly
-by later crons and a bit as part of libraries for perl and others.  we have
-only attempted to stand on their shoulders with this one.
-
-the original scheduling grammar consisted of five fields that dealt with 90% of
-the scheduling needs and then required cron scripts show some intelligence to 
-handle the exception cases.  we will be sharing this library with at least the
-calendaring application, so we must add some tweaks since there will not be any
-scipts to "filter" what we can't express directly.
-
-our scheduling grammar is composed of seven fields which have no fixed length
-and are separated by spaces...
-
-.B <minutes>
-.RS 8
-minute marks on which the job should launch (00-59)
-.RE
-
-.B <hours>
-.RS 8
-hours on which the job should launch (00-23)
-.RE
-
-.B <days>
-.RS 8
-days on which the job should launch (01-31)
-.RE
-
-.B <months>
-.RS 8
-months in which the job should launch (01-12)
-.RE
-
-.B <days of the week>
-.RS 8
-weekdays on which the job should launch (1/Mo -7/Su)
-.RE
-
-.B <weeks of the year>
-.RS 8
-weeks in which the job should launch (01-53)
-.RE
-
-.B <duration>
-.RS 8
-expected length of the job (max) or duration of meeting/event
-.RE
-
-all these fields are combined through AND logic to determine when a job is
-scheduled to launch.  As a note, most crons use OR logic with day/dow and do
-not include the week or duration field -- we prefer AND.
-
-
-.SH BASIC SCHEDULING GRAMMAR
-
-the first six of these fields uses the same foundational grammar...
-
-.B wildcard (*)
-.RS 8
-all possible values in a field, i.e., no restriction
-.RE
-
-.B range (<nn>-<nn>)
-.RS 8
-all values between two numbers (inclusive)
-.RE
-
-.B step (/<nn>)
-.RS 8
-modifies a range or wildcard to skip by a value
-.RE
-
-.B list (<nn>,<nn>)
-.RS 8
-creates the union between two values, ranges, etc.
-.RE
-
-.B modifier (<nn><ch>)
-.RS 8
-modifies a value within its context
-.RE
-
-.B prefixes (<ch><nn>)
-.RS 8
-significantly modifies the value
-.RE
-
-.B constant (<ch>)
-.RS 8
-stands in for a value or range of values
-.RE
-
-some basic examples with values, ranges, and steps...
-
-#min-- -hrs-- day--- mon--- dow--- wks---
-
-00     02     *      *      *      *       2am every day
-
-00     00     1      *      *      *       midnight on the first
-
-10     *      *      *      *      *       10min after every hour
-
-30     8,17   *      *      *      *       8:30a and 5:30p
-
-00,30  8-17   *      *      *      *       half hours from 8a to 5p
-
-00     12     *      *      1      *       noon every monday
-
-00     20     *      *      5      1       8p friday in first week
-
-00     00     31     *      *      *       midnight on jan 31st
-
-00     00     */2    *      *      *       midnight every other day
-
-00     3-9/3  *      *      *      *       3a, 6a, and 9a
-
-00     15     *      *      *      */2     3p very other week
-
-
-.SH ABBREVIATIONS IN SCHEDULING GRAMMAR
-
-in order to make the crontab more readable, some contants may be used...
-
-.B L (last)
-.RS 8
-may be used in any field, e.g., L in days is last day of month
-.RE
-
-.B B (business hours)
-.RS 8
-9a to 5p only (only in hours)
-.RE
-
-.B O (off hours)
-.RS 8
-midnight to 9a to 5p to midnight (only in hours)
-.RE
-
-.B Mo, Tu, We, Th, Fr, Sa, Su (weekdays)
-.RS 8
-to keep it quickly readable -- can't be in ranges
-.RE
-
-.B W, E (weekdays)
-.RS 8
-abbreviated standin for all weekdays (W) and weekends (E)
-.RE
-
-
-.SH SPECIAL DATE MODIFIERS
-
-some days are hard to specify and require modifiers...
-
-.B <nn>a (on or after)
-.RS 8
-first weekday (Mo-Fr) on or after the date (only in days)
-.RE
-
-.B <nn>b (on or before)
-.RS 8
-closest weekday (Mo-Fr) on or before the date (only in days)
-.RE
-
-.B <nn>+ (on or before minus one)
-.RS 8
-closest weekday (Mo-Fr) on or before minus one weekday
-.RE
-
-.B <nn>n (nearest)
-.RS 8
-nearest weekday (Mo-Fr) to date (only in days)
-.RE
-
-.B <n>w (full week)
-.RS 8
-1st, 2nd, ... week (7days) of the month (only in days)
-.RE
-
-.B <n>q (full quarter)
-.RS 8
-stands in for 1st, 2nd, ... quarter of year (only in months)
-.RE
-
-some further examples to explain are...
-
-#min-- -hrs-- day--- mon--- dow--- wks---
-
-00     08     *      *      Tu,Fr  *       8a on Tuesday and Friday
-
-00     13     *      *      W      *       1p on all weekdays
-
-00     15     15n    *      *      *       3p workday nearest the 15th
-
-00     15     15b    *      *      *       ... on or before the 15th
-
-00     15     15a    *      *      *       ... on or after the 15th
-
-00     10     2w     *      Mo     *       10a on the 2nd Monday
-
-00     B      *      *      W      *       each bus. hour on weekday
-
-
-.SH PREFIXES
-
-then, there are several ways to expand the expressive power of the entries...
-
-.B ~ (not)
-.RS 8
-can be placed in front of any value or range to exclude it
-.RE
-
-.B ! (inverse)
-.RS 8
-will mark all but the value or range as included
-.RE
-
-.B ^ (reverse)
-.RS 8
-will count values/ranges from the end rather than the start
-.RE
-
-.B <nn (from beginning)
-.RS 8
-makes a range from the minimum to the value
-.RE
-
-.B nn> (till the end)
-.RS 8
-makes a range from value to the maximum
-.RE
-
-finally, a few more examples...
-
-#min-- -hrs-- day--- mon--- dow--- wks---
-
-00     6-10,~8   *   *      *      *       6a, 7a, 9a, and 10a
-
-00     14     ^1     *      *      *       2p on the next to last day
-
-00     14     !5-10  *      *      *       2p the 1-4 and 11-31
-
-00     00     <5     *      *      *       midnight on the 1st to 5th
-
-00     00     10>    *      *      *       midnight 10th to month end
-
-
-.SH EFFECTIVE DATES
-
-in order to give entries additional expressive power, there are five entries
-that can alter the date ranges over which the entries are valid.
-
-.B .validity <start> <end>
-.RS 8
-global setting for all file entries making them only valid between these two
-dates, such as, "08/01 10/31" for Aug - Oct.
-.RE
-
-.B .holiday <date list>
-.RS 8
-modifies the validity range (or all dates if not set) by excluding specific
-dates, e.g., "05.05,07.04" to exclude May 5th and July 4th.  these are comma
-separated dates with no spaces
-.RE
-
-.B .vacation <date list>
-.RS 8
-exactly like holiday (and adding onto it)
-.RE
-
-.B .blackout <date list>
-.RS 8
-exactly like holiday (and adding onto it)
-.RE
-
-.B .effective <start> <end> <date list>
-.RS 8
-this is effective only on a group of records which have no blank lines or
-comments between them -- as soon as a blank/comment is hit, this clears.
-the values fall within the four globals above and can not over ride them.
-.RE
-
-
-.SH OTHER LINES
-
-in order to make these files clear, two other types of entries are valid --
-blank lines and comments which have a # in the first column.  besides helping
-to format and document the file, ".effective" entries are reset when either
-of this is processed.
-
-
-.SH FORMAT
-
-.I scheduling entry
-.RS 3
-each entry is a null terminated c-string with seven fields separated by spaces.
-no other constraints exist on these entries.
-.RE
-
-.SH BUGS
-unit testing is presently clean, but who knows till it rears its ugly head
 
 .SH AUTHOR
 the_heatherlys

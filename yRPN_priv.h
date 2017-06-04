@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7k"
-#define   zRPN_VER_TXT       "updated operators, including full unit testing ;)"
+#define   zRPN_VER_NUM       "0.7l"
+#define   zRPN_VER_TXT       "cleaned up global names"
 
 
 
@@ -48,6 +48,8 @@ extern char      zRPN_olddebug;
 /*---(lengths)------------------------*/
 #define      S_LEN_OUTPUT     2000
 #define      S_LEN_TOKEN       200
+#define      S_LEN_DESC        100
+#define      S_LEN_LABEL        20
 /*---(token types)--------------------*/
 /*---(grouping)--------*/
 #define      S_TTYPE_GROUP      '('
@@ -82,6 +84,9 @@ extern char      zRPN_olddebug;
 /*---(operator type)------------------*/
 #define      S_RIGHT_ONLY       'y'
 #define      S_LEFT_ONLY        '-'
+/*---(left_oper options)--------------*/
+#define      S_OPER_LEFT        'y'
+#define      S_OPER_CLEAR       '-'
 /*---(preprocessor)-------------------*/
 #define      S_PPROC_NO         '-'
 #define      S_PPROC_YES        'y'
@@ -110,10 +115,10 @@ typedef   struct cRPN  tRPN;
 struct  cRPN {
    /*---(infix format)-------------------*/
    char        source      [S_LEN_OUTPUT];  /* source infix string (const)    */
-   int         nsource;                     /* length of source infix string  */
+   int         l_source;                    /* length of source infix string  */
    /*---(working areas)------------------*/
    char        working     [S_LEN_OUTPUT];  /* copy of source for parsing     */
-   int         nworking;                    /* position in working string     */
+   int         l_working;                   /* position in working string     */
    /*---(working areas)------------------*/
    char        t_token     [S_LEN_TOKEN];   /* current token (full)           */
    char        t_type;                      /* current token type             */
@@ -122,25 +127,24 @@ struct  cRPN {
    char        t_prec;                      /* current token precidence       */
    char        t_dir;                       /* current token dir of eval      */
    char        t_arity;                     /* current token unary, binary,.. */
-   char        right_only;                  /* next operator must be S_RIGHT  */
+   char        left_oper;                   /* if oper next, must be left type*/
    /*---(stack)--------------------------*/
    char        stack       [S_MAX_STACK][S_LEN_TOKEN];
-   int         nstack;
-   int         depth;  
+   int         n_stack;
    char        p_type;
    char        p_prec;
-   char        cdepth;
-   char        mdepth;
    char        pproc;                       /* pre-processor modes           */
-   /*---(postfix format)-----------------*/
-   char        detail      [S_LEN_OUTPUT];
-   char        output      [S_LEN_OUTPUT];
-   int         noutput;
+   /*---(infix output)-------------------*/
    char        tokens      [S_LEN_OUTPUT];
    char        normal      [S_LEN_OUTPUT];
-   int         nnormal;
-   int         count;
-   /*---(other)--------------------------*/
+   /*---(postfix output)-----------------*/
+   char        shuntd      [S_LEN_OUTPUT];
+   char        detail      [S_LEN_OUTPUT];
+   int         l_shuntd;
+   int         l_normal;
+   int         n_shuntd;
+   /*---(MAYBE GONE)---------------------*/
+   int         depth;  
    char        about       [500];
 };
 extern  tRPN      rpn;
@@ -228,6 +232,8 @@ yRPN__types        (int  a_pos);
 char       /* ---- : set spreadsheet human readable --------------------------*/
 yRPN__shuman       (int *a_ntoken);
 
+char       /* ---- : convert normal infix notation to postfix/rpn ------------*/
+yRPN__output_done    (void);
 
 #endif
 /*===[[ END ]]================================================================*/
