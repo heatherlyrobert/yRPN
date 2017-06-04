@@ -10,8 +10,9 @@ char     *v_alpha     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_";
 char     *v_upnum     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
 char     *v_lower     = "abcdefghijklmnopqrstuvwxyz";
 char     *v_number    = "0123456789";
+char     *v_float     = "0123456789.";
 char     *v_hex       = "0123456789abcdefABCDEF";
-char     *v_octal     = "01234567";
+char     *v_octal     = "o01234567";
 char     *v_binary    = "01";
 char     *v_paren     = "(),[]";   
 char     *v_operator  = "|&=!<>*/%+-.?:^~#";
@@ -52,94 +53,95 @@ tRPN      rpn;
 /*===[[ OPERATORS ]]==========================================================*/
 typedef   struct cOPER tOPER;
 struct    cOPER {
-   char      prec;
-   char      token [5];
-   char      dir;
-   char      arity;                    /* how many arguments it takes         */
+   char        name        [5];        /* operator                            */
+   char        real;                   /* real/used, internal, or off         */
+   char        prec;                   /* percedence                          */
+   char        dir;                    /* direction of evaluation             */
+   char        arity;                  /* how many arguments it takes         */
 };
 #define   MAX_OPER    200
 tOPER     s_opers [MAX_OPER] = {
-   /*-prec------token----dir-arity-*/
+   /*-r----prec------name-----dir-arity-*/
    /*---(spreadsheet)------------*/
-   { 'd' +  0,  ".."    , S_LEFT ,   2 },    /* cell range                        */
+   { ".."    , 'r', 'd' +  0,  S_LEFT ,   2 },    /* cell range                        */
    /*---(preprocessor)-----------*/
-   /*> { 'd' +  0,  "#"     , S_LEFT ,   2 },    /+ prefix                            +/   <*/
-   /*> { 'd' +  0,  "##"    , S_LEFT ,   2 },    /+ stringification                   +/   <*/
-   /*---(unary/prefix)-----------*/
-   { 'd' +  1,  "+-"    , S_LEFT ,   1 },    /* suffix increment                  */
-   { 'd' +  1,  "-+"    , S_LEFT ,   1 },    /* suffix decrement                  */
+   { "#"     , '-', 'd' +  0,  S_LEFT ,   2 },    /* prefix                            */
+   { "##"    , '-', 'd' +  0,  S_LEFT ,   2 },    /* stringification                   */
+   /*---(unary/suffix)-----------*/
+   { "<+"    , 'I', 'd' +  1,  S_LEFT ,   1 },    /* suffix increment                  */
+   { "<-"    , 'I', 'd' +  1,  S_LEFT ,   1 },    /* suffix decrement                  */
    /*---(element of)-------------*/
-   { 'd' +  1,  "["     , S_LEFT ,   1 },    /* array subscripting                */
-   { 'd' +  1,  "]"     , S_LEFT ,   1 },    /* array subscripting                */
-   { 'd' +  1,  "."     , S_LEFT ,   2 },    /* element selection by reference    */
-   { 'd' +  1,  "->"    , S_LEFT ,   2 },    /* element selection thru pointer    */
+   { "["     , 'r', 'd' +  1,  S_LEFT ,   1 },    /* array subscripting                */
+   { "]"     , 'r', 'd' +  1,  S_LEFT ,   1 },    /* array subscripting                */
+   { "."     , 'r', 'd' +  1,  S_LEFT ,   2 },    /* element selection by reference    */
+   { "->"    , 'r', 'd' +  1,  S_LEFT ,   2 },    /* element selection thru pointer    */
    /*---(unary/prefix)-----------*/
-   { 'd' +  2,  "++"    , S_RIGHT,   1 },    /* prefix increment                  */
-   { 'd' +  2,  "--"    , S_RIGHT,   1 },    /* prefix decrement                  */
-   { 'd' +  2,  "+:"    , S_RIGHT,   1 },    /* unary plus                        */
-   { 'd' +  2,  "-:"    , S_RIGHT,   1 },    /* unary minus                       */
-   { 'd' +  2,  "!"     , S_RIGHT,   1 },    /* logical NOT                       */
-   { 'd' +  2,  "~"     , S_RIGHT,   1 },    /* bitwise NOT                       */
-   { 'd' +  2,  "*:"    , S_RIGHT,   1 },    /* indirection/dereference           */
-   { 'd' +  2,  "&:"    , S_RIGHT,   1 },    /* address-of                        */
+   { "++"    , 'r', 'd' +  2,  S_RIGHT,   1 },    /* prefix increment                  */
+   { "--"    , 'r', 'd' +  2,  S_RIGHT,   1 },    /* prefix decrement                  */
+   { "+:"    , 'I', 'd' +  2,  S_RIGHT,   1 },    /* unary plus                        */
+   { "-:"    , 'I', 'd' +  2,  S_RIGHT,   1 },    /* unary minus                       */
+   { "!"     , 'r', 'd' +  2,  S_RIGHT,   1 },    /* logical NOT                       */
+   { "~"     , 'r', 'd' +  2,  S_RIGHT,   1 },    /* bitwise NOT                       */
+   { "*:"    , 'I', 'd' +  2,  S_RIGHT,   1 },    /* indirection/dereference           */
+   { "&:"    , 'I', 'd' +  2,  S_RIGHT,   1 },    /* address-of                        */
    /*---(multiplicative)---------*/
-   { 'd' +  3,  "*"     , S_LEFT ,   2 },    /* multiplication                    */
-   { 'd' +  3,  "/"     , S_LEFT ,   2 },    /* division                          */
-   { 'd' +  3,  "%"     , S_LEFT ,   2 },    /* modulus                           */
+   { "*"     , 'r', 'd' +  3,  S_LEFT ,   2 },    /* multiplication                    */
+   { "/"     , 'r', 'd' +  3,  S_LEFT ,   2 },    /* division                          */
+   { "%"     , 'r', 'd' +  3,  S_LEFT ,   2 },    /* modulus                           */
    /*---(additive)---------------*/
-   { 'd' +  4,  "+"     , S_LEFT ,   2 },    /* addition                          */
-   { 'd' +  4,  "-"     , S_LEFT ,   2 },    /* substraction                      */
-   { 'd' +  4,  "#"     , S_LEFT ,   2 },    /* string concatination              */
-   { 'd' +  4,  "##"    , S_LEFT ,   2 },    /* string concatination              */
+   { "+"     , 'r', 'd' +  4,  S_LEFT ,   2 },    /* addition                          */
+   { "-"     , 'r', 'd' +  4,  S_LEFT ,   2 },    /* substraction                      */
+   { "#"     , 'r', 'd' +  4,  S_LEFT ,   2 },    /* string concatination              */
+   { "##"    , 'r', 'd' +  4,  S_LEFT ,   2 },    /* string concatination              */
    /*---(shift)------------------*/
-   { 'd' +  5,  "<<"    , S_LEFT ,   2 },    /* bitwise shift left                */
-   { 'd' +  5,  ">>"    , S_LEFT ,   2 },    /* bitwise shift right               */
+   { "<<"    , 'r', 'd' +  5,  S_LEFT ,   2 },    /* bitwise shift left                */
+   { ">>"    , 'r', 'd' +  5,  S_LEFT ,   2 },    /* bitwise shift right               */
    /*---(relational)-------------*/
-   { 'd' +  6,  "<"     , S_LEFT ,   2 },    /* relational lesser                 */
-   { 'd' +  6,  "<="    , S_LEFT ,   2 },    /* relational less or equal          */
-   { 'd' +  6,  ">"     , S_LEFT ,   2 },    /* relational greater                */
-   { 'd' +  6,  ">="    , S_LEFT ,   2 },    /* relational more or equal          */
-   { 'd' +  6,  "#<"    , S_LEFT ,   2 },    /* relational string lesser          */
-   { 'd' +  6,  "#>"    , S_LEFT ,   2 },    /* relational string greater         */
+   { "<"     , 'r', 'd' +  6,  S_LEFT ,   2 },    /* relational lesser                 */
+   { "<="    , 'r', 'd' +  6,  S_LEFT ,   2 },    /* relational less or equal          */
+   { ">"     , 'r', 'd' +  6,  S_LEFT ,   2 },    /* relational greater                */
+   { ">="    , 'r', 'd' +  6,  S_LEFT ,   2 },    /* relational more or equal          */
+   { "#<"    , 'r', 'd' +  6,  S_LEFT ,   2 },    /* relational string lesser          */
+   { "#>"    , 'r', 'd' +  6,  S_LEFT ,   2 },    /* relational string greater         */
    /*---(equality)---------------*/
-   { 'd' +  7,  "=="    , S_LEFT ,   2 },    /* relational equality               */
-   { 'd' +  7,  "!="    , S_LEFT ,   2 },    /* relational inequality             */
-   { 'd' +  7,  "#="    , S_LEFT ,   2 },    /* relational string equality        */
-   { 'd' +  7,  "#!"    , S_LEFT ,   2 },    /* relational string inequality      */
+   { "=="    , 'r', 'd' +  7,  S_LEFT ,   2 },    /* relational equality               */
+   { "!="    , 'r', 'd' +  7,  S_LEFT ,   2 },    /* relational inequality             */
+   { "#="    , 'r', 'd' +  7,  S_LEFT ,   2 },    /* relational string equality        */
+   { "#!"    , 'r', 'd' +  7,  S_LEFT ,   2 },    /* relational string inequality      */
    /*---(bitwise)----------------*/
-   { 'd' +  8,  "&"     , S_LEFT ,   2 },    /* bitwise AND                       */
-   { 'd' +  9,  "^"     , S_LEFT ,   2 },    /* bitwise XOR                       */
-   { 'd' + 10,  "|"     , S_LEFT ,   2 },    /* bitwise OR                        */
+   { "&"     , 'r', 'd' +  8,  S_LEFT ,   2 },    /* bitwise AND                       */
+   { "^"     , 'r', 'd' +  9,  S_LEFT ,   2 },    /* bitwise XOR                       */
+   { "|"     , 'r', 'd' + 10,  S_LEFT ,   2 },    /* bitwise OR                        */
    /*---(logical)----------------*/
-   { 'd' + 11,  "&&"    , S_LEFT ,   2 },    /* logical AND                       */
-   { 'd' + 12,  "||"    , S_LEFT ,   2 },    /* logical OR                        */
+   { "&&"    , 'r', 'd' + 11,  S_LEFT ,   2 },    /* logical AND                       */
+   { "||"    , 'r', 'd' + 12,  S_LEFT ,   2 },    /* logical OR                        */
    /*---(conditional)------------*/
-   { 'd' + 13,  "?"     , S_RIGHT,   2 },    /* trinary conditional               */
-   { 'd' + 13,  ":"     , S_RIGHT,   2 },    /* trinary conditional               */
+   { "?"     , 'r', 'd' + 13,  S_RIGHT,   2 },    /* trinary conditional               */
+   { ":"     , 'r', 'd' + 13,  S_RIGHT,   2 },    /* trinary conditional               */
    /*---(assignment)-------------*/
-   { 'd' + 14,  "="     , S_RIGHT,   2 },    /* direct assignment                 */
-   { 'd' + 14,  "+="    , S_RIGHT,   2 },
-   { 'd' + 14,  "-="    , S_RIGHT,   2 },
-   { 'd' + 14,  "*="    , S_RIGHT,   2 },
-   { 'd' + 14,  "/="    , S_RIGHT,   2 },
-   { 'd' + 14,  "%="    , S_RIGHT,   2 },
-   { 'd' + 14,  "<<="   , S_RIGHT,   2 },
-   { 'd' + 14,  ">>="   , S_RIGHT,   2 },
-   { 'd' + 14,  "&="    , S_RIGHT,   2 },
-   { 'd' + 14,  "^="    , S_RIGHT,   2 },
-   { 'd' + 14,  "|="    , S_RIGHT,   2 },
+   { "="     , 'r', 'd' + 14,  S_RIGHT,   2 },    /* direct assignment                 */
+   { "+="    , 'r', 'd' + 14,  S_RIGHT,   2 },
+   { "-="    , 'r', 'd' + 14,  S_RIGHT,   2 },
+   { "*="    , 'r', 'd' + 14,  S_RIGHT,   2 },
+   { "/="    , 'r', 'd' + 14,  S_RIGHT,   2 },
+   { "%="    , 'r', 'd' + 14,  S_RIGHT,   2 },
+   { "<<="   , 'r', 'd' + 14,  S_RIGHT,   2 },
+   { ">>="   , 'r', 'd' + 14,  S_RIGHT,   2 },
+   { "&="    , 'r', 'd' + 14,  S_RIGHT,   2 },
+   { "^="    , 'r', 'd' + 14,  S_RIGHT,   2 },
+   { "|="    , 'r', 'd' + 14,  S_RIGHT,   2 },
    /*---(comma)------------------*/
-   { 'd' + 15,  ","     , S_LEFT ,   2 },    /* comma                             */
+   { ","     , 'r', 'd' + 15,  S_LEFT ,   2 },    /* comma                             */
    /*---(parenthesis)------------*/
-   { 'd' + 16,  "("     , S_LEFT ,   1 },
-   { 'd' + 16,  ")"     , S_LEFT ,   1 },
+   { "("     , 'r', 'd' + 16,  S_LEFT ,   1 },
+   { ")"     , 'r', 'd' + 16,  S_LEFT ,   1 },
    /*---(semicolon)--------------*/
-   { 'd' + 17,  ";"     , S_LEFT ,   1 },
-   /*---(braces)-----------------*/
-   { 'd' + 18,  "{"     , S_LEFT ,   1 },
-   { 'd' + 18,  "}"     , S_LEFT ,   1 },
+   { ";"     , 'r', 'd' + 17,  S_LEFT ,   1 },
+   /*-------------(braces)-------*/
+   { "{"     , 'r', 'd' + 18,  S_LEFT ,   1 },
+   { "}"     , 'r', 'd' + 18,  S_LEFT ,   1 },
    /*---(end)--------------------*/
-   { '-'     ,  "end"   , '-',   0 },
+   { ""      , '-', '-'     ,  '-'    ,   0 },
 };
 
 
@@ -214,38 +216,38 @@ tKEYWORDS  s_keywords [MAX_KEYWORDS] = {
    /*---(beg)--------------------*/
    { "beg-of-keywords"        , '-' },
    /*---(preprocessor)-----------*/
-   { "include"                , '-' },
-   { "define"                 , '-' },
-   { "unfef"                  , '-' },
-   { "ifdef"                  , '-' },
-   { "ifndef"                 , '-' },
-   { "elif"                   , '-' },
-   { "endif"                  , '-' },
-   { "line"                   , '-' },
-   { "error"                  , '-' },
-   { "pragma"                 , '-' },
+   { "include"                , 'p' },
+   { "define"                 , 'p' },
+   { "unfef"                  , 'p' },
+   { "ifdef"                  , 'p' },
+   { "ifndef"                 , 'p' },
+   { "elif"                   , 'p' },
+   { "endif"                  , 'p' },
+   { "line"                   , 'p' },
+   { "error"                  , 'p' },
+   { "pragma"                 , 'p' },
    /*---(storage)----------------*/
-   { "struct"                 , '-' },
-   { "union"                  , '-' },
-   { "typedef"                , '-' },
-   { "enum"                   , '-' },
-   { "sizeof"                 , '-' },
+   { "struct"                 , 's' },
+   { "union"                  , 's' },
+   { "typedef"                , 's' },
+   { "enum"                   , 's' },
+   { "sizeof"                 , 's' },
    /*---(control)----------------*/
-   { "break"                  , '-' },
-   { "case"                   , '-' },
-   { "continue"               , '-' },
-   { "default"                , '-' },
-   { "do"                     , '-' },
-   { "else"                   , '-' },
-   { "for"                    , '-' },
-   { "goto"                   , '-' },
-   { "if"                     , '-' },
-   { "return"                 , '-' },
-   { "switch"                 , '-' },
-   { "while"                  , '-' },
+   { "break"                  , 'c' },
+   { "case"                   , 'c' },
+   { "continue"               , 'c' },
+   { "default"                , 'c' },
+   { "do"                     , 'c' },
+   { "else"                   , 'c' },
+   { "for"                    , 'c' },
+   { "goto"                   , 'c' },
+   { "if"                     , 'c' },
+   { "return"                 , 'c' },
+   { "switch"                 , 'c' },
+   { "while"                  , 'c' },
    /*---(reserving)--------------*/
-   { "asm"                    , '-' },
-   { "typeof"                 , '-' },
+   { "asm"                    , 'r' },
+   { "typeof"                 , 'r' },
    /*---(end)--------------------*/
    { ""                       , '-' },
 };
@@ -308,8 +310,8 @@ yRPN__precedence   (void)
 {
    int       i         = 0;
    for (i = 0; i < MAX_OPER; ++i) {
-      if  (strcmp (s_opers[i].token, "end"     ) == 0)  break;
-      if  (strcmp (s_opers[i].token, rpn.t_name) != 0)  continue;
+      if  (strcmp (s_opers[i].name, "end"     ) == 0)  break;
+      if  (strcmp (s_opers[i].name, rpn.t_name) != 0)  continue;
       rpn.t_prec  = s_opers[i].prec;
       rpn.t_dir   = s_opers[i].dir;
       rpn.t_arity = s_opers[i].arity;
@@ -325,8 +327,8 @@ yRPN_arity         (char *a_op)
 {
    int       i         = 0;
    for (i = 0; i < MAX_OPER; ++i) {
-      if  (strcmp (s_opers[i].token, "end"     ) == 0)  break;
-      if  (strcmp (s_opers[i].token, a_op      ) != 0)  continue;
+      if  (strcmp (s_opers[i].name, "end"     ) == 0)  break;
+      if  (strcmp (s_opers[i].name, a_op      ) != 0)  continue;
       return  s_opers[i].arity;
    }
    /*---(complete)----------------*/
@@ -504,13 +506,41 @@ yRPN__token_add      (int *a_pos)
    --rce;  switch (rpn.t_type) {
    case S_TTYPE_KEYW   : case S_TTYPE_TYPE   :
       DEBUG_YRPN_M  yLOG_snote   ("v_lower");
-      if (strchr (v_lower, x_ch) == 0)                          x_bad = 'y';
+      if (strchr (v_lower , x_ch) == 0)                         x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_CONST  :
       DEBUG_YRPN_M  yLOG_snote   ("v_upnum");
       if (rpn.t_len == 0 && (x_ch < 'A' || x_ch > 'Z'))         x_bad = 'y';
-      if (strchr (v_upnum, x_ch) == 0)                          x_bad = 'y';
+      if (strchr (v_upnum , x_ch) == 0)                         x_bad = 'y';
+      break;
+      /*---(done)------------------------*/
+   case S_TTYPE_INT    :
+      DEBUG_YRPN_M  yLOG_snote   ("v_number");
+      if (strchr (v_number, x_ch) == 0)                         x_bad = 'y';
+      break;
+      /*---(done)------------------------*/
+   case S_TTYPE_FLOAT  :
+      DEBUG_YRPN_M  yLOG_snote   ("v_float");
+      if (strchr (v_float , x_ch) == 0)                         x_bad = 'y';
+      break;
+      /*---(done)------------------------*/
+   case S_TTYPE_BIN    :
+      DEBUG_YRPN_M  yLOG_snote   ("v_binary");
+      if (rpn.t_len != 1 && strchr (v_binary, x_ch) == 0)       x_bad = 'y';
+      if (rpn.t_len == 1 && (x_ch != 'b' && x_ch != 'B'))       x_bad = 'y';
+      break;
+      /*---(done)------------------------*/
+   case S_TTYPE_OCT    :
+      DEBUG_YRPN_M  yLOG_snote   ("v_octal");
+      if (rpn.t_len != 1 && strchr (v_octal + 1, x_ch) == 0)    x_bad = 'y';
+      if (rpn.t_len == 1 && strchr (v_octal    , x_ch) == 0)    x_bad = 'y';
+      break;
+      /*---(done)------------------------*/
+   case S_TTYPE_HEX    :
+      DEBUG_YRPN_M  yLOG_snote   ("v_hex");
+      if (rpn.t_len != 1 && strchr (v_hex   , x_ch) == 0)       x_bad = 'y';
+      if (rpn.t_len == 1 && (x_ch != 'x' && x_ch != 'X'))       x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_VARS   : case S_TTYPE_FUNC   :
@@ -546,6 +576,12 @@ yRPN__token_add      (int *a_pos)
       if (x_esc == 'y' && rpn.t_len == 3 && x_ch == '\'')       x_bad = '#';
       if (rpn.t_len >= 3)                                       x_bad = 'y';
       break;
+      /*---(done)------------------------*/
+   case S_TTYPE_OPER   :
+      if (rpn.t_len >= 2)                                       x_bad = 'y';
+      if (strchr (v_operator , x_ch) == 0)                      x_bad = 'y';
+      break;
+      /*---(done)------------------------*/
    default             :
       DEBUG_YRPN_M  yLOG_snote   ("illegal type");
       DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
@@ -577,20 +613,84 @@ yRPN__token_add      (int *a_pos)
 }
 
 char         /*--> check what comes next -----------------[--------[--------]-*/
-yRPN__token_next     (int a_pos)
+yRPN__token_paren    (int a_pos)
 {
    /*---(locals)-----------+-----------+-*/
-   char        rce         =  -10;     /* return code for errors              */
    char        x_ch        =    0;     /* current character                   */
    int         x_pos       =    0;     /* updated position in input           */
+   char        x_type      =  S_TTYPE_VARS;
    /*---(skip whitespace)----------------*/
    x_pos = a_pos;
-   while (x_pos <= rpn.nworking && rpn.working [x_pos] == ' ')  ++x_pos;
+   while (x_pos <  rpn.nworking) {
+      x_ch = rpn.working [x_pos];
+      if (x_ch != ' ')  break;
+      ++x_pos;
+   }
    /*---(classify)-----------------------*/
-   if (rpn.working [x_pos] == '(')  return  S_TTYPE_FUNC;
-   else                             return  S_TTYPE_VARS;
+   if (x_ch == '(')  x_type = S_TTYPE_FUNC;
+   else              x_type = S_TTYPE_VARS;
    /*---(complete)-----------------------*/
-   return 0;
+   return x_type;
+}
+
+char         /*--> check what comes next -----------------[--------[--------]-*/
+yRPN__token_nums     (int a_pos)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        x_ch        =    0;     /* current character                   */
+   int         x_pos       =    0;     /* updated position in input           */
+   char        x_type      =  S_TTYPE_INT;
+   /*---(header)------------------------*/
+   DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_sint    (a_pos);
+   /*---(check for non-number)-----------*/
+   x_pos = a_pos;
+   while (x_pos <  rpn.nworking) {
+      x_ch = rpn.working [x_pos];
+      DEBUG_YRPN_M  yLOG_schar   (x_ch);
+      if (strchr (v_number, x_ch) == 0) break;
+      ++x_pos;
+   }
+   DEBUG_YRPN_M  yLOG_sint    (x_pos);
+   /*---(classify)-----------------------*/
+   if (rpn.working [a_pos] == '0' && x_pos == a_pos + 1) {
+      DEBUG_YRPN_M  yLOG_snote   ("special");
+      switch (x_ch) {
+      case 'x' : case 'X' :
+         DEBUG_YRPN_M  yLOG_snote   ("hex");
+         x_type = S_TTYPE_HEX;
+         break;
+      case 'b' : case 'B' :
+         DEBUG_YRPN_M  yLOG_snote   ("bin");
+         x_type = S_TTYPE_BIN;
+         break;
+      case 'o' :
+         DEBUG_YRPN_M  yLOG_snote   ("oct");
+         x_type = S_TTYPE_OCT;
+         break;
+      case '.' :
+         DEBUG_YRPN_M  yLOG_snote   ("float");
+         x_type = S_TTYPE_FLOAT;
+         break;
+      default  :
+         DEBUG_YRPN_M  yLOG_snote   ("int1");
+         x_type = S_TTYPE_INT;
+         break;
+      }
+   } else if (rpn.working [a_pos] == '0' && x_pos > a_pos + 1) {
+      DEBUG_YRPN_M  yLOG_snote   ("oct2");
+      x_type = S_TTYPE_OCT;
+   } else if (x_ch == '.') {
+      DEBUG_YRPN_M  yLOG_snote   ("float2");
+      x_type = S_TTYPE_FLOAT;
+   } else {
+      DEBUG_YRPN_M  yLOG_snote   ("int2");
+      x_type = S_TTYPE_INT;
+   }
+   DEBUG_YRPN_M  yLOG_schar   (x_type);
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
+   return x_type;
 }
 
 char         /*--> save token to output ------------------[--------[--------]-*/
@@ -673,7 +773,7 @@ yRPN__keywords       (int  a_pos)
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put keyword directly to output");
    yRPN__token_save    (a_pos);
-   rpn.lops = 'y';
+   rpn.right_only = S_RIGHT_ONLY;
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
@@ -730,7 +830,7 @@ yRPN__types          (int  a_pos)
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put c type directly to output");
    yRPN__token_save    (a_pos);
-   rpn.lops = 'y';
+   rpn.right_only = S_RIGHT_ONLY;
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
@@ -794,7 +894,7 @@ yRPN__strings        (int  a_pos)
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put string literal directly to output");
    yRPN__token_save    (a_pos);
-   rpn.lops = 'n';
+   rpn.right_only = S_LEFT_ONLY;
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
@@ -857,7 +957,83 @@ yRPN__chars          (int  a_pos)
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put char literal directly to output");
    yRPN__token_save    (a_pos);
-   rpn.lops = 'n';
+   rpn.right_only = S_LEFT_ONLY;
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
+   return x_pos;
+}
+
+int          /*--> check for normal type numbers ---------[--------[--------]-*/
+yRPN__numbers        (int  a_pos)
+{  /*---(design notes)--------------------------------------------------------*/
+   /*  begin and end with single quotes, only one character inside.           */
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   int         rc          =    0;
+   int         x_pos       =    0;     /* updated position in input           */
+   int         x_last      =    0;
+   char        x_bad       =  '-';
+   /*---(header)------------------------*/
+   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
+   /*---(defenses)-----------------------*/
+   yRPN__token_error ();
+   DEBUG_YRPN    yLOG_value   ("a_pos"     , a_pos);
+   --rce;  if (a_pos <  0) {
+      DEBUG_YRPN    yLOG_note    ("start can not be negative");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   --rce;  if (strchr (v_number, rpn.working [a_pos]) == 0) {
+      DEBUG_YRPN    yLOG_note    ("must start with a number");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(accumulate characters)------------*/
+   DEBUG_YRPN    yLOG_note    ("accumulate characters");
+   x_pos        = a_pos;  /* starting point */
+   rpn.t_type   = yRPN__token_nums (x_pos);
+   DEBUG_YRPN    yLOG_char    ("rpn.t_type", rpn.t_type);
+   while (yRPN__token_add (&x_pos) == 0);
+   DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
+   /*---(check if long enough)-------------*/
+   DEBUG_YRPN    yLOG_value   ("rpn.t_len" , rpn.t_len);
+   switch (rpn.t_type) {
+   case S_TTYPE_INT  :
+      if (rpn.t_len < 1)  x_bad = 'y';
+      break;
+   case S_TTYPE_OCT  :
+      if (rpn.t_len < 2)  x_bad = 'y';
+      break;
+   default           :
+      if (rpn.t_len < 3)  x_bad = 'y';
+      break;
+   }
+   --rce;  if (x_bad == 'y') {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("number too short");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(check float decimals)-------------*/
+   --rce;  if (rpn.t_type == S_TTYPE_FLOAT) {
+      rc = strldcnt (rpn.t_name, '.', S_LEN_TOKEN);
+      --rce;  if (rc != 1) {
+         yRPN__token_error ();
+         DEBUG_YRPN    yLOG_note    ("too many decimals");
+         DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+         return rce;
+      }
+      --rce;  if (rpn.t_name [rpn.t_len - 1] == '.') {
+         yRPN__token_error ();
+         DEBUG_YRPN    yLOG_note    ("can not end with decimal");
+         DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+         return rce;
+      }
+   }
+   /*---(save)-----------------------------*/
+   DEBUG_YRPN    yLOG_note    ("put har literal directly to output");
+   yRPN__token_save    (a_pos);
+   rpn.right_only = S_LEFT_ONLY;
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
@@ -916,7 +1092,7 @@ yRPN__constants      (int  a_pos)
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put constant directly to output");
    yRPN__token_save    (a_pos);
-   rpn.lops = 'n';
+   rpn.right_only = S_LEFT_ONLY;
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
@@ -956,7 +1132,7 @@ yRPN__funcvar      (int   a_pos)
       return rce;
    }
    /*---(check func vs vars)---------------*/
-   rpn.t_type   = yRPN__token_next (x_pos);
+   rpn.t_type   = yRPN__token_paren (x_pos);
    /*---(save)-----------------------------*/
    if (rpn.t_type == S_TTYPE_FUNC) {
       DEBUG_YRPN    yLOG_note    ("put function on stack");
@@ -966,7 +1142,7 @@ yRPN__funcvar      (int   a_pos)
       DEBUG_YRPN    yLOG_note    ("put variable directly to output");
       yRPN__token_save    (a_pos);
    }
-   rpn.lops = 'n';
+   rpn.right_only = S_LEFT_ONLY;
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
@@ -987,206 +1163,103 @@ yRPN__text         (int  a_pos)
    return strlen (rpn.working);
 }
 
-int        /* ---- : save off numbers ----------------------------------------*/
-yRPN__numbers      (int  a_pos)
-{
-   /*---(design notes)-------------------*/
-   /*
-    *  numbers can be integer, float, scientific, octal, hex, or binary
-    *
-    */
-   /*---(begin)--------------------------*/
-   DEBUG_OPER  yLOG_enter   (__FUNCTION__);
-   zRPN_DEBUG  printf("   number-----------------\n");
-   /*---(locals)---------------------------*/
-   int       i         = a_pos;
-   int       j         = 0;
-   int       points    = 0;
-   /*---(prepare)------------------------*/
-   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-   rpn.t_type   = S_TTYPE_ERROR;
-   rpn.t_prec   = S_PREC_NONE;
+int          /*--> check for operators -------------------[--------[--------]-*/
+yRPN__operators      (int  a_pos)
+{  /*---(design notes)--------------------------------------------------------*/
+   /* operators are symbols and stored in a table.                            */
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   int         x_pos       =    0;     /* updated position in input           */
+   int         i           =    0;     /* iterator for keywords               */
+   int         x_found     =   -1;     /* index of keyword                    */
+   /*---(header)------------------------*/
+   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(defenses)-----------------------*/
-   if (i              >= rpn.nworking) {
-      DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-      return  zRPN_ERR_INPUT_NOT_AVAIL;
+   yRPN__token_error ();
+   DEBUG_YRPN    yLOG_value   ("a_pos"     , a_pos);
+   --rce;  if (a_pos <  0) {
+      DEBUG_YRPN    yLOG_note    ("start can not be negative");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
    }
-   if (strchr(v_number, rpn.working[i]) == 0) {
-      DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-      return  zRPN_ERR_NOT_START_NUMBER;
+   /*---(accumulate characters)------------*/
+   DEBUG_YRPN    yLOG_note    ("accumulate characters");
+   rpn.t_type   = S_TTYPE_OPER;
+   x_pos        = a_pos;  /* starting point */
+   while (yRPN__token_add (&x_pos) == 0);
+   DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
+   /*---(try to match operators)-----------*/
+   DEBUG_YRPN    yLOG_note    ("search operators");
+   for (i = 0; i < MAX_OPER; ++i) {
+      if  (s_opers [i].name [0] == '\0')                   break;
+      if  (s_opers [i].real     != 'r' )                   continue;
+      if  (s_opers [i].name [0] != rpn.t_name [0])         continue;
+      if  (strcmp (s_opers [i].name, rpn.t_name ) != 0)    continue;
+      x_found = i;
+      DEBUG_YRPN    yLOG_value   ("x_found"   , x_found);
+      break;
    }
-   if (rpn.working[i] == '.')   {
-      DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-      return  zRPN_ERR_NOT_START_NUMBER;
-   }
-   /*---(main loop)------------------------*/
-   rpn.t_type   = 'I';
-   rpn.t_len  = 0;
-   while (i < rpn.nworking) {
-      /*---(test for right characters)-----*/
-      if (rpn.working[i] == '.') {
-         ++points;
-         if (points > 1) {
-            strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-            rpn.t_type   = 'e';
-            DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-            return  zRPN_ERR_MULTIPLE_DECIMALS;
-         } else if (rpn.t_type == 'I') {
-            rpn.t_type = 'F';
-         } else {
-            strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-            rpn.t_type   = 'e';
-            DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-            return  zRPN_ERR_DECIMALS_NOT_ALLOWED;
-         }
-      } else if (j == 1 && rpn.working[i] == 'x' && rpn.t_type == 'I') {
-         zRPN_DEBUG  printf ("      switching to hex constant mode\n");
-         rpn.t_type = 'X';
-      } else if (j == 1 && rpn.working[i] == 'b' && rpn.t_type == 'I') {
-         zRPN_DEBUG  printf ("      switching to binary constant mode\n");
-         rpn.t_type = 'B';
-      } else {
-         if      (rpn.t_type == S_TTYPE_INT   && strchr(v_number  , rpn.working[i]) == 0)  break;
-         else if (rpn.t_type == S_TTYPE_FLOAT && strchr(v_number  , rpn.working[i]) == 0)  break;
-         else if (rpn.t_type == S_TTYPE_HEX   && strchr(v_hex     , rpn.working[i]) == 0)  break;
-         else if (rpn.t_type == S_TTYPE_BIN   && strchr(v_binary  , rpn.working[i]) == 0)  break;
-         else if (rpn.t_type == S_TTYPE_OCT   && strchr(v_octal   , rpn.working[i]) == 0)  break;
-      }
-      /*---(normal number)-----------------*/
-      rpn.t_name[j]     = rpn.working[i];
-      rpn.t_name[j + 1] = '\0';
-      ++rpn.t_len ;
-      /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
-      /*---(prepare for next char)-------*/
-      ++i;
-      ++j;
-   }
-   /*---(check for octal)------------------*/
-   if (rpn.t_type == S_TTYPE_INT && rpn.t_len  > 1 && rpn.t_name [0] == '0') {
-      zRPN_DEBUG  printf ("      recast as an octal onstant\n");
-      rpn.t_type = S_TTYPE_OCT;
-   }
-   /*---(check for no payload)-------------*/
-   if ((strchr (S_TTYPE_BINHEX, rpn.t_type) != 0) && rpn.t_len  < 3) {
-      zRPN_DEBUG  printf ("      special format (0x or 0b) has no payload)\n");
-      strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-      rpn.t_type   = S_TTYPE_ERROR;
-   }
-   /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
-   yRPN__token ();
-   yRPN__save  ();
-   yRPN__normal (a_pos);
-   rpn.lops = 'n';
-   /*---(complete)-------------------------*/
-   DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-   return i;
-}
-
-int        /* ---- : process operators ---------------------------------------*/
-yRPN__operators    (int  a_pos)
-{
-   /*---(design notes)-------------------*/
-   /*
-    *  operators can have a wild number of forms and precedences
-    *
-    */
-   /*---(begin)--------------------------*/
-   DEBUG_OPER  yLOG_enter   (__FUNCTION__);
-   DEBUG_OPER  yLOG_value   ("a_pos"     , a_pos);
-   zRPN_DEBUG  printf("   operator---------------\n");
-   /*---(locals)---------------------------*/
-   int       i         = a_pos;
-   int       j         = 0;
-   int       rc        = 0;
-   /*---(prepare)------------------------*/
-   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
-   rpn.t_type = S_TTYPE_OPER;
-   rpn.t_prec = S_PREC_NONE;
-   /*---(defenses)-----------------------*/
-   DEBUG_OPER  yLOG_value   ("nworking"  , rpn.nworking);
-   if (i              >= rpn.nworking) {
-      DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-      return  zRPN_ERR_INPUT_NOT_AVAIL;
-   }
-   DEBUG_OPER  yLOG_char    ("first"     , rpn.working[i]);
-   if (strchr(v_operator, rpn.working[i]) == 0) {
-      DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-      return  zRPN_ERR_NOT_START_OPERATOR;
-   }
-   /*---(main loop)------------------------*/
-   rpn.t_len  = 0;
-   while (i < rpn.nworking && j < 2) {
-      DEBUG_OPER  yLOG_complex ("current"   , "i=%3d, j=%3d, ch=%c", i, j, rpn.working[i]);
-      /*---(test for right chars)-------------*/
-      if (strchr(v_operator, rpn.working[i]) == 0)  break;
-      if (zRPN_lang != S_LANG_GYGES && rpn.count == 0 && rpn.working[i] == '#')   rpn.pproc = S_PPROC_YES;
-      /*---(add to token)------------------*/
-      rpn.t_name[j]     = rpn.working[i];
-      rpn.t_name[j + 1] = '\0';
-      ++rpn.t_len ;
-      DEBUG_OPER  yLOG_complex ("token"     , "len=%3d, str=%s", rpn.t_len , rpn.t_name);
-      /*---(check for too long)---------------*/
-      yRPN__precedence ();
-      if (j > 0 && rpn.t_prec == S_PREC_FAIL) {
-         rpn.t_name[j]     = '\0';
-         --rpn.t_len ;
-         --j;
-         --i;
+   if (x_found < 0 && rpn.t_len == 2) {
+      rpn.t_name [1] = '\0';
+      rpn.t_len      = 1;
+      --x_pos;
+      for (i = 0; i < MAX_OPER; ++i) {
+         if  (s_opers [i].name [0] == '\0')                   break;
+         if  (s_opers [i].real     != 'r' )                   continue;
+         if  (s_opers [i].name [0] != rpn.t_name [0])         continue;
+         if  (strcmp (s_opers [i].name, rpn.t_name ) != 0)    continue;
+         x_found = i;
+         DEBUG_YRPN    yLOG_value   ("x_found"   , x_found);
          break;
       }
-      /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
-      /*---(prepare for next char)-------*/
-      ++i;
-      ++j;
    }
-   /*---(check size)-----------------------*/
-   if (rpn.t_len  <= 0) {
-      DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-      return  zRPN_ERR_ZERO_LEN_TOKEN;
-   }
-   if (rpn.t_len  >  3) {
-      DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-      return  zRPN_ERR_OPERATOR_TOO_LONG;
+   /*---(handle misses)--------------------*/
+   --rce;  if (x_found < 0) {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("operator not found");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
    }
    /*---(check for unary)------------------*/
-   if (rpn.lops == 'y') {
-      if        (strcmp (rpn.t_name, "+") == 0)  { strcpy (rpn.t_name, "+:"); rpn.t_len  = 2;
-      } else if (strcmp (rpn.t_name, "-") == 0)  { strcpy (rpn.t_name, "-:"); rpn.t_len  = 2;
-      } else if (strcmp (rpn.t_name, "*") == 0)  { strcpy (rpn.t_name, "*:"); rpn.t_len  = 2;
-      } else if (strcmp (rpn.t_name, "&") == 0)  { strcpy (rpn.t_name, "&:"); rpn.t_len  = 2;
+   if (rpn.right_only == S_RIGHT_ONLY) {
+      DEBUG_YRPN    yLOG_note    ("check for left operators in right only mode");
+      if        (strcmp (rpn.t_name, "+" ) == 0)  { strcpy (rpn.t_name, "+:"); rpn.t_len  = 2;
+      } else if (strcmp (rpn.t_name, "-" ) == 0)  { strcpy (rpn.t_name, "-:"); rpn.t_len  = 2;
+      } else if (strcmp (rpn.t_name, "*" ) == 0)  { strcpy (rpn.t_name, "*:"); rpn.t_len  = 2;
+      } else if (strcmp (rpn.t_name, "&" ) == 0)  { strcpy (rpn.t_name, "&:"); rpn.t_len  = 2;
+      }
+   } else {
+      DEBUG_YRPN    yLOG_note    ("check for right operators in left only mode");
+      if        (strcmp (rpn.t_name, "++") == 0)  { strcpy (rpn.t_name, "<+"); rpn.t_len  = 2;
+      } else if (strcmp (rpn.t_name, "--") == 0)  { strcpy (rpn.t_name, "<-"); rpn.t_len  = 2;
       }
    }
-   /*---(end)------------------------------*/
-   DEBUG_OPER  yLOG_complex ("final"     , "str=%-3.3s, en=%3d, dir=%c, arity=%d, prec=%c", rpn.t_name, rpn.t_len , rpn.t_dir, rpn.t_arity, rpn.t_prec);
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
-   yRPN__token ();
    /*---(handle it)------------------------*/
    yRPN__precedence ();
-   yRPN__peek ();
-   DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.t_prec, rpn.p_prec);
-   zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.t_prec, rpn.p_prec);
-   if ( (rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||
-         (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {
-      while ((rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||
-            (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {
-         /*> if (rpn__last != 'z') RPN__pops();                                       <*/
-         if (rpn.p_prec == 'z') break;
-         yRPN__pops();
-         yRPN__peek();
-      }
-      yRPN__push();
-      yRPN__normal (a_pos);
-   } else {
-      yRPN__push();
-      yRPN__normal (a_pos);
-   }
+   /*> yRPN__peek ();                                                                                <* 
+    *> DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.t_prec, rpn.p_prec);         <* 
+    *> zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.t_prec, rpn.p_prec);   <* 
+    *> if ( (rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||                                     <* 
+    *>       (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                                   <* 
+    *>    while ((rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||                                <* 
+    *>          (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                                <* 
+    *>       /+> if (rpn__last != 'z') RPN__pops();                                       <+/        <* 
+    *>       if (rpn.p_prec == 'z') break;                                                           <* 
+    *>       yRPN__pops();                                                                           <* 
+    *>       yRPN__peek();                                                                           <* 
+    *>    }                                                                                          <* 
+    *>    yRPN__push();                                                                              <* 
+    *>    yRPN__normal (a_pos);                                                                      <* 
+    *> } else {                                                                                      <* 
+    *>    yRPN__push();                                                                              <* 
+    *>    yRPN__normal (a_pos);                                                                      <* 
+    *> }                                                                                             <*/
+   /*---(save)-----------------------------*/
+   DEBUG_YRPN    yLOG_note    ("put constant directly to output");
+   rpn.right_only = S_RIGHT_ONLY; /* an oper after an oper must be right-only */
    /*---(complete)-------------------------*/
-   rpn.lops = 'y';
-   DEBUG_OPER  yLOG_exit    (__FUNCTION__);
-   return i;
+   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
+   return x_pos;
 }
 
 int        /* ---- : process grouping ----------------------------------------*/
@@ -1240,7 +1313,7 @@ yRPN__grouping     (int  a_pos)
       yRPN__token ();
       yRPN__push();
       if (x_fake == 'n')  yRPN__normal (a_pos);
-      rpn.lops = 'y';
+      rpn.right_only = S_RIGHT_ONLY;
    }
    /*---(close bracket)-------------------*/
    if (rpn.t_name[0] == ']') {
@@ -1266,7 +1339,7 @@ yRPN__grouping     (int  a_pos)
       yRPN__toss();
       rc = yRPN__peek();
       if (rpn.t_token[0] == ']')  yRPN__pops();
-      rpn.lops = 'n';
+      rpn.right_only = S_LEFT_ONLY;
    }
    /*---(comma)----------------------------*/
    else if (strncmp(rpn.t_name, ",", 1) == 0) {
@@ -1284,7 +1357,7 @@ yRPN__grouping     (int  a_pos)
          rpn.t_type = S_TTYPE_OPER;
          yRPN__save ();
          yRPN__normal (a_pos);
-         rpn.lops = 'y';
+         rpn.right_only = S_RIGHT_ONLY;
       }
    }
    /*---(complete)-------------------------*/
@@ -1472,7 +1545,7 @@ yRPN__addresses    (int  a_pos)
    yRPN__normal (a_pos);
    /*---(end)------------------------------*/
    zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
-   rpn.lops = 'n';
+   rpn.right_only = S_LEFT_ONLY;
    /*---(complete)-------------------------*/
    zRPN_DEBUG  printf("exiting yRPN_addresses");
    return i;
@@ -1520,7 +1593,7 @@ yRPN__load         (
    rpn.nstack   = 0;
    rpn.depth    = 0;
    rpn.count    = 0;
-   rpn.lops     = 'y';
+   rpn.right_only     = S_RIGHT_ONLY;
    rpn.cdepth   = 0;
    rpn.mdepth   = 0;
    /*---(complete)-----------------------*/

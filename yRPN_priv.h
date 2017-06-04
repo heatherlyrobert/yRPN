@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7j"
-#define   zRPN_VER_TXT       "updated funcvar and constants, including full units ;)"
+#define   zRPN_VER_NUM       "0.7k"
+#define   zRPN_VER_TXT       "updated operators, including full unit testing ;)"
 
 
 
@@ -79,6 +79,9 @@ extern char      zRPN_olddebug;
 /*---(evalulation direction)----------*/
 #define      S_LEFT             'l'
 #define      S_RIGHT            'r'
+/*---(operator type)------------------*/
+#define      S_RIGHT_ONLY       'y'
+#define      S_LEFT_ONLY        '-'
 /*---(preprocessor)-------------------*/
 #define      S_PPROC_NO         '-'
 #define      S_PPROC_YES        'y'
@@ -119,6 +122,7 @@ struct  cRPN {
    char        t_prec;                      /* current token precidence       */
    char        t_dir;                       /* current token dir of eval      */
    char        t_arity;                     /* current token unary, binary,.. */
+   char        right_only;                  /* next operator must be S_RIGHT  */
    /*---(stack)--------------------------*/
    char        stack       [S_MAX_STACK][S_LEN_TOKEN];
    int         nstack;
@@ -127,7 +131,6 @@ struct  cRPN {
    char        p_prec;
    char        cdepth;
    char        mdepth;
-   char        lops;
    char        pproc;                       /* pre-processor modes           */
    /*---(postfix format)-----------------*/
    char        detail      [S_LEN_OUTPUT];
