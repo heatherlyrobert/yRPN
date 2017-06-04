@@ -496,6 +496,8 @@ SCRP          character literal interpretation                             yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\' \'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\' \'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a single character                                                                                                                                                                                          
      exec     load the string                      yRPN__load            "\'p\'"                                                       i_equal     3                                                                      
@@ -510,6 +512,8 @@ SCRP          character literal interpretation                             yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'p\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'p\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a number                                                                                                                                                                                                    
      exec     load the string                      yRPN__load            "\'1\'"                                                       i_equal     3                                                                      
@@ -524,6 +528,8 @@ SCRP          character literal interpretation                             yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'1\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'1\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a escaped tab                                                                                                                                                                                               
      exec     load the string                      yRPN__load            "\'\t\'"                                                      i_equal     3                                                                      
@@ -538,6 +544,8 @@ SCRP          character literal interpretation                             yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'\t\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'\t\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a symbol                                                                                                                                                                                                    
      exec     load the string                      yRPN__load            "\'(\'"                                                       i_equal     3                                                                      
@@ -552,6 +560,8 @@ SCRP          character literal interpretation                             yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'(\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'(\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a double quote                                                                                                                                                                                              
      exec     load the string                      yRPN__load            "\'\"\'"                                                      i_equal     3                                                                      
@@ -566,6 +576,8 @@ SCRP          character literal interpretation                             yRP
      get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'\"\'                                                
      get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'\"\'                                              
      get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    GROUP      v21  attempt basic mistakes                                       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -576,6 +588,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                            
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a string                                                                                                                                                                                                    
      exec     load the string                      yRPN__load            "\"testing\""                                                 i_equal     9                                                                      
@@ -584,6 +604,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                            
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try an empty string                                                                                                                                                                                             
      exec     load the string                      yRPN__load            "\"\""                                                        i_equal     2                                                                      
@@ -592,6 +620,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                            
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a larger number                                                                                                                                                                                             
      exec     load the string                      yRPN__load            "42"                                                          i_equal     2                                                                      
@@ -600,6 +636,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                            
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try a symbol by itself                                                                                                                                                                                          
      exec     load the string                      yRPN__load            "("                                                           i_equal     1                                                                      
@@ -607,6 +651,15 @@ SCRP          character literal interpretation                             yRP
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :(                                                   
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                            
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
+     get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                                   
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    GROUP      v21  try harder mistakes                                          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -617,6 +670,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try if advanced to right start                                                                                                                                                                        
      exec     load the string                      yRPN__load            "vo\'t\'"                                                     i_equal     5                                                            
@@ -625,6 +686,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\'t\'                                     
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\'t\'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'t\'                                                
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'t\'                                              
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try on a blank load                                                                                                                                                                                   
      exec     load the string                      yRPN__load            ""                                                            i_equal     0                                                            
@@ -633,6 +702,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try with the position to advanced                                                                                                                                                                     
      exec     load the string                      yRPN__load            "\'t\'"                                                       i_equal     3                                                            
@@ -641,6 +718,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       try with a negative position                                                                                                                                                                          
      exec     load the string                      yRPN__load            "\'t\'"                                                       i_equal     3                                                            
@@ -649,6 +734,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       do a valid one again                                                                                                                                                                                  
      exec     load the string                      yRPN__load            "\'p\'"                                                       i_equal     3                                                                      
@@ -657,6 +750,14 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\'p\'                                               
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                                   
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                                   
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\'p\'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'p\'                                                
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'p\'                                              
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    GROUP      v21  find in a larger context                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -667,55 +768,126 @@ SCRP          character literal interpretation                             yRP
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the first entry                                                                                                                                                                                 
+     exec     load the string                      yRPN__load            "  int sho\'r\'t_ \'c\"luster\" vOid char\',\',"              i_equal     39                                                           
      exec     check the type                       yRPN__chars           2                                                             i_lesser    0                                                            
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :  int sho\'r\'t_ \'c\"luster\" vOid char\',\',      
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the first char entry                                                                                                                                                                            
+     exec     load the string                      yRPN__load            "  int sho\'r\'t_ \'c\"luster\" vOid char\',\',"              i_equal     39                                                           
      exec     check the type                       yRPN__chars           9                                                             i_equal     12                                                           
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :  int sho\'r\'t_ \'c\"luster\" vOid char\',\',      
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\'r\'                                     
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\'r\'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\'r\'                                                
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\'r\'                                              
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check using the second quote of first entry                                                                                                                                                           
+     exec     load the string                      yRPN__load            "  int sho\'r\'t_ \'c\"luster\" vOid char\',\',"              i_equal     39                                                           
      exec     check the type                       yRPN__chars           11                                                            i_lesser    0                                                            
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :  int sho\'r\'t_ \'c\"luster\" vOid char\',\',      
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the second quoted entry (ends wrong)                                                                                                                                                            
+     exec     load the string                      yRPN__load            "  int sho\'r\'t_ \'c\"luster\" vOid char\',\',"              i_equal     39                                                           
      exec     check the type                       yRPN__chars           15                                                            i_lesser    0                                                            
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :  int sho\'r\'t_ \'c\"luster\" vOid char\',\',      
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the double quoted entry                                                                                                                                                                         
+     exec     load the string                      yRPN__load            "  int sho\'r\'t_ \'c\"luster\" vOid char\',\',"              i_equal     39                                                           
      exec     check the type                       yRPN__chars           17                                                            i_lesser    0                                                            
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :  int sho\'r\'t_ \'c\"luster\" vOid char\',\',      
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check the fourth entry                                                                                                                                                                                
+     exec     load the string                      yRPN__load            "  int sho\'r\'t_ \'c\"luster\" vOid char\',\',"              i_equal     39                                                           
      exec     check the type                       yRPN__chars           35                                                            i_equal     38                                                           
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :  int sho\'r\'t_ \'c\"luster\" vOid char\',\',      
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :\',\'                                     
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : C                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 1                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :\',\'                                             
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 1                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :\',\'                                                
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :C,\',\'                                              
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    COND       check after the fifth entry                                                                                                                                                                           
+     exec     load the string                      yRPN__load            "  int sho\'r\'t_ \'c\"luster\" vOid char\',\',"              i_equal     39                                                           
      exec     check the type                       yRPN__chars           38                                                            i_lesser    0                                                            
      get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :  int sho\'r\'t_ \'c\"luster\" vOid char\',\',      
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :((null))                                  
      get      token precedence assigned            yRPN_accessor         "precedence" ,   0                                            s_equal     precedence       : -                                         
      get      token type assigned                  yRPN_accessor         "type"       ,   0                                            s_equal     current type     : e                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 0                                                   
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                                   
+     get      output -- token count                yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                                   
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :                                                      
+     get      output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :                                                      
+     get      stack  -- depth                      yRPN_accessor         "depth"      ,   0                                            s_equal     stack depth      : 0                                         
+     get      stack  -- details                    yRPN_accessor         "stack_list" ,   0                                            s_equal     stack details    :                                                     
+     get      stack  -- terse                      yRPN_accessor         "stack_terse",   0                                            s_equal     stack terse      :                                                     
 
    GROUP      v21  complete                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 

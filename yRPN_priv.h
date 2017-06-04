@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7o"
-#define   zRPN_VER_TXT       "fixed stack unit test reporting and added terse version"
+#define   zRPN_VER_NUM       "0.7p"
+#define   zRPN_VER_TXT       "added all output and stack review to string and char units"
 
 
 
