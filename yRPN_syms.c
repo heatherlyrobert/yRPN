@@ -793,26 +793,26 @@ yRPN__operators      (int  a_pos)
    /*---(handle it)------------------------*/
    yRPN__precedence ();
    yRPN_stack_infix      ();
-   yRPN_stack_peek       ();
-   DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.t_prec, rpn.p_prec);
-   zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.t_prec, rpn.p_prec);
-   if ( (rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||
-         (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {
-      while ((rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||
-            (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {
-         /*> if (rpn__last != 'z') RPN__pops();                                       <*/
-         if (rpn.p_prec == 'z') break;
-         yRPN_stack_pops ();
-         yRPN_stack_peek();
-      }
-      yRPN_stack_push(a_pos);
-      yRPN_stack_normal (a_pos);
-   } else {
-      yRPN_stack_push(a_pos);
-      yRPN_stack_normal (a_pos);
-   }
+   yRPN_stack_oper       (a_pos);
+   /*> yRPN_stack_peek       ();                                                                     <* 
+    *> DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.t_prec, rpn.p_prec);         <* 
+    *> zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.t_prec, rpn.p_prec);   <* 
+    *> if ( (rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||                                     <* 
+    *>       (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                                   <* 
+    *>    while ((rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||                                <* 
+    *>          (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                                <* 
+    *>       /+> if (rpn__last != 'z') RPN__pops();                                       <+/        <* 
+    *>       if (rpn.p_prec == 'z') break;                                                           <* 
+    *>       yRPN_stack_pops ();                                                                     <* 
+    *>       yRPN_stack_peek();                                                                      <* 
+    *>    }                                                                                          <* 
+    *>    yRPN_stack_push(a_pos);                                                                    <* 
+    *>    yRPN_stack_normal (a_pos);                                                                 <* 
+    *> } else {                                                                                      <* 
+    *>    yRPN_stack_push(a_pos);                                                                    <* 
+    *>    yRPN_stack_normal (a_pos);                                                                 <* 
+    *> }                                                                                             <*/
    /*---(save)-----------------------------*/
-   DEBUG_YRPN    yLOG_note    ("put constant directly to output");
    rpn.left_oper  = S_OPER_LEFT;  /* an oper after an oper must be right-only */
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);

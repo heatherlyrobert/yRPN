@@ -3826,23 +3826,23 @@ SCRP          mathmatical expression interpretation                        yRP
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 15                                        
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :x y z - a * a b c * + 3.14159 / - =        
 
-   GROUP      v21  bad grouping                                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+#  GROUP      v21  bad grouping                                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
-   COND       unbalanced parens : no ending paren                                                                                                                                                                   
-     exec     check the operator                   yRPN_convert          "(a + b"                                                      p_null      0                                                            
-     get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :(a + b                                          
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :( a + b                            
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                         
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :((null))                                  
+#  COND       unbalanced parens : no ending paren                                                                                                                                                                   
+#    exec     check the operator                   yRPN_convert          "(a + b"                                                      p_null      0                                                            
+#    get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :(a + b                                          
+#    get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
+#    get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :( a + b                            
+#    get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                         
+#    get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :((null))                                  
 
-   COND       unbalanced parens : no beginning paren                                                                                                                                                                
-     exec     check the operator                   yRPN_convert          "a + b)"                                                      p_null      0                                                            
-     get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :a + b)                                          
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :a + b )                            
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                         
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :((null))                                  
+#  COND       unbalanced parens : no beginning paren                                                                                                                                                                
+#    exec     check the operator                   yRPN_convert          "a + b)"                                                      p_null      0                                                            
+#    get      original input string                yRPN_accessor         "source"     ,   0                                            s_equal     source string    :a + b)                                          
+#    get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
+#    get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :a + b )                            
+#    get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 0                                         
+#    get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :((null))                                  
 
 #  GROUP      v21  conversion issues                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
