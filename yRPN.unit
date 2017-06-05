@@ -3949,8 +3949,8 @@ SCRP          cell address verification                                    yRP
      get      review the parsing                   yRPN_syms_unit        "address"    ,   0                                            s_equal     yRPN address     : tab=   0, col=   0, row=   2, abs=7                 
 
    COND       clean-up                                                                                                                                                                                              
-     code     set the debug off                    zRPN_olddebug= 'n';
-     code     set the mode to compiler             zRPN_lang    = 'c';
+     exec     wrap-up for testing                  yRPN__testend                                                                       i_equal     0                                                            
+     code     set the mode to compiler             zRPN_lang    = S_LANG_C;
 
 
 
@@ -4046,76 +4046,85 @@ SCRP          simple cell addresses (spreadsheet)  yRPN__addresses           
 
 
 #==(verb)===  ===========(short desc)============  =====(function)=====  ========================(arguments)=========================  ==========  ==========================(results)========================= 
-SCRP          unary operators (compilier)          yRPN_convert                                                                                                                                                   
+SCRP          interpreting unary operators         yRPN_convert                                                                                                                                                   
 
    COND       setup some testing variables                                                                                                                                                                          
-#    code     set the debug on                     zRPN_olddebug= 'y';
-     code     set the debug off                    zRPN_olddebug= 'n';
-     code     set the compiler mode                zRPN_lang    = 'c';
+     exec     prepare for testing                  yRPN__testquiet                                                                     i_equal     0                                                            
+     code     set the compiler mode                zRPN_lang    = S_LANG_C;
 
    COND       internal plus                                                                                                                                                                                         
-     exec     check the operator                   yRPN_convert          "a + + b"                                                     s_not       ""                                                           
+     exec     check the operator                   yRPN_convert          "a + + b"                                                     s_equal     a b +: +                                                     
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :a + +: b                                     
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 4                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b +: +                                  
 
    COND       internal minus                                                                                                                                                                                        
-     exec     check the operator                   yRPN_convert          "a + - b"                                                     s_not       ""                                                           
+     exec     check the operator                   yRPN_convert          "a + - b"                                                     s_equal     a b -: +                                                                             
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :a + -: b                                     
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 4                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b -: +                                  
 
    COND       double negative                                                                                                                                                                                       
-     exec     check the operator                   yRPN_convert          "a + - - b"                                                   s_not       ""                                                           
+     exec     check the operator                   yRPN_convert          "a + - - b"                                                   s_equal     a b -: -: +                                                                          
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 5                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :a + -: -: b                                   
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 5                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b -: -: +                               
 
    COND       leading minus                                                                                                                                                                                         
-     exec     check the operator                   yRPN_convert          "-b"                                                          s_not       ""                                                           
+     exec     check the operator                   yRPN_convert          "-b"                                                          s_equal     b -:                                                                                 
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 2                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :-: b                                         
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 2                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b -:                                      
 
    COND       leading minus outside parentheses                                                                                                                                                                     
-     exec     check the operator                   yRPN_convert          "-(b)"                                                        s_not       ""                                                           
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 2                                         
+     exec     check the operator                   yRPN_convert          "-(b)"                                                        s_equal     b -:                                                                                 
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :-: ( b )                                     
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 2                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b -:                                      
 
    COND       leading minus before expression                                                                                                                                                                       
-     exec     check the operator                   yRPN_convert          "-b*c+a"                                                      s_not       ""                                                           
+     exec     check the operator                   yRPN_convert          "-b*c+a"                                                      s_equal     b -: c * a +                                                                         
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 6                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :-: b * c + a                                 
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 6                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b -: c * a +                              
 
    COND       leading minus outside parentheses                                                                                                                                                                     
-     exec     check the operator                   yRPN_convert          "- (b + a)"                                                   s_not       ""                                                           
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
+     exec     check the operator                   yRPN_convert          "- (b + a)"                                                   s_equal     b a + -:                                                                             
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 6                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :-: ( b + a )                                 
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 4                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a + -:                                  
 
    COND       using the logical not                                                                                                                                                                                 
-     exec     check the operator                   yRPN_convert          "!b"                                                          s_not       ""                                                           
+     exec     check the operator                   yRPN_convert          "!b"                                                          s_equal     b !                                                                                  
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 2                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :! b                                         
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 2                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b !                                       
 
    COND       using the logical not with an assignment                                                                                                                                                              
-     exec     check the operator                   yRPN_convert          "=!b"                                                         s_not       ""                                                           
+     exec     check the operator                   yRPN_convert          "=!b"                                                         s_equal     b ! =                                                                                
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 3                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     := ! b                                       
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 3                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b ! =                                     
 
    COND       using an unary plus with an assignment                                                                                                                                                                
-     exec     check the operator                   yRPN_convert          "=+b"                                                         s_not       ""                                                           
+     exec     check the operator                   yRPN_convert          "=+b"                                                         s_equal     b +: =                                                                               
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 3                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     := +: b                                       
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 3                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b +: =                                    
 
    COND       clean-up                                                                                                                                                                                              
-     code     set the debug off                    zRPN_olddebug= 'n';
-     code     set the mode to compiler             zRPN_lang    = 'c';
+     exec     wrap-up for testing                  yRPN__testend                                                                       i_equal     0                                                            
+     code     set the mode to compiler             zRPN_lang    = S_LANG_C;
 
 
 

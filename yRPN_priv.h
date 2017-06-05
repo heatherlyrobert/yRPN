@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7l"
-#define   zRPN_VER_TXT       "got operator shunting simpified, math unit test done"
+#define   zRPN_VER_NUM       "0.7m"
+#define   zRPN_VER_TXT       "got unary operator unit test updated"
 
 
 
