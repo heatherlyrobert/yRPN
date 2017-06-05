@@ -51,6 +51,7 @@ tRPN      rpn;
 
 
 /*===[[ STACK ]]==============================================================*/
+#define   S_MAX_STACK         100
 typedef     struct cSTACK    tSTACK;
 struct cSTACK {
    char        type;
@@ -373,7 +374,7 @@ yRPN__normal       (int a_pos)
     *> printf ("just didn't skip\n");                                                       <*/
    sprintf (x_token, "%c,%04d,%s", rpn.t_type, a_pos, rpn.t_name);
    strlcat (rpn.normal, x_token    , S_LEN_OUTPUT);
-   ++rpn.l_normal;
+   rpn.l_normal = strlen (rpn.normal);
    zRPN_DEBUG  printf("      RPN__normal     :: (---) %s\n", x_token);
    return 0;
 }
@@ -386,11 +387,13 @@ yRPN__token        (void)
    /*---(adapt divider)------------------*/
    if (rpn.n_tokens == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
+   /*> printf ("rpn.tokens before %2d:%s\n", rpn.n_tokens, rpn.tokens);               <*/
    /*---(add token)----------------------*/
    strlcat (rpn.tokens, x_div      , S_LEN_OUTPUT);
    strlcat (rpn.tokens, rpn.t_name , S_LEN_OUTPUT);
    /*---(update counters)----------------*/
-   ++rpn.n_tokens;
+   ++(rpn.n_tokens);
+   /*> printf ("rpn.tokens after  %2d:%s\n", rpn.n_tokens, rpn.tokens);               <*/
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -414,10 +417,6 @@ yRPN__push         (int a_pos)
    strlcpy (s_stack [s_nstack].name, rpn.t_name, S_LEN_TOKEN);
    s_stack [s_nstack].pos  = a_pos;
    ++s_nstack;
-   /*---(old stack)----------------------*/
-   /*> snprintf (rpn.stack[rpn.n_stack], zRPN_MAX_LEN, "%c,%c,%s", rpn.t_type, rpn.t_prec, rpn.t_name);       <* 
-    *> ++rpn.n_stack;                                                                                         <* 
-    *> zRPN_DEBUG  printf("      RPN__push       :: (%3d) %s\n", rpn.n_stack, rpn.stack [rpn.n_stack - 1]);   <*/
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -428,24 +427,14 @@ yRPN__peek         (void)
    /*---(locals)-----------+-----------+-*/
    char        rce         =  -10;
    /*---(default)------------------------*/
-   rpn.p_type = '-';
-   rpn.p_prec = '-';
+   rpn.p_type = '~';
+   rpn.p_prec = '~';
+   strlcpy (rpn.p_token, "", S_LEN_TOKEN);
    --rce;  if (s_nstack <= 0) return rce;
    /*---(new stack)----------------------*/
    rpn.p_type = s_stack [s_nstack - 1].type;
    rpn.p_prec = s_stack [s_nstack - 1].prec;
-   /*---(handle empty stack)-------------*/
-   /*> if (rpn.n_stack <= 0) {                                                        <* 
-    *>    rpn.p_prec  = zRPN_END;                                                     <* 
-    *>    strncpy (rpn.t_token, YRPN_TOKEN_NULL, 15);                                 <* 
-    *>    zRPN_DEBUG  printf("      RPN__peek       :: empty stack\n");               <* 
-    *>    return zRPN_ERR_EMPTY_STACK;                                                <* 
-    *> }                                                                              <*/
-   /*---(old stack)----------------------*/
-   /*> rpn.p_type  = rpn.stack[rpn.n_stack - 1][0];                                   <* 
-    *> rpn.p_prec  = rpn.stack[rpn.n_stack - 1][2];                                   <*/
-   /*> strncpy (rpn.t_token, rpn.stack[rpn.n_stack - 1] + 4, zRPN_MAX_LEN);           <*/
-   /*> zRPN_DEBUG  printf("      RPN__peek       :: (%3d) %s\n", rpn.n_stack, rpn.stack [rpn.n_stack - 1]);   <*/
+   strlcpy (rpn.p_token, s_stack [s_nstack - 1].name, S_LEN_TOKEN);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -455,17 +444,9 @@ yRPN__toss         (void)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         =  -10;
-   /*---(handle empty stack)-------------*/
-   /*> if (rpn.n_stack <= 0) {                                                        <* 
-    *>    zRPN_DEBUG  printf("      RPN__toss       :: FATAL empty stack\n");         <* 
-    *>    return zRPN_ERR_EMPTY_STACK;                                                <* 
-    *> }                                                                              <*/
    /*---(new stack)----------------------*/
    --rce;  if (s_nstack <= 0)  return rce;
    --s_nstack;
-   /*---(old stack)----------------------*/
-   /*> zRPN_DEBUG  printf("      RPN__toss       :: (%3d) %s\n", rpn.n_stack, rpn.stack [rpn.n_stack - 1]);   <* 
-    *> --rpn.n_stack;                                                                                         <*/
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -478,23 +459,19 @@ yRPN__pops         (void)
    char        x_div       [S_LEN_LABEL];
    char        x_token     [S_LEN_TOKEN];
    /*---(handle empty stack)-------------*/
-   /*> if (rpn.n_stack <= 0)  return zRPN_ERR_EMPTY_STACK;                            <*/
    --rce;  if (s_nstack <= 0)  return rce;
    /*---(adjust stack)-------------------*/
    --s_nstack;
-   /*> --rpn.n_stack;                                                                 <*/
    /*---(shuntd output)------------------*/
    if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
    strlcat (rpn.shuntd, x_div           , S_LEN_OUTPUT);
-   /*> strlcat (rpn.shuntd, rpn.stack[rpn.n_stack] + 4, S_LEN_OUTPUT);                <*/
    strlcat (rpn.shuntd, s_stack [s_nstack].name, S_LEN_OUTPUT);
    /*---(normal stack)-------------------*/
    if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
    strlcat (rpn.detail, x_div           , S_LEN_OUTPUT);
    sprintf (x_token, "%c,%s", s_stack [s_nstack].type, s_stack [s_nstack].name);
-   /*> sprintf (x_token, "%c,%s", rpn.stack[rpn.n_stack][0], rpn.stack[rpn.n_stack] + 4);   <*/
    strlcat (rpn.detail, x_token         , S_LEN_OUTPUT);
    /*---(update counters)----------------*/
    ++rpn.n_shuntd;
@@ -1224,13 +1201,13 @@ yRPN__funcvar      (int   a_pos)
 /*====================------------------------------------====================*/
 static void        o___TOKENS__________________o (void) {;}
 
-int        /* ---- : save off string literals --------------------------------*/
-yRPN__text         (int  a_pos)
-{
-   strcat (rpn.tokens, rpn.working + a_pos);
-   strcat (rpn.tokens, " ");
-   return strlen (rpn.working);
-}
+/*> int        /+ ---- : save off string literals --------------------------------+/   <* 
+ *> yRPN__text         (int  a_pos)                                                    <* 
+ *> {                                                                                  <* 
+ *>    strcat (rpn.tokens, rpn.working + a_pos);                                       <* 
+ *>    strcat (rpn.tokens, " ");                                                       <* 
+ *>    return strlen (rpn.working);                                                    <* 
+ *> }                                                                                  <*/
 
 char
 yRPN__oper_stack     (int a_pos)
@@ -1328,7 +1305,8 @@ yRPN__operators      (int  a_pos)
    }
    /*---(handle it)------------------------*/
    yRPN__precedence ();
-   yRPN__peek ();
+   yRPN__token      ();
+   yRPN__peek       ();
    DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.t_prec, rpn.p_prec);
    zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.t_prec, rpn.p_prec);
    if ( (rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||
@@ -1489,7 +1467,7 @@ yRPN__grouping     (int  a_pos)
    char      x_match   = ' ';
    char      x_fake    = 'n';
    /*---(prepare)------------------------*/
-   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   strlcpy (rpn.t_name, YRPN_TOKEN_NULL, S_LEN_TOKEN);
    rpn.t_name[0] = rpn.working[i];
    rpn.t_name[1] = '\0';
    rpn.t_type     = S_TTYPE_GROUP;
@@ -1524,7 +1502,7 @@ yRPN__grouping     (int  a_pos)
       yRPN__token ();
       yRPN__push(a_pos);
       if (x_fake == 'n')  yRPN__normal (a_pos);
-      rpn.left_oper  = S_LEFT_ONLY;
+      rpn.left_oper  = S_OPER_LEFT;
       return 0;
    }
    /*---(close bracket)-------------------*/
@@ -1554,7 +1532,7 @@ yRPN__grouping     (int  a_pos)
       rpn.left_oper  = S_OPER_CLEAR;
    }
    /*---(comma)----------------------------*/
-   else if (strncmp(rpn.t_name, ",", 1) == 0) {
+   if (strncmp(rpn.t_name, ",", 1) == 0) {
       yRPN__token ();
       rc = yRPN__peek();
       while (rc >= 0  &&  rpn.p_prec != 'd' + 16) {
@@ -1721,7 +1699,7 @@ yRPN__addresses    (int  a_pos)
    int       len       = 0;
    /*---(prepare)------------------------*/
    zRPN_DEBUG  printf("entering yRPN_addresses");
-   strncpy (rpn.t_name, YRPN_TOKEN_NULL, zRPN_MAX_LEN);
+   strlcpy (rpn.t_name, YRPN_TOKEN_NULL, S_LEN_TOKEN);
    rpn.t_type = S_TTYPE_ADDR;
    rpn.t_prec = S_PREC_NONE;
    /*---(defenses)-----------------------*/
@@ -1818,7 +1796,7 @@ yRPN__load         (char *a_source)   /* source infix string                    
    /*---(set the stack vars)-------------*/
    DEBUG_YRPN    yLOG_snote   ("stack");
    s_nstack       = 0;
-   rpn.n_stack    = 0;
+   /*> rpn.n_stack    = 0;                                                            <*/
    rpn.depth      = 0;
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_sexit   (__FUNCTION__);
@@ -1948,7 +1926,7 @@ yRPN__depth        (void)
 {
    /*> yLOG_enter  (__FUNCTION__);                                                    <*/
    /*---(locals)-------*-----------------*/
-   char      x_detail  [zRPN_MAX_LEN] = "";
+   char      x_detail  [S_LEN_OUTPUT] = "";
    int       i         = 0;            /* loop iterator -- token              */
    char     *p         = NULL;         /* pointer to current token            */
    char     *s         = NULL;         /* strtok context variable             */
@@ -1990,15 +1968,6 @@ yRPN__output_done    (void)
 {
    /*---(locals)-----------+-----------+-*/
    int         x_len       = 0;
-   /*---(drop the trailing space)--------*/
-   /*> x_len = strlen (rpn.shuntd) - strlen (s_divider);                              <* 
-    *> rpn.shuntd [x_len] = '\0';                                                     <*/
-   /*> x_len = strlen (rpn.detail) - strlen (s_divtech);                              <* 
-    *> rpn.detail [x_len] = '\0';                                                     <*/
-   /*> x_len = strlen (rpn.normal) - strlen (s_divtech);                              <* 
-    *> rpn.normal[x_len] = '\0';                                                      <*/
-   /*> x_len = strlen (rpn.tokens) - 1;                                               <* 
-    *> rpn.tokens [x_len] = '\0';                                                     <*/
    /*---(output)-------------------------*/
    zRPN_DEBUG  printf("   shunted = <<%s>>\n", rpn.shuntd);
    zRPN_DEBUG  printf("   detail  = <<%s>>\n", rpn.detail);
@@ -2080,11 +2049,10 @@ yRPN_convert       (char *a_source)
    /*---(handle errors)------------------*/
    if (rc < 0) {
       zRPN_DEBUG  printf ("FATAL %4d : %s\n", rc, zRPN_ERRORS [ -rc - 100]);
+      strlcpy (rpn.detail, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
+      strlcpy (rpn.shuntd, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
       rpn.l_shuntd  = 0;
       rpn.n_shuntd  = 0;
-      strcpy (rpn.shuntd, YRPN_TOKEN_NULL);
-      /*> return  strndup (rpn.shuntd, zRPN_MAX_LEN);                                 <*/
-      /*> return  rpn.shuntd;                                                         <*/
       DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
       return NULL;
    }
@@ -2092,49 +2060,24 @@ yRPN_convert       (char *a_source)
    zRPN_DEBUG  printf("   ---clear stack---------\n");
    while (s_nstack > 0) {
       yRPN__peek();
-      if (strcmp(rpn.t_token, "(") == 0) {
+      if (strcmp(rpn.p_token, "(") == 0) {
          zRPN_DEBUG  printf ("FATAL %4d : %s\n", zRPN_ERR_UNBALANCED_PARENS, "unbalanced parentheses\n");
+         strlcpy (rpn.detail, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
+         strlcpy (rpn.shuntd, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
          rpn.l_shuntd  = 0;
          rpn.n_shuntd  = 0;
-         strcpy (rpn.shuntd, YRPN_TOKEN_NULL);
-         /*> return  strndup (rpn.shuntd, zRPN_MAX_LEN);                              <*/
-         /*> return  rpn.shuntd;                                                      <*/
          DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
          return NULL;
       }
       yRPN__pops();
    }
    zRPN_DEBUG  printf("      done\n");
-   /*---(drop the trailing space)--------*/
-   /*> len = strlen(rpn.shuntd) - strlen(s_divider);                                         <* 
-    *> rpn.shuntd[len] = '\0';                                                                  <* 
-    *> zRPN_DEBUG  printf("      done 2\n");                                                    <* 
-    *> len = strlen(rpn.detail) - strlen(s_divtech);                                         <* 
-    *> rpn.detail[len] = '\0';                                                                  <* 
-    *> len = strlen(rpn.normal) - strlen(s_divtech);                                         <* 
-    *> rpn.normal[len] = '\0';                                                                  <* 
-    *> zRPN_DEBUG  printf("      done 3\n");                                                    <* 
-    *> /+> yRPN__depth();                                                                 <+/   <* 
-    *> zRPN_DEBUG  printf("      done 4\n");                                                    <* 
-    *> len = strlen(rpn.tokens) - 1;                                                            <* 
-    *> rpn.tokens[len] = '\0';                                                                  <* 
-    *> zRPN_DEBUG  printf("      done 5\n");                                                    <*/
    /*---(output)-------------------------*/
    yRPN__output_done ();
-   /*> zRPN_DEBUG  printf("   shunted = <<%s>>\n", rpn.shuntd);                       <* 
-    *> zRPN_DEBUG  printf("   detail  = <<%s>>\n", rpn.detail);                       <* 
-    *> zRPN_DEBUG  printf("   normal  = <<%s>>\n", rpn.normal);                       <* 
-    *> zRPN_DEBUG  printf("   tokens  = <<%s>>\n", rpn.tokens);                       <* 
-    *> zRPN_DEBUG  printf("   depth   = <<%d>>\n", rpn.depth);                        <* 
-    *> DEBUG_TOPS  yLOG_info    ("shunted"   , rpn.shuntd);                           <* 
-    *> DEBUG_TOPS  yLOG_info    ("detail"    , rpn.detail);                           <* 
-    *> DEBUG_TOPS  yLOG_info    ("normal"    , rpn.normal);                           <* 
-    *> DEBUG_TOPS  yLOG_info    ("tokens"    , rpn.tokens);                           <* 
-    *> DEBUG_TOPS  yLOG_value   ("depth"     , rpn.depth);                            <*/
    /*---(complete)-----------------------*/
    zRPN_DEBUG  printf("RPN_convert     :: end ------------------------------\n");
    DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
-   /*> return  strndup (rpn.shuntd, zRPN_MAX_LEN);                                    <*/
+   /*> return  strndup (rpn.shuntd, S_LEN_OUTPUT);                                    <*/
    return  rpn.shuntd;
 }
 

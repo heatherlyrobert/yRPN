@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7i"
-#define   zRPN_VER_TXT       "added all output and stack review to nums and special bases units"
+#define   zRPN_VER_NUM       "0.7j"
+#define   zRPN_VER_TXT       "mathmatical equations unit test is working now ;))"
 
 
 
@@ -28,8 +28,6 @@
 
 
 
-#define   zRPN_MAX_LEN       2000
-#define   S_MAX_STACK         100
 
 extern char     *v_alphanum;
 extern char     *v_alpha;
@@ -128,21 +126,20 @@ struct  cRPN {
    char        t_dir;                       /* current token dir of eval      */
    char        t_arity;                     /* current token unary, binary,.. */
    char        left_oper;                   /* if oper next, must be left type*/
+   char        pproc;                       /* pre-processor modes            */
    /*---(stack)--------------------------*/
-   char        stack       [S_MAX_STACK][S_LEN_TOKEN];
-   int         n_stack;
-   char        p_type;
-   char        p_prec;
-   char        pproc;                       /* pre-processor modes           */
+   char        p_token     [S_LEN_TOKEN];   /* peek token from stack          */
+   char        p_type;                      /* peek token from stack          */
+   char        p_prec;                      /* peek token from stack          */
    /*---(infix output)-------------------*/
    char        tokens      [S_LEN_OUTPUT];
    char        normal      [S_LEN_OUTPUT];
+   int         l_normal;
    int         n_tokens; 
    /*---(postfix output)-----------------*/
    char        shuntd      [S_LEN_OUTPUT];
    char        detail      [S_LEN_OUTPUT];
    int         l_shuntd;
-   int         l_normal;
    int         n_shuntd;
    /*---(MAYBE GONE)---------------------*/
    int         depth;  
