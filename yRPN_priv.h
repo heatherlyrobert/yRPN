@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7m"
-#define   zRPN_VER_TXT       "got unary operator unit test updated"
+#define   zRPN_VER_NUM       "0.7n"
+#define   zRPN_VER_TXT       "got pointer operations unit test updated and passed"
 
 
 
