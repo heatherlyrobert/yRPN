@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7j"
-#define   zRPN_VER_TXT       "mathmatical equations unit test is working now ;))"
+#define   zRPN_VER_NUM       "0.7k"
+#define   zRPN_VER_TXT       "broke the library down into multiple files for ease"
 
 
 
@@ -25,17 +25,21 @@
 #include    <yVAR.h>         /* CUSTOM  heatherly variable testing            */
 
 
-
-
-
+extern char s_divider [5];
+extern char s_divtech [5];
 
 extern char     *v_alphanum;
 extern char     *v_alpha;
-extern char     *v_lower;
 extern char     *v_upnum;
+extern char     *v_lower;
 extern char     *v_number;
-extern char     *v_paren;
+extern char     *v_float;
+extern char     *v_hex;
+extern char     *v_octal;
+extern char     *v_binary;
+extern char     *v_sequence;
 extern char     *v_operator;
+extern char     *v_preproc;
 extern char     *v_address;
 
 extern char      zRPN_olddebug;
@@ -142,7 +146,6 @@ struct  cRPN {
    int         l_shuntd;
    int         n_shuntd;
    /*---(MAYBE GONE)---------------------*/
-   int         depth;  
    char        about       [500];
 };
 extern  tRPN      rpn;
@@ -184,9 +187,6 @@ extern  char      zRPN_lang;
 extern  char      zRPN_divider [5];
 
 
-char*      /* ---- : provide gray-box information to unit testing ------------*/
-yRPN_accessor      (char*, int);
-
 char       /* ---- : identify the symbol precedence --------------------------*/
 yRPN__precedence   (void);
 
@@ -210,10 +210,10 @@ int        /* ---- : process operators ---------------------------------------*/
 yRPN__operators    (int  a_pos);
 
 int        /* ---- : process grouping ----------------------------------------*/
-yRPN__grouping     (int  a_pos);
+yRPN__sequence     (int  a_pos);
 
 char       /* ---- : interpret cell address ----------------------------------*/
-yRPN__cells       (char *a_label, int *a_tab, int *a_col, int *a_row, char *a_sign);
+yRPN__cells        (char *a_label, int *a_tab, int *a_col, int *a_row, char *a_sign);
 
 int        /* ---- : save off cell addresses ---------------------------------*/
 yRPN__addresses    (int  a_pos);
@@ -232,6 +232,51 @@ yRPN__shuman       (int *a_ntoken);
 
 char       /* ---- : convert normal infix notation to postfix/rpn ------------*/
 yRPN__output_done    (void);
+
+
+
+char*      /* ---- : provide gray-box information to unit testing ------------*/
+yRPN_accessor      (char*, int);
+
+char       /*----: set up programgents/debugging -----------------------------*/
+yRPN__testquiet     (void);
+
+char       /*----: set up programgents/debugging -----------------------------*/
+yRPN__testloud      (void);
+
+char       /*----: set up programgents/debugging -----------------------------*/
+yRPN__testend       (void);
+
+
+extern char unit_answer [ S_LEN_OUTPUT ];
+
+
+
+char*       yRPN_syms_unit       (char *a_question, int a_item);
+
+
+
+/*===[[ yRPN_stack.c ]]========================================*/
+/*345678901-12345678901234567890->-----------------------------*/
+/*---(program)-----------------*/
+char        yRPN_stack_init      (void);
+/*---(stack on)----------------*/
+char        yRPN_stack_push      (int a_pos);
+/*---(stack off)---------------*/
+char        yRPN_stack_peek      (void);
+char        yRPN_stack_pops      (void);
+char        yRPN_stack_toss      (void);
+/*---(specialty)---------------*/
+char        yRPN_stack_oper      (int a_pos);
+char        yRPN_stack_paren     (int a_pos);
+/*---(output)------------------*/
+char        yRPN_stack_shuntd    (void);
+char        yRPN_stack_normal    (int a_pos);
+char        yRPN_stack_infix     (void);
+/*---(unittest)----------------*/
+char*       yRPN_stack_unit      (char *a_question, int a_item);
+/*---(done)--------------------*/
+
 
 #endif
 /*===[[ END ]]================================================================*/
