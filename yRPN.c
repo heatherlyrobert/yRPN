@@ -329,7 +329,7 @@ yRPN_convert       (char *a_source)
    while (1) {
       rc = yRPN_stack_peek();
       if (rc < 0)  break;
-      if (strcmp(rpn.p_token, "(") == 0) {
+      if (strcmp(rpn.p_name, "(") == 0) {
          zRPN_DEBUG  printf ("FATAL %4d : %s\n", zRPN_ERR_UNBALANCED_PARENS, "unbalanced parentheses\n");
          strlcpy (rpn.detail, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
          strlcpy (rpn.shuntd, YRPN_TOKEN_NULL, S_LEN_OUTPUT);

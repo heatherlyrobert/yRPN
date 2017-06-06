@@ -96,14 +96,14 @@ yRPN_stack_peek         (void)
    /*---(default)------------------------*/
    rpn.p_type = '-';
    rpn.p_prec = 'a';
-   strlcpy (rpn.p_token, "", S_LEN_TOKEN);
+   strlcpy (rpn.p_name, "", S_LEN_TOKEN);
    /*---(defense)------------------------*/
    DEBUG_YRPN_M  yLOG_sint    (s_nstack);
    --rce;  if (s_nstack <= 0) {
       DEBUG_YRPN_M  yLOG_snote   ("empty, defaults");
       DEBUG_YRPN_M  yLOG_schar   (rpn.p_type);
       DEBUG_YRPN_M  yLOG_schar   (rpn.p_prec);
-      DEBUG_YRPN_M  yLOG_snote   (rpn.p_token);
+      DEBUG_YRPN_M  yLOG_snote   (rpn.p_name);
       DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
       return rce;
    }
@@ -111,10 +111,10 @@ yRPN_stack_peek         (void)
    DEBUG_YRPN_M  yLOG_snote   ("success");
    rpn.p_type = s_stack [s_nstack - 1].type;
    rpn.p_prec = s_stack [s_nstack - 1].prec;
-   strlcpy (rpn.p_token, s_stack [s_nstack - 1].name, S_LEN_TOKEN);
+   strlcpy (rpn.p_name, s_stack [s_nstack - 1].name, S_LEN_TOKEN);
    DEBUG_YRPN_M  yLOG_schar   (rpn.p_type);
    DEBUG_YRPN_M  yLOG_schar   (rpn.p_prec);
-   DEBUG_YRPN_M  yLOG_snote   (rpn.p_token);
+   DEBUG_YRPN_M  yLOG_snote   (rpn.p_name);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
@@ -295,7 +295,7 @@ yRPN_stack_paren     (int a_pos)
       return rc;
    }
    /*---(throw away open paren)----------*/
-   rc = yRPN_stack_toss ();
+   if (strcmp (rpn.t_name, ")") == 0)  rc = yRPN_stack_toss ();
    /*---(complete)-----------------------*/
    return 0;
 }

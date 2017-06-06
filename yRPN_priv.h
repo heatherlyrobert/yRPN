@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7n"
-#define   zRPN_VER_TXT       "got pointer operations unit test updated and passed"
+#define   zRPN_VER_NUM       "0.7o"
+#define   zRPN_VER_TXT       "added descriptions to operator table (vs comments)"
 
 
 
@@ -132,7 +132,7 @@ struct  cRPN {
    char        left_oper;                   /* if oper next, must be left type*/
    char        pproc;                       /* pre-processor modes            */
    /*---(stack)--------------------------*/
-   char        p_token     [S_LEN_TOKEN];   /* peek token from stack          */
+   char        p_name      [S_LEN_TOKEN];   /* peek token from stack          */
    char        p_type;                      /* peek token from stack          */
    char        p_prec;                      /* peek token from stack          */
    /*---(infix output)-------------------*/

@@ -32,90 +32,93 @@ struct    cOPER {
    char        prec;                   /* percedence                          */
    char        dir;                    /* direction of evaluation             */
    char        arity;                  /* how many arguments it takes         */
+   char        desc        [LEN_DESC]; /* helpful description vs comment      */
 };
 #define   MAX_OPER    200
 tOPER     s_opers [MAX_OPER] = {
    /*-r----prec------name-----dir-arity-*/
    /*---(spreadsheet)------------*/
-   { ".."    , 'r',  0, 'd',  S_LEFT ,   2 },    /* cell range                        */
+   { ".."  , 'r',  0, 'd',  S_LEFT , 2, "cell range"                           },
    /*---(preprocessor)-----------*/
-   { "#"     , '-',  0, 'd',  S_LEFT ,   2 },    /* prefix                            */
-   { "##"    , '-',  0, 'd',  S_LEFT ,   2 },    /* stringification                   */
+   { "#"   , '-',  0, 'd',  S_LEFT , 2, "prefix"                               },
+   { "##"  , '-',  0, 'd',  S_LEFT , 2, "stringification"                      },
    /*---(unary/suffix)-----------*/
-   { ":+"    , 'I',  1, 'e',  S_LEFT ,   1 },    /* suffix increment                  */
-   { ":-"    , 'I',  1, 'e',  S_LEFT ,   1 },    /* suffix decrement                  */
+   { ":+"  , 'I',  1, 'e',  S_LEFT , 1, "suffix increment"                     },
+   { ":-"  , 'I',  1, 'e',  S_LEFT , 1, "suffix decrement"                     },
    /*---(element of)-------------*/
-   { "["     , 'r',  1, 'e',  S_LEFT ,   1 },    /* array subscripting                */
-   { "]"     , 'r',  1, 'e',  S_LEFT ,   1 },    /* array subscripting                */
-   { "."     , 'r',  1, 'e',  S_LEFT ,   2 },    /* element selection by reference    */
-   { "->"    , 'r',  1, 'e',  S_LEFT ,   2 },    /* element selection thru pointer    */
+   { "["   , 'r',  1, 'e',  S_LEFT , 1, "array subscripting"                   },
+   { "]"   , 'r',  1, 'e',  S_LEFT , 1, "array subscripting"                   },
+   { "."   , 'r',  1, 'e',  S_LEFT , 2, "element selection by reference"       },
+   { "->"  , 'r',  1, 'e',  S_LEFT , 2, "element selection thru pointer"       },
    /*---(unary/prefix)-----------*/
-   { "++"    , 'r',  2, 'f',  S_RIGHT,   1 },    /* prefix increment                  */
-   { "--"    , 'r',  2, 'f',  S_RIGHT,   1 },    /* prefix decrement                  */
-   { "+:"    , 'I',  2, 'f',  S_RIGHT,   1 },    /* unary plus                        */
-   { "-:"    , 'I',  2, 'f',  S_RIGHT,   1 },    /* unary minus                       */
-   { "!"     , 'r',  2, 'f',  S_RIGHT,   1 },    /* logical NOT                       */
-   { "~"     , 'r',  2, 'f',  S_RIGHT,   1 },    /* bitwise NOT                       */
-   { "*:"    , 'I',  2, 'f',  S_RIGHT,   1 },    /* indirection/dereference           */
-   { "&:"    , 'I',  2, 'f',  S_RIGHT,   1 },    /* address-of                        */
+   { "++"  , 'r',  2, 'f',  S_RIGHT, 1, "prefix increment"                     },
+   { "--"  , 'r',  2, 'f',  S_RIGHT, 1, "prefix decrement"                     },
+   { "+:"  , 'I',  2, 'f',  S_RIGHT, 1, "unary plus"                           },
+   { "-:"  , 'I',  2, 'f',  S_RIGHT, 1, "unary minus"                          },
+   { "!"   , 'r',  2, 'f',  S_RIGHT, 1, "logical NOT"                          },
+   { "~"   , 'r',  2, 'f',  S_RIGHT, 1, "bitwise NOT"                          },
+   { "*:"  , 'I',  2, 'f',  S_RIGHT, 1, "indirection/dereference"              },
+   { "&:"  , 'I',  2, 'f',  S_RIGHT, 1, "address-of"                           },
+   { "(*)" , 'I',  2, 'f',  S_RIGHT, 1, "casting modifier"                     },
    /*---(multiplicative)---------*/
-   { "*"     , 'r',  3, 'g',  S_LEFT ,   2 },    /* multiplication                    */
-   { "/"     , 'r',  3, 'g',  S_LEFT ,   2 },    /* division                          */
-   { "%"     , 'r',  3, 'g',  S_LEFT ,   2 },    /* modulus                           */
+   { "*"   , 'r',  3, 'g',  S_LEFT , 2, "multiplication"                       },
+   { "/"   , 'r',  3, 'g',  S_LEFT , 2, "division"                             },
+   { "%"   , 'r',  3, 'g',  S_LEFT , 2, "modulus"                              },
    /*---(additive)---------------*/
-   { "+"     , 'r',  4, 'h',  S_LEFT ,   2 },    /* addition                          */
-   { "-"     , 'r',  4, 'h',  S_LEFT ,   2 },    /* substraction                      */
-   { "#"     , 'r',  4, 'h',  S_LEFT ,   2 },    /* string concatination              */
-   { "##"    , 'r',  4, 'h',  S_LEFT ,   2 },    /* string concatination              */
+   { "+"   , 'r',  4, 'h',  S_LEFT , 2, "addition"                             },
+   { "-"   , 'r',  4, 'h',  S_LEFT , 2, "substraction"                         },
+   { "#"   , 'r',  4, 'h',  S_LEFT , 2, "string concatination"                 },
+   { "##"  , 'r',  4, 'h',  S_LEFT , 2, "string concatination"                 },
    /*---(shift)------------------*/
-   { "<<"    , 'r',  5, 'i',  S_LEFT ,   2 },    /* bitwise shift left                */
-   { ">>"    , 'r',  5, 'i',  S_LEFT ,   2 },    /* bitwise shift right               */
+   { "<<"  , 'r',  5, 'i',  S_LEFT , 2, "bitwise shift left"                   },
+   { ">>"  , 'r',  5, 'i',  S_LEFT , 2, "bitwise shift right"                  },
    /*---(relational)-------------*/
-   { "<"     , 'r',  6, 'j',  S_LEFT ,   2 },    /* relational lesser                 */
-   { "<="    , 'r',  6, 'j',  S_LEFT ,   2 },    /* relational less or equal          */
-   { ">"     , 'r',  6, 'j',  S_LEFT ,   2 },    /* relational greater                */
-   { ">="    , 'r',  6, 'j',  S_LEFT ,   2 },    /* relational more or equal          */
-   { "#<"    , 'r',  6, 'j',  S_LEFT ,   2 },    /* relational string lesser          */
-   { "#>"    , 'r',  6, 'j',  S_LEFT ,   2 },    /* relational string greater         */
+   { "<"   , 'r',  6, 'j',  S_LEFT , 2, "relational lesser"                    },
+   { "<="  , 'r',  6, 'j',  S_LEFT , 2, "relational less or equal"             },
+   { ">"   , 'r',  6, 'j',  S_LEFT , 2, "relational greater"                   },
+   { ">="  , 'r',  6, 'j',  S_LEFT , 2, "relational more or equal"             },
+   { "#<"  , 'r',  6, 'j',  S_LEFT , 2, "relational string lesser"             },
+   { "#>"  , 'r',  6, 'j',  S_LEFT , 2, "relational string greater"            },
    /*---(equality)---------------*/
-   { "=="    , 'r',  7, 'k',  S_LEFT ,   2 },    /* relational equality               */
-   { "!="    , 'r',  7, 'k',  S_LEFT ,   2 },    /* relational inequality             */
-   { "#="    , 'r',  7, 'k',  S_LEFT ,   2 },    /* relational string equality        */
-   { "#!"    , 'r',  7, 'k',  S_LEFT ,   2 },    /* relational string inequality      */
+   { "=="  , 'r',  7, 'k',  S_LEFT , 2, "relational equality"                  },
+   { "!="  , 'r',  7, 'k',  S_LEFT , 2, "relational inequality"                },
+   { "#="  , 'r',  7, 'k',  S_LEFT , 2, "relational string equality"           },
+   { "#!"  , 'r',  7, 'k',  S_LEFT , 2, "relational string inequality"         },
    /*---(bitwise)----------------*/
-   { "&"     , 'r',  8, 'l',  S_LEFT ,   2 },    /* bitwise AND                       */
-   { "^"     , 'r',  9, 'm',  S_LEFT ,   2 },    /* bitwise XOR                       */
-   { "|"     , 'r', 10, 'n',  S_LEFT ,   2 },    /* bitwise OR                        */
+   { "&"   , 'r',  8, 'l',  S_LEFT , 2, "bitwise AND"                          },
+   { "^"   , 'r',  9, 'm',  S_LEFT , 2, "bitwise XOR"                          },
+   { "|"   , 'r', 10, 'n',  S_LEFT , 2, "bitwise OR"                           },
    /*---(logical)----------------*/
-   { "&&"    , 'r', 11, 'o',  S_LEFT ,   2 },    /* logical AND                       */
-   { "||"    , 'r', 12, 'p',  S_LEFT ,   2 },    /* logical OR                        */
+   { "&&"  , 'r', 11, 'o',  S_LEFT , 2, "logical AND"                          },
+   { "||"  , 'r', 12, 'p',  S_LEFT , 2, "logical OR"                           },
    /*---(conditional)------------*/
-   { "?"     , 'r', 13, 'q',  S_RIGHT,   2 },    /* trinary conditional               */
-   { ":"     , 'r', 13, 'd',  S_RIGHT,   2 },    /* trinary conditional               */
+   { "?"   , 'r', 13, 'q',  S_RIGHT, 2, "trinary conditional"                  },
+   { ":"   , 'r', 13, 'q',  S_RIGHT, 2, "trinary conditional"                  },
    /*---(assignment)-------------*/
-   { "="     , 'r', 14, 'r',  S_RIGHT,   2 },    /* direct assignment                 */
-   { "+="    , 'r', 14, 'r',  S_RIGHT,   2 },
-   { "-="    , 'r', 14, 'r',  S_RIGHT,   2 },
-   { "*="    , 'r', 14, 'r',  S_RIGHT,   2 },
-   { "/="    , 'r', 14, 'r',  S_RIGHT,   2 },
-   { "%="    , 'r', 14, 'r',  S_RIGHT,   2 },
-   { "<<="   , 'r', 14, 'r',  S_RIGHT,   2 },
-   { ">>="   , 'r', 14, 'r',  S_RIGHT,   2 },
-   { "&="    , 'r', 14, 'r',  S_RIGHT,   2 },
-   { "^="    , 'r', 14, 'r',  S_RIGHT,   2 },
-   { "|="    , 'r', 14, 'r',  S_RIGHT,   2 },
+   { "="   , 'r', 14, 'r',  S_RIGHT, 2, "direct assignment"                    },
+   { "+="  , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { "-="  , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { "*="  , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { "/="  , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { "%="  , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { "<<=" , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { ">>=" , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { "&="  , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { "^="  , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { "|="  , 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
    /*---(comma)------------------*/
-   { ","     , 'r', 15, 's',  S_LEFT ,   2 },    /* comma                             */
+   { ","   , 'r', 15, 's',  S_LEFT , 2, "sequence separator"                   },
    /*---(parenthesis)------------*/
-   { "("     , 'r', 16, 't',  S_LEFT ,   1 },
-   { ")"     , 'r', 16, 't',  S_LEFT ,   1 },
+   { "("   , 'r', 16, 't',  S_LEFT , 1, "sequence openning"                    },
+   { ")"   , 'r', 16, 't',  S_LEFT , 1, "sequence closing"                     },
+   { "(:"  , 'I', 16, 't',  S_LEFT , 1, "casting opening"                      },
    /*---(semicolon)--------------*/
-   { ";"     , 'r', 17, 'u',  S_LEFT ,   1 },
+   { ";"   , 'r', 17, 'u',  S_LEFT , 1, "statement separator"                  },
    /*-------------(braces)-------*/
-   { "{"     , 'r', 18, 'v',  S_LEFT ,   1 },
-   { "}"     , 'r', 18, 'v',  S_LEFT ,   1 },
+   { "{"   , 'r', 18, 'v',  S_LEFT , 1, "function openning"                    },
+   { "}"   , 'r', 18, 'v',  S_LEFT , 1, "function closing"                     },
    /*---(end)--------------------*/
-   { ""      , '-',  0, '-',  '-'    ,   0 },
+   { ""    , '-',  0, '-',  '-'    , 0, ""                                     },
 };
 
 
@@ -207,18 +210,18 @@ tKEYWORDS  s_keywords [MAX_KEYWORDS] = {
    { "enum"                   , 's' },
    { "sizeof"                 , 's' },
    /*---(control)----------------*/
-   { "break"                  , 'c' },
-   { "case"                   , 'c' },
-   { "continue"               , 'c' },
-   { "default"                , 'c' },
-   { "do"                     , 'c' },
-   { "else"                   , 'c' },
-   { "for"                    , 'c' },
-   { "goto"                   , 'c' },
-   { "if"                     , 'c' },
-   { "return"                 , 'c' },
-   { "switch"                 , 'c' },
-   { "while"                  , 'c' },
+   { "break"                  , 's' },
+   { "case"                   , 'f' },
+   { "continue"               , 's' },
+   { "default"                , 's' },
+   { "do"                     , 'f' },
+   { "else"                   , 's' },
+   { "for"                    , 'f' },
+   { "goto"                   , 'f' },
+   { "if"                     , 'f' },
+   { "return"                 , 's' },
+   { "switch"                 , 'f' },
+   { "while"                  , 'f' },
    /*---(reserving)--------------*/
    { "asm"                    , 'r' },
    { "typeof"                 , 'r' },
@@ -327,8 +330,9 @@ yRPN__keywords       (int  a_pos)
       else                                      rpn.pproc = S_PPROC_OTHER;
    }
    /*---(save)-----------------------------*/
-   DEBUG_YRPN    yLOG_note    ("put keyword directly to output");
-   yRPN__token_save    (a_pos);
+   DEBUG_YRPN    yLOG_note    ("keyword is a function");
+   /*> yRPN__token_save    (a_pos);                                                   <*/
+   yRPN__token_push    (a_pos);
    rpn.left_oper = S_OPER_CLEAR;
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
@@ -386,7 +390,8 @@ yRPN__types          (int  a_pos)
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put c type directly to output");
    yRPN__token_save    (a_pos);
-   rpn.left_oper  = S_OPER_CLEAR;
+   /*> rpn.left_oper  = S_OPER_CLEAR;                                                 <*/
+   rpn.left_oper  = S_OPER_LEFT;
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
@@ -917,18 +922,6 @@ yRPN__sequencer      (int  a_pos)
       yRPN_stack_infix      ();
       yRPN_stack_normal     (a_pos);
       rc = yRPN_stack_paren (a_pos);
-      /*> rc = yRPN_stack_peek   ();                                                        <* 
-       *> while (rc >= 0  &&  rpn.p_prec < rpn.t_prec) {                              <* 
-       *>    yRPN_stack_pops        ();                                                     <* 
-       *>    rc = yRPN_stack_peek  ();                                                     <* 
-       *> }                                                                           <* 
-       *> if (rc < 0) {                                                               <* 
-       *>    zRPN_DEBUG  printf ("      FATAL :: nothing more on stack\n");           <* 
-       *>    return rc;                                                               <* 
-       *> }                                                                           <* 
-       *> yRPN_stack_toss       ();                                                        <*/
-      /*> rc = yRPN_stack_peek();                                                          <* 
-       *> if (rpn.t_token[0] == ']')  yRPN_stack_pops   ();                                 <*/
       rpn.left_oper  = S_OPER_CLEAR;
       break;
    case '[' :
@@ -936,6 +929,10 @@ yRPN__sequencer      (int  a_pos)
    case ']' :
       break;
    case ',' :
+      yRPN_stack_infix      ();
+      yRPN_stack_normal     (a_pos);
+      rc = yRPN_stack_paren (a_pos);
+      rpn.left_oper  = S_OPER_LEFT;
       break;
    }
    /*---(complete)-------------------------*/
