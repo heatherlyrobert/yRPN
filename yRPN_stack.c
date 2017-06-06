@@ -38,6 +38,9 @@ yRPN_stack_init      (void)
    DEBUG_YRPN    yLOG_snote   ("clear stack");
    s_nstack       = 0;
    DEBUG_YRPN    yLOG_sint    (s_nstack);
+   /*---(line variables)-----------------*/
+   rpn.line_done  = S_LINE_OPEN;
+   rpn.line_type  = S_LINE_NORMAL;
    /*---(output)-------------------------*/
    DEBUG_YRPN    yLOG_snote   ("clear output");
    strlcpy (rpn.shuntd  ,"" , S_LEN_OUTPUT);
@@ -194,7 +197,7 @@ static void        o___SPECIALTY_______o () { return; }
 
 /*> /+---(handle it)------------------------+/                                                    <* 
  *> yRPN__precedence ();                                                                          <* 
- *> yRPN_stack_infix      ();                                                                          <* 
+ *> yRPN_stack_tokens      ();                                                                          <* 
  *> yRPN_stack_peek       ();                                                                     <* 
  *> DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.t_prec, rpn.p_prec);         <* 
  *> zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.t_prec, rpn.p_prec);   <* 
@@ -355,10 +358,27 @@ yRPN_stack_normal       (int a_pos)
 }
 
 char       /*----: save a token to the tokens output -------------------------*/
-yRPN_stack_infix        (void)
+yRPN_stack_tokens        (void)
 {
    /*---(locals)-----------+-----------+-*/
    char        x_div       [S_LEN_LABEL];
+   /*---(check line done)----------------*/
+   if (strcmp (";"     , rpn.t_name) == 0)     rpn.line_done = S_LINE_DONE;
+   if (strcmp ("{"     , rpn.t_name) == 0)     rpn.line_done = S_LINE_DONE;
+   /*---(check line types)---------------*/
+   if (rpn.n_tokens == 0 && rpn.t_type == 't') {
+      if (strcmp ("extern", rpn.t_name) == 0)  rpn.line_type = S_LINE_EXTERN;
+      else                                     rpn.line_type = S_LINE_DEF;
+   }
+   if (rpn.n_tokens >  0 && rpn.line_type == S_LINE_DEF) {
+      if (strcmp ("="     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_VAR;
+      if (strcmp (";"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_VAR;
+      if (rpn.t_type == S_TTYPE_FUNC)          rpn.line_type = S_LINE_DEF_FUN;
+   }
+   if (rpn.n_tokens >  0 && rpn.line_type == S_LINE_DEF_FUN) {
+      if (strcmp (";"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_FUN;
+      if (strcmp ("{"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_PRO;
+   }
    /*---(adapt divider)------------------*/
    if (rpn.n_tokens == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
@@ -400,6 +420,46 @@ yRPN_stack_unit      (char *a_question, int a_item)
       for (i = 0; i < s_nstack && i < 6; ++i) {
          sprintf (x_temp     , " %c%c", s_stack [i].type, s_stack [i].prec);
          strlcat (unit_answer, x_temp       , S_LEN_OUTPUT);
+      }
+   }
+   /*---(line level)---------------------*/
+   else if   (strcmp (a_question, "line_done"     )  == 0) {
+      switch (rpn.line_done) {
+      case S_LINE_OPEN :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source status    : open");
+         break;
+      case S_LINE_DONE :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source status    : DONE");
+         break;
+      default          :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source status    : unknown");
+         break;
+      }
+   }
+   /*---(line type)----------------------*/
+   else if   (strcmp (a_question, "line_type"     )  == 0) {
+      switch (rpn.line_type) {
+      case S_LINE_EXTERN   :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : external variable definition");
+         break;
+      case S_LINE_DEF      :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : unknown type of definition");
+         break;
+      case S_LINE_DEF_VAR  :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : variable definition");
+         break;
+      case S_LINE_DEF_PRO  :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : function prototype");
+         break;
+      case S_LINE_DEF_FUN  :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : function definition");
+         break;
+      case S_LINE_NORMAL   :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : normal statement");
+         break;
+      default          :
+         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : unknown");
+         break;
       }
    }
    /*---(UNKNOWN)------------------------*/

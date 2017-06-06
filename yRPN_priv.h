@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7o"
-#define   zRPN_VER_TXT       "added descriptions to operator table (vs comments)"
+#define   zRPN_VER_NUM       "0.7p"
+#define   zRPN_VER_TXT       "added line done and type tracing"
 
 
 
@@ -79,7 +79,8 @@ extern char      zRPN_olddebug;
 #define      S_PREC_FUNC        'a'
 /*---(language support)---------------*/
 #define      S_LANG_C           'c'
-#define      S_LANG_GYGES       's'
+#define      S_LANG_GYGES       'g'
+#define      S_LANG_BOTH        'B'
 /*---(evalulation direction)----------*/
 #define      S_LEFT             'l'
 #define      S_RIGHT            'r'
@@ -94,6 +95,16 @@ extern char      zRPN_olddebug;
 #define      S_PPROC_YES        'y'
 #define      S_PPROC_INCL       'i'
 #define      S_PPROC_OTHER      'o'
+/*---(line types)---------------------*/
+#define      S_LINE_EXTERN      'e'
+#define      S_LINE_DEF         'D'
+#define      S_LINE_DEF_VAR     'v'
+#define      S_LINE_DEF_PRO     'p'
+#define      S_LINE_DEF_FUN     'f'
+#define      S_LINE_NORMAL      's'
+/*---(line complete)------------------*/
+#define      S_LINE_OPEN        '-'
+#define      S_LINE_DONE        'y'
 
 
 
@@ -121,7 +132,10 @@ struct  cRPN {
    /*---(working areas)------------------*/
    char        working     [S_LEN_OUTPUT];  /* copy of source for parsing     */
    int         l_working;                   /* position in working string     */
-   /*---(working areas)------------------*/
+   /*---(overall working)----------------*/
+   char        line_type;                   /* source line type               */
+   char        line_done;                   /* source line complete           */
+   /*---(token working)------------------*/
    char        t_token     [S_LEN_TOKEN];   /* current token (full)           */
    char        t_type;                      /* current token type             */
    char        t_name      [S_LEN_TOKEN];   /* current token name             */
@@ -272,7 +286,7 @@ char        yRPN_stack_paren     (int a_pos);
 /*---(output)------------------*/
 char        yRPN_stack_shuntd    (void);
 char        yRPN_stack_normal    (int a_pos);
-char        yRPN_stack_infix     (void);
+char        yRPN_stack_tokens     (void);
 /*---(unittest)----------------*/
 char*       yRPN_stack_unit      (char *a_question, int a_item);
 /*---(done)--------------------*/

@@ -236,7 +236,7 @@ yRPN__token_nums     (int a_pos)
 char         /*--> save token to output ------------------[--------[--------]-*/
 yRPN__token_save     (char a_pos)
 {
-   yRPN_stack_infix  ();         /* strait to tokens list                          */
+   yRPN_stack_tokens  ();         /* strait to tokens list                          */
    yRPN_stack_shuntd   ();         /* strait to shunted and output lists (no stack)  */
    yRPN_stack_normal (a_pos);    /* strait to normal list                          */
    return 0;
@@ -245,7 +245,7 @@ yRPN__token_save     (char a_pos)
 char         /*--> push token on stack -------------------[--------[--------]-*/
 yRPN__token_push     (char a_pos)
 {
-   yRPN_stack_infix  ();         /* strait to tokens list                          */
+   yRPN_stack_tokens  ();         /* strait to tokens list                          */
    yRPN_stack_push   (a_pos);    /* move token to stack                            */
    yRPN_stack_normal (a_pos);    /* strait to normal list                          */
    return 0;
