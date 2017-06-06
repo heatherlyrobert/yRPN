@@ -69,16 +69,60 @@ yRPN_stack_push      (int a_pos)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         =  -10;
+   /*---(header)-------------------------*/
+   DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    /*---(defense)------------------------*/
-   --rce;  if ((s_nstack + 1) >= S_MAX_STACK)  return rce;  /* no room */
+   DEBUG_YRPN_M  yLOG_sint    (s_nstack);
+   --rce;  if ((s_nstack + 1) >= S_MAX_STACK) {
+      DEBUG_YRPN_M  yLOG_snote   ("full");
+      DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
+      return rce;
+   }
    /*---(save entry)---------------------*/
    s_stack [s_nstack].type = rpn.t_type;
    s_stack [s_nstack].prec = rpn.t_prec;
    strlcpy (s_stack [s_nstack].name, rpn.t_name, S_LEN_TOKEN);
    s_stack [s_nstack].pos  = a_pos;
+   DEBUG_YRPN_M  yLOG_snote   (s_stack [s_nstack].name);
+   DEBUG_YRPN_M  yLOG_schar   (s_stack [s_nstack].type);
+   DEBUG_YRPN_M  yLOG_schar   (s_stack [s_nstack].prec);
+   DEBUG_YRPN_M  yLOG_sint    (s_stack [s_nstack].pos );
    /*---(update counters)----------------*/
    ++s_nstack;
+   DEBUG_YRPN_M  yLOG_sint    (s_nstack);
    /*---(complete)-----------------------*/
+   DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
+   return 0;
+}
+
+char         /*--> update the top entry ------------------[--------[--------]-*/
+yRPN_stack_update    (void)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;
+   /*---(header)-------------------------*/
+   DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
+   /*---(defense)------------------------*/
+   DEBUG_YRPN_M  yLOG_sint    (s_nstack);
+   --rce;  if (s_nstack <= 0) {
+      DEBUG_YRPN_M  yLOG_snote   ("empty, nothing to do");
+      DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
+      return rce;
+   }
+   DEBUG_YRPN_M  yLOG_snote   ("before");
+   DEBUG_YRPN_M  yLOG_snote   (s_stack [s_nstack - 1].name);
+   DEBUG_YRPN_M  yLOG_schar   (s_stack [s_nstack - 1].type);
+   DEBUG_YRPN_M  yLOG_schar   (s_stack [s_nstack - 1].prec);
+   /*---(update except pos)--------------*/
+   strlcpy (s_stack [s_nstack - 1].name, rpn.p_name, S_LEN_TOKEN);
+   s_stack [s_nstack - 1].type = rpn.p_type;
+   s_stack [s_nstack - 1].prec = rpn.p_prec;
+   DEBUG_YRPN_M  yLOG_snote   ("after");
+   DEBUG_YRPN_M  yLOG_snote   (s_stack [s_nstack - 1].name);
+   DEBUG_YRPN_M  yLOG_schar   (s_stack [s_nstack - 1].type);
+   DEBUG_YRPN_M  yLOG_schar   (s_stack [s_nstack - 1].prec);
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
 }
 
@@ -142,19 +186,32 @@ yRPN_stack_pops     (void)
    /*---(adjust stack)-------------------*/
    --s_nstack;
    DEBUG_YRPN_M  yLOG_sint    (s_nstack);
+   /*---(check for casting)--------------*/
+   DEBUG_YRPN_M  yLOG_snote   (s_stack [s_nstack].name);
+   if (strcmp ("(:", s_stack [s_nstack].name) == 0) {
+      DEBUG_YRPN_M  yLOG_snote   ("skip cast paren");
+      DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
+      return 0;
+   }
+   if (strcmp ("):", s_stack [s_nstack].name) == 0) {
+      DEBUG_YRPN_M  yLOG_snote   ("skip cast paren");
+      DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
+      return 0;
+   }
    /*---(shuntd output)------------------*/
-   DEBUG_YRPN_M  yLOG_snote   ("write shuntd");
    if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
    strlcat (rpn.shuntd, x_div           , S_LEN_OUTPUT);
    strlcat (rpn.shuntd, s_stack [s_nstack].name, S_LEN_OUTPUT);
+   DEBUG_YRPN_M  yLOG_snote   (s_stack [s_nstack].name);
+   printf ("%s\n", rpn.shuntd);
    /*---(normal stack)-------------------*/
-   DEBUG_YRPN_M  yLOG_snote   ("write detail");
    if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
    strlcat (rpn.detail, x_div           , S_LEN_OUTPUT);
    sprintf (x_token, "%c,%s", s_stack [s_nstack].type, s_stack [s_nstack].name);
    strlcat (rpn.detail, x_token         , S_LEN_OUTPUT);
+   DEBUG_YRPN_M  yLOG_snote   (x_token);
    /*---(update counters)----------------*/
    DEBUG_YRPN_M  yLOG_snote   ("update counters");
    ++rpn.n_shuntd;
@@ -193,29 +250,6 @@ yRPN_stack_toss   (void)
 /*===----                       specialty moves                        ----===*/
 /*====================------------------------------------====================*/
 static void        o___SPECIALTY_______o () { return; }
-
-
-/*> /+---(handle it)------------------------+/                                                    <* 
- *> yRPN__precedence ();                                                                          <* 
- *> yRPN_stack_tokens      ();                                                                          <* 
- *> yRPN_stack_peek       ();                                                                     <* 
- *> DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.t_prec, rpn.p_prec);         <* 
- *> zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.t_prec, rpn.p_prec);   <* 
- *> if ( (rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||                                     <* 
- *>       (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                                   <* 
- *>    while ((rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||                                <* 
- *>          (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                                <* 
- *>       /+> if (rpn__last != 'z') RPN__pops();                                       <+/        <* 
- *>       if (rpn.p_prec == 'z') break;                                                           <* 
- *>       yRPN_stack_pops ();                                                                     <* 
- *>       yRPN_stack_peek();                                                                      <* 
- *>    }                                                                                          <* 
- *>    yRPN_stack_push(a_pos);                                                                    <* 
- *>    yRPN_stack_normal (a_pos);                                                                      <* 
- *> } else {                                                                                      <* 
- *>    yRPN_stack_push(a_pos);                                                                    <* 
- *>    yRPN_stack_normal (a_pos);                                                                      <* 
- *> }                                                                                             <*/
 
 char
 yRPN_stack_oper      (int a_pos)
@@ -261,23 +295,6 @@ yRPN_stack_oper      (int a_pos)
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_exit    (__FUNCTION__);
    return 0;
-   /*---(OLD LOGIC)----------------------*/
-   /*> rc = yRPN_stack_peek ();                                                                 <* 
-    *> if ( (rpn.t_dir == S_LEFT && rpn.p_prec <  rpn.t_prec) ||                                <* 
-    *>       (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                              <* 
-    *>    while ((rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||                           <* 
-    *>          (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                           <* 
-    *>       /+> if (rpn__last != 'z') RPN__pops();                                       <+/   <* 
-    *>       if (rpn.p_prec == 'z') break;                                                      <* 
-    *>       rc = yRPN_stack_pops ();                                                           <* 
-    *>       rc = yRPN_stack_peek();                                                            <* 
-    *>    }                                                                                     <* 
-    *>    rc = yRPN_stack_push(a_pos);                                                          <* 
-    *>    yRPN_stack_normal (a_pos);                                                            <* 
-    *> } else {                                                                                 <* 
-    *>    rc = yRPN_stack_push(a_pos);                                                          <* 
-    *>    yRPN_stack_normal (a_pos);                                                            <* 
-    *> }                                                                                        <*/
 }
 
 char
@@ -286,20 +303,39 @@ yRPN_stack_paren     (int a_pos)
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;
    char        rc          =   0;
-   /*---(cycle)--------------------------*/
+   /*---(header)-------------------------*/
+   DEBUG_YRPN_M  yLOG_enter   (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_char    ("t_type"    , rpn.t_type);
+   DEBUG_YRPN_M  yLOG_char    ("t_prec"    , rpn.t_prec);
+   /*---(check for stack)----------------*/
    rc = yRPN_stack_peek ();
-   while (rc >= 0  &&  rpn.p_prec < rpn.t_prec) {
-      rc = yRPN_stack_pops  ();
-      rc = yRPN_stack_peek ();
+   --rce;  if (rc < 0) {
+      DEBUG_YRPN_M  yLOG_note    ("stack empty");
+      DEBUG_YRPN_M  yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
    }
-   /*---(check for errors)---------------*/
-   if (rc < 0) {
-      zRPN_DEBUG  printf ("      FATAL :: nothing more on stack\n");
-      return rc;
+   /*---(cycle)--------------------------*/
+   DEBUG_YRPN_M  yLOG_char    ("p_type"    , rpn.p_type);
+   if (rpn.p_type != S_TTYPE_CAST) {
+      DEBUG_YRPN_M  yLOG_note    ("normal parenthesis closing");
+      DEBUG_YRPN_M  yLOG_char    ("p_prec"    , rpn.p_prec);
+      while (rc >= 0  &&  rpn.p_prec < rpn.t_prec) {
+         rc = yRPN_stack_pops  ();
+         rc = yRPN_stack_peek ();
+         DEBUG_YRPN_M  yLOG_char    ("p_prec"    , rpn.p_prec);
+      }
+      /*---(throw away open paren)----------*/
+      if (strcmp (rpn.t_name, ")") == 0)  rc = yRPN_stack_toss ();
+   } else {
+      DEBUG_YRPN_M  yLOG_note    ("casting parenthesis closing");
+      strlcpy (rpn.t_name, "):", S_LEN_LABEL);
+      DEBUG_YRPN_M  yLOG_info    ("new name"  , rpn.t_name);
+      rpn.t_type = S_TTYPE_CAST;
+      DEBUG_YRPN_M  yLOG_char    ("new type"  , rpn.t_type);
+      yRPN_stack_push   (a_pos);
    }
-   /*---(throw away open paren)----------*/
-   if (strcmp (rpn.t_name, ")") == 0)  rc = yRPN_stack_toss ();
    /*---(complete)-----------------------*/
+   DEBUG_YRPN_M  yLOG_exit    (__FUNCTION__);
    return 0;
 }
 

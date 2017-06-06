@@ -82,8 +82,9 @@ static void        o___DRIVER__________________o (void) {;}
 int          /*--> prepare variables for rpn conversion --[ ------ [ ------ ]-*/
 yRPN__load         (char *a_source)   /* source infix string                          */
 {
-   DEBUG_YRPN    yLOG_senter  (__FUNCTION__);
+   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(set the source/working)---------*/
+   DEBUG_YRPN    yLOG_note    ("initialize source and working strings");
    if (a_source == NULL || a_source [0] == '\0') {
       strncpy (rpn.source  , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
       strncpy (rpn.working , ""             , S_LEN_OUTPUT);
@@ -95,7 +96,7 @@ yRPN__load         (char *a_source)   /* source infix string                    
    }
    DEBUG_YRPN    yLOG_sint    (rpn.l_source);
    /*---(set the token vars)-------------*/
-   DEBUG_YRPN    yLOG_snote   ("token vars");
+   DEBUG_YRPN    yLOG_note    ("token vars");
    strncpy (rpn.t_name  , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
    rpn.t_type     = S_TTYPE_ERROR;
    rpn.t_len      = 0;
@@ -108,10 +109,9 @@ yRPN__load         (char *a_source)   /* source infix string                    
    rpn.p_type     = '-';
    rpn.p_prec     = '-';
    /*---(set the stack vars)-------------*/
-   DEBUG_YRPN    yLOG_snote   ("stack");
    yRPN_stack_init   ();
    /*---(complete)-----------------------*/
-   DEBUG_YRPN    yLOG_sexit   (__FUNCTION__);
+   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return  rpn.l_source;
 }
 
@@ -233,23 +233,6 @@ yRPN_tokens        (char *a_source)
    return rpn.tokens;
 }
 
-char       /* ---- : convert normal infix notation to postfix/rpn ------------*/
-yRPN__output_done    (void)
-{
-   /*---(locals)-----------+-----------+-*/
-   int         x_len       = 0;
-   /*---(output)-------------------------*/
-   zRPN_DEBUG  printf("   shunted = <<%s>>\n", rpn.shuntd);
-   zRPN_DEBUG  printf("   detail  = <<%s>>\n", rpn.detail);
-   zRPN_DEBUG  printf("   normal  = <<%s>>\n", rpn.normal);
-   zRPN_DEBUG  printf("   tokens  = <<%s>>\n", rpn.tokens);
-   DEBUG_TOPS  yLOG_info    ("shunted"   , rpn.shuntd);
-   DEBUG_TOPS  yLOG_info    ("detail"    , rpn.detail);
-   DEBUG_TOPS  yLOG_info    ("normal"    , rpn.normal);
-   DEBUG_TOPS  yLOG_info    ("tokens"    , rpn.tokens);
-   return 0;
-}
-
 char*      /* ---- : convert normal infix notation to postfix/rpn ------------*/
 yRPN_convert       (char *a_source)
 {
@@ -271,6 +254,7 @@ yRPN_convert       (char *a_source)
    int       len       = 0;
    int       rc        = 0;
    char      x_ch      = 0;
+   int       x_pass    = 0;
    /*---(defenses)-----------------------*/
    if (a_source     == NULL)  {
       DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
@@ -281,7 +265,9 @@ yRPN_convert       (char *a_source)
    zRPN_DEBUG  printf("   ---process-------------\n");
    x_pos = 0;
    rpn.pproc = S_PPROC_NO;
+   DEBUG_TOPS  yLOG_note    ("convert loop enter--------------------");
    while (x_pos < rpn.l_working) {
+      DEBUG_TOPS  yLOG_value   ("PASS"      , x_pass++);
       /*---(prepare)---------------------*/
       x_ch    = rpn.working [x_pos];
       rc      = x_pos;
@@ -314,6 +300,7 @@ yRPN_convert       (char *a_source)
       /*---(next)------------------------*/
       x_pos = rc;
    }
+   DEBUG_TOPS  yLOG_note    ("convert loop exit---------------------");
    /*---(handle errors)------------------*/
    if (rc < 0) {
       zRPN_DEBUG  printf ("FATAL %4d : %s\n", rc, zRPN_ERRORS [ -rc - 100]);
@@ -342,7 +329,14 @@ yRPN_convert       (char *a_source)
    }
    zRPN_DEBUG  printf("      done\n");
    /*---(output)-------------------------*/
-   yRPN__output_done ();
+   zRPN_DEBUG  printf("   shunted = <<%s>>\n", rpn.shuntd);
+   zRPN_DEBUG  printf("   detail  = <<%s>>\n", rpn.detail);
+   zRPN_DEBUG  printf("   normal  = <<%s>>\n", rpn.normal);
+   zRPN_DEBUG  printf("   tokens  = <<%s>>\n", rpn.tokens);
+   DEBUG_TOPS  yLOG_info    ("shunted"   , rpn.shuntd);
+   DEBUG_TOPS  yLOG_info    ("detail"    , rpn.detail);
+   DEBUG_TOPS  yLOG_info    ("normal"    , rpn.normal);
+   DEBUG_TOPS  yLOG_info    ("tokens"    , rpn.tokens);
    /*---(complete)-----------------------*/
    zRPN_DEBUG  printf("RPN_convert     :: end ------------------------------\n");
    DEBUG_TOPS  yLOG_exit    (__FUNCTION__);

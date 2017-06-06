@@ -4132,7 +4132,7 @@ SCRP          interpreting unary operators         yRPN_convert              
 SCRP          pointer operations (compilier)       yRPN_convert                                                                                                                                                   
 
    COND       setup some testing variables                                                                                                                                                                          
-     exec     prepare for testing                  yRPN__testquiet                                                                     i_equal     0                                                            
+     exec     prepare for testing                  yRPN__testloud                                                                      i_equal     0                                                            
      code     set the compiler mode                zRPN_lang    = S_LANG_C;
 
    COND       variable address-of                                                                                                                                                                                   

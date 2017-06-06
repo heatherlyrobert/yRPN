@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7p"
-#define   zRPN_VER_TXT       "added line done and type tracing"
+#define   zRPN_VER_NUM       "0.7q"
+#define   zRPN_VER_TXT       "very basic type casting working in unit test"
 
 
 
@@ -64,6 +64,7 @@ extern char      zRPN_olddebug;
 #define      S_TTYPE_FUNC       'f'
 #define      S_TTYPE_ADDR       '@'
 #define      S_TTYPE_VARS       'v'
+#define      S_TTYPE_CAST       'c'
 /*---(upper)-----------*/
 #define      S_TTYPE_CHAR       'C'
 #define      S_TTYPE_STR        'S'
@@ -202,7 +203,7 @@ extern  char      zRPN_divider [5];
 
 
 char       /* ---- : identify the symbol precedence --------------------------*/
-yRPN__precedence   (void);
+yRPN__prec   (void);
 
 int        /* ---- : prepare variables for postfix conversion ----------------*/
 yRPN__load         (char *a_source);
@@ -276,6 +277,7 @@ char*       yRPN_syms_unit       (char *a_question, int a_item);
 char        yRPN_stack_init      (void);
 /*---(stack on)----------------*/
 char        yRPN_stack_push      (int a_pos);
+char        yRPN_stack_update    (void);
 /*---(stack off)---------------*/
 char        yRPN_stack_peek      (void);
 char        yRPN_stack_pops      (void);
