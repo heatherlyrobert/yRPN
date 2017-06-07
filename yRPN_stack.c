@@ -436,6 +436,7 @@ yRPN_stack_tokens        (void)
       if (strcmp ("="     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_VAR;
       if (strcmp (";"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_VAR;
       if (rpn.t_type == S_TTYPE_FUNC)          rpn.line_type = S_LINE_DEF_FUN;
+      if (rpn.t_type == S_TTYPE_VARS)          rpn.line_type = S_LINE_DEF_VAR;
    }
    if (rpn.n_tokens >  0 && rpn.line_type == S_LINE_DEF_FUN) {
       if (strcmp ("{"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_FUN;

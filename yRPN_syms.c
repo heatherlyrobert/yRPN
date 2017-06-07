@@ -785,6 +785,10 @@ yRPN__funcvar      (int   a_pos)
    /*---(save variables)-------------------*/
    else {
       DEBUG_YRPN    yLOG_note    ("put variable directly to output");
+      if (rpn.l_type == S_TTYPE_OPER) {
+         if (strcmp (rpn.l_name, "." ) == 0)  rpn.t_type = S_TTYPE_MEMB;
+         if (strcmp (rpn.l_name, "->") == 0)  rpn.t_type = S_TTYPE_MEMB;
+      }
       yRPN_stack_tokens  ();         /* strait to tokens list                          */
       yRPN__token_save    (a_pos);
    }
@@ -827,7 +831,8 @@ yRPN__oper_splat     (int  a_pos)
       DEBUG_YRPN    yLOG_char    ("t_type"    , rpn.t_type);
       yRPN_stack_push       (a_pos);
       rpn.left_oper  = S_OPER_CLEAR;
-   } else if (rc >= 0 && rpn.p_type == S_TTYPE_FUNC) {
+   /*> } else if (rc >= 0 && rpn.p_type == S_TTYPE_FUNC) {                            <*/
+   } else if (rc >= 0 && (rpn.line_type == S_LINE_DEF_FPTR || rpn.line_type == S_LINE_DEF_FUN || rpn.line_type == S_LINE_DEF_PRO)) {
       DEBUG_YRPN    yLOG_note    ("working in * type modifier mode");
       strlcpy (rpn.t_name, "(*)", S_LEN_LABEL);
       rpn.t_type = S_TTYPE_PTYPE;
@@ -850,7 +855,7 @@ yRPN__oper_splat     (int  a_pos)
       DEBUG_YRPN    yLOG_info    ("t_name"    , rpn.t_name);
       DEBUG_YRPN    yLOG_char    ("t_type"    , rpn.t_type);
       yRPN__token_save    (a_pos);
-      rpn.left_oper  = S_OPER_CLEAR;
+      rpn.left_oper  = S_OPER_LEFT;
    } else {
       DEBUG_YRPN    yLOG_note    ("working in * dereference mode");
       DEBUG_YRPN    yLOG_info    ("t_name"    , rpn.t_name);

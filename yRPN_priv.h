@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7t"
-#define   zRPN_VER_TXT       "handled unnamed parameters in function prototyes"
+#define   zRPN_VER_NUM       "0.7u"
+#define   zRPN_VER_TXT       "added ability to see var vs structure member"
 
 
 
@@ -67,7 +67,7 @@ extern char      zRPN_olddebug;
 #define      S_TTYPE_FUNC       'f'
 #define      S_TTYPE_ADDR       '@'
 #define      S_TTYPE_VARS       'v'
-#define      S_TTYPE_HOLDER     'h'
+#define      S_TTYPE_MEMB       'm'
 #define      S_TTYPE_CAST       'c'
 #define      S_TTYPE_FPTR       '*'
 /*---(upper)-----------*/
