@@ -4129,10 +4129,113 @@ SCRP          interpreting unary operators         yRPN_convert              
 
 
 #==(verb)===  ===========(short desc)============  =====(function)=====  ========================(arguments)=========================  ==========  ==========================(results)========================= 
+SCRP          idendifying line types               yRPN_stack_tokens                                                                                                                                              
+
+   COND       setup some testing variables                                                                                                                                                                          
+     exec     prepare for testing                  yRPN__testquiet                                                                     i_equal     0                                                            
+     code     set the compiler mode                zRPN_lang    = S_LANG_C;
+
+   COND       open statement                                                                                                                                                                                        
+     exec     feed in the expression               yRPN_convert          "a + b"                                                       s_equal     a b +                                                        
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 3                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :a + b                                        
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 3                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b +                                     
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a v,b o,+                                   
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
+
+   COND       completed statement                                                                                                                                                                                   
+     exec     feed in the expression               yRPN_convert          "a + b;"                                                      s_equal     a b +                                                        
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :a + b ;                                      
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 3                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a b +                                     
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a v,b o,+                                   
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : DONE normal statement                          
+
+   COND       open variable definition                                                                                                                                                                              
+     exec     feed in the expression               yRPN_convert          "char c='-'"                                                  s_equal     char c '-' =                                               
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 4                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :char c = '-'                                 
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 4                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :char c '-' =                              
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,char v,c C,'-' o,=                             
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN variable definition                  
+
+   COND       completed variable definition                                                                                                                                                                         
+     exec     feed in the expression               yRPN_convert          "char c='-';"                                                 s_equal     char c '-' =                                               
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 5                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :char c = '-' ;                               
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 4                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :char c '-' =                              
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,char v,c C,'-' o,=                             
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : DONE variable definition                  
+
+   COND       open function definition                                                                                                                                                                              
+     exec     feed in the expression               yRPN_convert          "int swap (int *a, int *b)"                                   s_equal     int int (*) a int (*) b swap                               
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 11                                        
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :int swap ( int *: a , int *: b )             
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 8                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int int (*) a int (*) b swap               
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,int p,int p,(*) v,a p,int p,(*) v,b f,swap               
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN function definition                  
+
+   COND       completed function prototype                                                                                                                                                                          
+     exec     feed in the expression               yRPN_convert          "int swap (int *a, int *b);"                                  s_equal     int int (*) a int (*) b swap                                 
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 12                                        
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :int swap ( int *: a , int *: b ) ;         
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 8                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int int (*) a int (*) b swap               
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,int p,int p,(*) v,a p,int p,(*) v,b f,swap               
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : DONE function prototype                   
+
+   COND       completed function definition                                                                                                                                                                         
+     exec     feed in the expression               yRPN_convert          "int swap (int *a, int *b) {"                                 s_equal     int int (*) a int (*) b swap                                 
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 12                                        
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :int swap ( int *: a , int *: b ) {         
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 8                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int int (*) a int (*) b swap               
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,int p,int p,(*) v,a p,int p,(*) v,b f,swap               
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : DONE function definition                  
+
+   COND       open function pointer (named args)                                                                                                                                                                    
+     exec     feed in the expression               yRPN_convert          "int (* swap) (int *a, int *b) "                              s_equal     int (> int (*) a int (*) b swap                              
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 14                                        
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :int ( *: swap ) ( int *: a , int *: b )           
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 9                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int (> int (*) a int (*) b swap            
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,int *,(> p,int p,(*) v,a p,int p,(*) v,b f,swap               
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN function pointer definition          
+
+   COND       open function pointer (no named args)                                                                                                                                                                 
+     exec     feed in the expression               yRPN_convert          "int (* swap) (int *, int *)"                                 s_equal     int (> int (*) ? int (*) ? swap                              
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 12                                        
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :int ( *: swap ) ( int *: , int *: )        
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 8                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int (> int (*) ? int (*) ? swap               
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,int *,(> p,int p,(*) v,? p,int p,(*) v,? f,swap               
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN function pointer definition          
+
+   COND       complete function pointer (no named args)                                                                                                                                                             
+     exec     feed in the expression               yRPN_convert          "int (* swap) (int *, int *);"                                s_equal     int (> int (*) ? int (*) ? swap                              
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 13                                        
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :int ( *: swap ) ( int *: , int *: ) ;      
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 8                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :int (> int (*) ? int (*) ? swap               
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,int *,(> p,int p,(*) v,? p,int p,(*) v,? f,swap               
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : DONE function pointer definition          
+
+   COND       clean-up                                                                                                                                                                                              
+     exec     wrap-up for testing                  yRPN__testend                                                                       i_equal     0                                                            
+     code     set the mode to compiler             zRPN_lang    = S_LANG_C;
+
+
+
+#==(verb)===  ===========(short desc)============  =====(function)=====  ========================(arguments)=========================  ==========  ==========================(results)========================= 
 SCRP          pointer operations (compilier)       yRPN_convert                                                                                                                                                   
 
    COND       setup some testing variables                                                                                                                                                                          
-     exec     prepare for testing                  yRPN__testloud                                                                      i_equal     0                                                            
+     exec     prepare for testing                  yRPN__testquiet                                                                     i_equal     0                                                            
      code     set the compiler mode                zRPN_lang    = S_LANG_C;
 
    COND       variable address-of                                                                                                                                                                                   
@@ -4141,6 +4244,8 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :&: a                                         
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 2                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a &:                                      
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a o,&:                                      
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       dereferencing a pointer                                                                                                                                                                               
      exec     feed in the expression               yRPN_convert          "*b"                                                          s_equal     b *:                                                         
@@ -4148,6 +4253,8 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :*: b                                         
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 2                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b *:                                      
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,b o,*:                                      
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       assigning a dereferenced pointer                                                                                                                                                                      
      exec     feed in the expression               yRPN_convert          "c=*b"                                                        s_equal     c b *: =                                                                        
@@ -4155,20 +4262,24 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :c = *: b                                     
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 4                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :c b *: =                                  
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,c v,b o,*: o,=                                  
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       both reference and dereference                                                                                                                                                                        
      exec     feed in the expression               yRPN_convert          "b=*&a"                                                       s_equal     b a &: *: =                                                                     
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 5                                         
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :b = *: &: a                                  
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 5                                         
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a &: *: =                               
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,b v,a o,&: o,*: o,=                               
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       both reference and dereference                                                                                                                                                                        
      exec     feed in the expression               yRPN_convert          "b=*a+c"                                                      s_equal     b a *: c + =                                                                    
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 6                                         
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :b = *: a + c                                 
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 6                                         
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a *: c + =                              
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,b v,a o,*: v,c o,+ o,=                              
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       more complicated combination                                                                                                                                                                          
      exec     feed in the expression               yRPN_convert          "b=!++*&a"                                                    s_equal     b a &: *: ++ ! =                                                                
@@ -4176,6 +4287,8 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :b = ! ++ *: &: a                             
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 7                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a &: *: ++ ! =                          
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,b v,a o,&: o,*: o,++ o,! o,=                          
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       more complicated combination with parens                                                                                                                                                              
      exec     feed in the expression               yRPN_convert          "b=!(++(*(&a)))"                                              s_equal     b a &: *: ++ ! =                                                                
@@ -4183,6 +4296,8 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :b = ! ( ++ ( *: ( &: a ) ) )                 
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 7                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :b a &: *: ++ ! =                          
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,b v,a o,&: o,*: o,++ o,! o,=                          
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       use a pointer arrow                                                                                                                                                                                   
      exec     feed in the expression               yRPN_convert          "++cell->count"                                               s_equal     cell count -> ++                                                                
@@ -4190,6 +4305,8 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :++ cell -> count                             
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 4                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :cell count -> ++                          
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,cell v,count o,-> o,++                          
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       use a pointer dot                                                                                                                                                                                     
      exec     feed in the expression               yRPN_convert          "++cell.count"                                                s_equal     cell count . ++                                                                
@@ -4197,6 +4314,8 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :++ cell . count                             
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 4                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :cell count . ++                          
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,cell v,count o,. o,++                          
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       and some math                                                                                                                                                                                         
      exec     feed in the expression               yRPN_convert          "c = ++cell.count * link->next"                               s_equal     c cell count . ++ link next -> * =                                               
@@ -4204,6 +4323,8 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :c = ++ cell . count * link -> next          
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 10                                        
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :c cell count . ++ link next -> * =         
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,c v,cell v,count o,. o,++ v,link v,next o,-> o,* o,=         
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       pointer math before dereference                                                                                                                                                                       
      exec     feed in the expression               yRPN_convert          "p = *(data + i)"                                             s_equal     p data i + *: =                                                                  
@@ -4211,6 +4332,8 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :p = *: ( data + i )                         
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 6                                        
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :p data i + *: =                            
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,p v,data v,i o,+ o,*: o,=                            
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       function call to swap variables                                                                                                                                                                       
      exec     feed in the expression               yRPN_convert          "cyclicSwap (&a, &b, &c);"                                    s_equal     a &: b &: c &: cyclicSwap                                             
@@ -4218,71 +4341,88 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :cyclicSwap ( &: a , &: b , &: c )          
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 7                                         
      get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :a &: b &: c &: cyclicSwap                  
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,a o,&: v,b o,&: v,c o,&: f,cyclicSwap                  
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       function def to swap variables                                                                                                                                                                        
-     exec     feed in the expression               yRPN_convert          "void cyclicSwap (int *a, int *b, int *c)"                    s_equal     void int a *: int b *: int c *: cyclicSwap                                                  
+     exec     feed in the expression               yRPN_convert          "void cyclicSwap (int *a, int *b, int *c)"                    s_equal     void int (*) a int (*) b int (*) c cyclicSwap                                                  
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 15                                        
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :void cyclicSwap ( int *: a , int *: b , int *: c ) 
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 11                                        
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :void int a *: int b *: int c *: cyclicSwap                                           
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :void int (*) a int (*) b int (*) c cyclicSwap                                       
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,void t,int t,(*) v,a t,int t,(*) v,b t,int t,(*) v,c f,cyclicSwap                                           
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN function definition                       
 
    COND       pointer casting                                                                                                                                                                                       
-     exec     feed in the expression               yRPN_convert          "data = (float*) calloc(num,sizeof(float))"                   s_equal                                                                                      
+     exec     feed in the expression               yRPN_convert          "data = (float*) calloc(num,sizeof(float))"                   s_equal     data num float sizeof calloc (*) float =                                         
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 15                                        
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :data = ( float * ) calloc ( num , sizeof ( float ) ) 
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    :                                           
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :                                           
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :data = ( float *: ) calloc ( num , sizeof ( float ) ) 
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 8                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :data num float sizeof calloc (*) float =                                           
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,data v,num t,float k,sizeof f,calloc c,(*) c,float o,=                                           
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       dereference comparision                                                                                                                                                                               
-     exec     feed in the expression               yRPN_convert          "if (*data < *(data + i))"                                    s_equal                                                                                      
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      :                                           
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                           
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    :                                           
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :                                           
+     exec     feed in the expression               yRPN_convert          "if (*data < *(data + i))"                                    s_equal     data *: data i + *: < if                                                         
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 12                                        
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :if ( *: data < *: ( data + i ) )           
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 8                                         
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :data *: data i + *: < if                                           
+     get      output -- postfix detail             yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :v,data o,*: v,data v,i o,+ o,*: o,< k,if                                           
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
 
    COND       pointer definition                                                                                                                                                                                    
-     exec     feed in the expression               yRPN_convert          "float *data = NULL"                                          s_equal                                                                                      
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      :                                           
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                           
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    :                                           
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :                                           
+     exec     feed in the expression               yRPN_convert          "float *data = NULL"                                          s_equal     float (*) data NULL =                                                                   
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 5                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :float *: data = NULL                       
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 5                                         
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :float (*) data NULL =                                           
+     get      output -- postfix detail             yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :t,float t,(*) v,data n,NULL o,=                                           
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN variable definition                       
 
    COND       pointer definition and assignment                                                                                                                                                                     
-     exec     feed in the expression               yRPN_convert          "char *chptr = &ch"                                           s_equal                                                                                      
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      :                                           
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                           
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    :                                           
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :                                           
+     exec     feed in the expression               yRPN_convert          "char *chptr = &ch"                                           s_equal     char (*) chptr ch &: =                                                           
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 6                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :char *: chptr = &: ch                      
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 6                                         
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :char (*) chptr ch &: =                                           
+     get      output -- postfix detail             yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :t,char t,(*) v,chptr v,ch o,&: o,=                                           
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN variable definition                       
 
    COND       var definition and pointer assignment                                                                                                                                                                 
-     exec     feed in the expression               yRPN_convert          "char t = *chptr"                                             s_equal                                                                                      
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      :                                           
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                           
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    :                                           
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :                                           
+     exec     feed in the expression               yRPN_convert          "char t = *chptr"                                             s_equal     char t chptr *: =                                                                
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 5                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :char t = *: chptr                          
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 5                                         
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :char t chptr *: =                                           
+     get      output -- postfix detail             yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :t,char v,t v,chptr o,*: o,=                                           
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN variable definition                       
 
    COND       constant pointer                                                                                                                                                                                      
-     exec     feed in the expression               yRPN_convert          "char *const ptr = &ch"                                       s_equal                                                                                      
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      :                                           
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                           
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    :                                           
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :                                           
+     exec     feed in the expression               yRPN_convert          "char *const ptr = &ch"                                       s_equal     char (*) const ptr ch &: =                                                       
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 7                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :char *: const ptr = &: ch                  
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 7                                         
+     get      output -- postfix summary            yRPN_accessor         "output"     ,   0                                            s_equal     postfix output   :char (*) const ptr ch &: =                                           
+     get      output -- postfix detail             yRPN_accessor         "detail"     ,   0                                            s_equal     postfix detail   :t,char t,(*) t,const v,ptr v,ch o,&: o,=                                           
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN variable definition                       
 
    COND       pointer to a pointer                                                                                                                                                                                  
-     exec     feed in the expression               yRPN_convert          "char **p2 = &p1"                                             s_equal                                                                                      
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      :                                           
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                           
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    :                                           
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :                                           
+     exec     feed in the expression               yRPN_convert          "char **p2 = &p1"                                             s_equal     char (*) (*) p2 p1 &: =                                                          
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 7                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :char *: *: p2 = &: p1                      
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 7                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :char (*) (*) p2 p1 &: =                                           
 
    COND       array of pointers                                                                                                                                                                                     
-     exec     feed in the expression               yRPN_convert          "char *ptr [10]"                                              s_equal                                                                                      
-     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      :                                           
-     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                           
-     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    :                                           
-     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :                                           
+     exec     feed in the expression               yRPN_convert          "char *ptr [10]"                                              s_equal     char (*) ptr 10 ]                                                                
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 6                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :char *: ptr [ 10 ]                         
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 5                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :char (*) ptr 10 ]                                           
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :t,char t,(*) v,ptr I,10 o,]                                           
 
-   COND       function pointer definition                                                                                                                                                                           
+   COND       function pointer definition                                                                                                int                                                                        
      exec     feed in the expression               yRPN_convert          "int (* func) (int, int)"                                     s_equal                                                                                      
      get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      :                                           
      get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :                                           

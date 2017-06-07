@@ -114,6 +114,7 @@ tOPER     s_opers [MAX_OPER] = {
    /*---(parenthesis)------------*/
    { "("   , 'B', 'r', 16, 't',  S_LEFT , 1, "sequence openning"                    },
    { ")"   , 'B', 'r', 16, 't',  S_LEFT , 1, "sequence closing"                     },
+   { "(>"  , 'c', 'I', 16, 't',  S_LEFT , 1, "function opening"                     },
    { "(:"  , 'c', 'I', 16, 't',  S_LEFT , 1, "casting opening"                      },
    { "):"  , 'c', 'I', 16, 't',  S_LEFT , 1, "casting closing"                      },
    /*---(semicolon)--------------*/
@@ -215,20 +216,20 @@ tKEYWORDS  s_keywords [MAX_KEYWORDS] = {
    { "sizeof"                 , 'f' },
    /*---(control)----------------*/
    { "break"                  , 's' },
-   { "case"                   , 's' },
+   { "case"                   , 'f' },
    { "continue"               , 's' },
    { "default"                , 's' },
    { "do"                     , 'f' },
    { "else"                   , 's' },
    { "for"                    , 'f' },
-   { "goto"                   , 's' },
+   { "goto"                   , 'f' },
    { "if"                     , 'f' },
-   { "return"                 , 's' },
+   { "return"                 , 'f' },
    { "switch"                 , 'f' },
    { "while"                  , 'f' },
    /*---(reserving)--------------*/
    { "asm"                    , 'r' },
-   { "typeof"                 , 'r' },
+   { "typeof"                 , 'f' },
    /*---(end)--------------------*/
    { ""                       , '-' },
 };
@@ -304,6 +305,7 @@ yRPN__keywords       (int  a_pos)
    int         x_pos       =    0;     /* updated position in input           */
    int         i           =    0;     /* iterator for keywords               */
    int         x_found     =   -1;     /* index of keyword                    */
+   int         x_use       =  '-';
    /*---(header)------------------------*/
    DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(defenses)-----------------------*/
@@ -331,7 +333,9 @@ yRPN__keywords       (int  a_pos)
       if  (s_keywords [i].name [0] != rpn.t_name [0])      continue;
       if  (strcmp (s_keywords [i].name, rpn.t_name ) != 0) continue;
       x_found = i;
+      x_use = s_keywords [i].usage;
       DEBUG_YRPN    yLOG_value   ("x_found"   , x_found);
+      DEBUG_YRPN    yLOG_char    ("x_use"     , x_use);
       break;
    }
    DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
@@ -383,13 +387,13 @@ yRPN__types          (int  a_pos)
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   /*---(accumulate characters)------------*/
+   /*---(accumulate characters)----------*/
    DEBUG_YRPN    yLOG_note    ("accumulate characters");
    rpn.t_type   = S_TTYPE_TYPE;
    x_pos        = a_pos;  /* starting point */
    while (yRPN__token_add (&x_pos) == 0);
    DEBUG_YRPN    yLOG_info    ("rpn.t_name", rpn.t_name);
-   /*---(try to match types)---------------*/
+   /*---(try to match types)-------------*/
    DEBUG_YRPN    yLOG_note    ("search types");
    for (i = 0; i < MAX_TYPES; ++i) {
       if  (s_types [i].name [0] == '\0')                   break;
@@ -400,32 +404,67 @@ yRPN__types          (int  a_pos)
       break;
    }
    DEBUG_YRPN    yLOG_info    ("token name", rpn.t_name);
-   /*---(handle misses)--------------------*/
+   /*---(handle misses)------------------*/
    --rce;  if (x_found < 0) {
       yRPN__token_error ();
       DEBUG_YRPN    yLOG_note    ("type not found");
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   /*---(definition vs casting)------------*/
+   /*---(definition vs casting)----------*/
    yRPN_stack_tokens  ();         /* strait to tokens list                          */
    if (rpn.line_type == S_LINE_NORMAL) {
       DEBUG_YRPN    yLOG_note    ("treating as a casting onto stack");
       rc == yRPN_stack_peek ();
-      if (rpn.p_type == S_TTYPE_CAST) {
+      DEBUG_YRPN    yLOG_char    ("rpn.p_type", rpn.p_type);
+      switch (rpn.p_type) {
+      case S_TTYPE_FUNC :
+         DEBUG_YRPN    yLOG_note    ("function parm type");
+         yRPN__token_save    (a_pos);
+         rpn.left_oper  = S_OPER_LEFT;
+         break;
+      case S_TTYPE_FPTR :
+         DEBUG_YRPN    yLOG_note    ("function pointer type");
+         yRPN__token_save    (a_pos);
+         rpn.left_oper  = S_OPER_LEFT;
+         break;
+      case S_TTYPE_TYPE :
+         DEBUG_YRPN    yLOG_note    ("normal type");
+         yRPN__token_save    (a_pos);
+         rpn.left_oper  = S_OPER_LEFT;
+         break;
+      case S_TTYPE_CAST :
+      default           :
+         DEBUG_YRPN    yLOG_note    ("casting type");
+         /*---(fix paren)----------------*/
+         if (strcmp (rpn.p_name, "(") == 0) {
+            strlcpy (rpn.p_name, "(:", S_LEN_LABEL);
+            rpn.p_type = S_TTYPE_CAST;
+            rpn.p_prec = S_PREC_FUNC;
+            yRPN_stack_update ();
+         }
+         /*---(update current)-----------*/
          rpn.t_type = S_TTYPE_CAST;
          rpn.t_prec = S_PREC_FUNC;
+         /*---(push)---------------------*/
+         yRPN__token_push    (a_pos);
+         rpn.left_oper  = S_OPER_LEFT;
       }
-      yRPN__token_push    (a_pos);
-      rpn.left_oper  = S_OPER_CLEAR;
    }
-   /*---(save)-----------------------------*/
+   /*---(save)---------------------------*/
+   else if (rpn.paren_lvl > 0) {
+      DEBUG_YRPN    yLOG_note    ("put c type directly to output");
+      rpn.t_type = S_TTYPE_PTYPE;
+      yRPN__token_save    (a_pos);
+      rpn.left_oper  = S_OPER_LEFT;
+   }
+   /*---(save)---------------------------*/
    else {
       DEBUG_YRPN    yLOG_note    ("put c type directly to output");
       yRPN__token_save    (a_pos);
       rpn.left_oper  = S_OPER_LEFT;
    }
-   /*---(complete)-------------------------*/
+   /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
 }
@@ -702,6 +741,7 @@ yRPN__funcvar      (int   a_pos)
    /* func/vars only contain alphnanumerics plus the underscore.              */
    /*---(locals)-----------+-----------+-*/
    char        rce         =  -10;     /* return code for errors              */
+   char        rc          =    0;     /* generic return code                 */
    int         x_pos       =    0;     /* updated position in input           */
    int         i           =    0;     /* iterator for keywords               */
    int         x_found     =   -1;     /* index of keyword                    */
@@ -730,14 +770,18 @@ yRPN__funcvar      (int   a_pos)
       return rce;
    }
    /*---(check func vs vars)---------------*/
-   rpn.t_type   = yRPN__token_paren (x_pos);
-   /*---(save)-----------------------------*/
+   rc = yRPN_stack_peek ();
+   if (rpn.s_type == S_TTYPE_FPTR)  rpn.t_type  = S_TTYPE_FUNC;
+   else                             rpn.t_type  = yRPN__token_paren (x_pos);
+   /*---(push functions)-------------------*/
    if (rpn.t_type == S_TTYPE_FUNC) {
       DEBUG_YRPN    yLOG_note    ("put function on stack");
       rpn.t_prec = S_PREC_FUNC;
       yRPN_stack_tokens  ();         /* strait to tokens list                          */
       yRPN__token_push    (a_pos);
-   } else {
+   }
+   /*---(save variables)-------------------*/
+   else {
       DEBUG_YRPN    yLOG_note    ("put variable directly to output");
       yRPN_stack_tokens  ();         /* strait to tokens list                          */
       yRPN__token_save    (a_pos);
@@ -762,6 +806,58 @@ static void        o___TOKENS__________________o (void) {;}
  *>    strcat (rpn.tokens, " ");                                                       <* 
  *>    return strlen (rpn.working);                                                    <* 
  *> }                                                                                  <*/
+
+int          /*--> check for operators -------------------[--------[--------]-*/
+yRPN__oper_splat     (int  a_pos)
+{  /*---(design notes)--------------------------------------------------------*/
+   char  rc = 0;
+   DEBUG_YRPN    yLOG_note    ("special pointer handling");
+   rc = yRPN_stack_peek ();
+   DEBUG_YRPN    yLOG_info    ("p_name"    , rpn.p_name);
+   DEBUG_YRPN    yLOG_char    ("p_type"    , rpn.p_type);
+   if (rc >= 0 && rpn.p_type == S_TTYPE_CAST) {
+      DEBUG_YRPN    yLOG_note    ("working in * casting mode");
+      strlcpy (rpn.t_name, "(*)", S_LEN_LABEL);
+      rpn.t_type = S_TTYPE_CAST;
+      rpn.t_prec = S_PREC_FUNC;
+      rpn.t_dir  = S_RIGHT;
+      DEBUG_YRPN    yLOG_info    ("t_name"    , rpn.t_name);
+      DEBUG_YRPN    yLOG_char    ("t_type"    , rpn.t_type);
+      yRPN_stack_push       (a_pos);
+      rpn.left_oper  = S_OPER_CLEAR;
+   } else if (rc >= 0 && rpn.p_type == S_TTYPE_FUNC) {
+      DEBUG_YRPN    yLOG_note    ("working in * type modifier mode");
+      strlcpy (rpn.t_name, "(*)", S_LEN_LABEL);
+      rpn.t_type = S_TTYPE_PTYPE;
+      DEBUG_YRPN    yLOG_info    ("t_name"    , rpn.t_name);
+      DEBUG_YRPN    yLOG_char    ("t_type"    , rpn.t_type);
+      yRPN__token_save    (a_pos);
+      rpn.left_oper  = S_OPER_CLEAR;
+   } else if (rpn.line_type == S_LINE_DEF_FPTR) {
+      DEBUG_YRPN    yLOG_note    ("working in function pointer mode");
+      strlcpy (rpn.t_name, "(>", S_LEN_LABEL);
+      rpn.t_type = S_TTYPE_FPTR;
+      DEBUG_YRPN    yLOG_info    ("t_name"    , rpn.t_name);
+      DEBUG_YRPN    yLOG_char    ("t_type"    , rpn.t_type);
+      yRPN__token_save    (a_pos);
+      rpn.left_oper  = S_OPER_CLEAR;
+   } else if (rpn.line_type == S_LINE_DEF) {
+      DEBUG_YRPN    yLOG_note    ("working in * type modifier mode");
+      strlcpy (rpn.t_name, "(*)", S_LEN_LABEL);
+      rpn.t_type = S_TTYPE_TYPE;
+      DEBUG_YRPN    yLOG_info    ("t_name"    , rpn.t_name);
+      DEBUG_YRPN    yLOG_char    ("t_type"    , rpn.t_type);
+      yRPN__token_save    (a_pos);
+      rpn.left_oper  = S_OPER_CLEAR;
+   } else {
+      DEBUG_YRPN    yLOG_note    ("working in * dereference mode");
+      DEBUG_YRPN    yLOG_info    ("t_name"    , rpn.t_name);
+      DEBUG_YRPN    yLOG_char    ("t_type"    , rpn.t_type);
+      yRPN_stack_oper       (a_pos);
+      rpn.left_oper  = S_OPER_LEFT;  /* an oper after an oper must be right-only */
+   }
+   return 0;
+}
 
 int          /*--> check for operators -------------------[--------[--------]-*/
 yRPN__operators      (int  a_pos)
@@ -838,40 +934,14 @@ yRPN__operators      (int  a_pos)
    /*---(handle it)------------------------*/
    yRPN__prec ();
    yRPN_stack_tokens      ();
-   rc = yRPN_stack_peek ();
-   if (rc >= 0 && rpn.p_type == S_TTYPE_CAST) {
-      DEBUG_YRPN    yLOG_note    ("working in casting mode");
-      strlcpy (rpn.t_name, "(*)", S_LEN_LABEL);
-      rpn.t_type = S_TTYPE_CAST;
-      rpn.t_prec = S_PREC_FUNC;
-      rpn.t_dir  = S_RIGHT;
-      yRPN_stack_push       (a_pos);
-      rpn.left_oper  = S_OPER_CLEAR;
+   if (strcmp (rpn.t_name, "*:") == 0) {
+      DEBUG_YRPN    yLOG_note    ("working with a pointer");
+      yRPN__oper_splat  (a_pos);
    } else {
-      DEBUG_YRPN    yLOG_note    ("working in normal mode");
+      DEBUG_YRPN    yLOG_note    ("working with normal operators");
       yRPN_stack_oper       (a_pos);
       rpn.left_oper  = S_OPER_LEFT;  /* an oper after an oper must be right-only */
    }
-   /*> yRPN_stack_peek       ();                                                                     <* 
-    *> DEBUG_OPER  yLOG_complex ("prec"      , "curr=%c, stack=%c", rpn.t_prec, rpn.p_prec);         <* 
-    *> zRPN_DEBUG  printf("      precedence %c versus stack top of %c\n", rpn.t_prec, rpn.p_prec);   <* 
-    *> if ( (rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||                                     <* 
-    *>       (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                                   <* 
-    *>    while ((rpn.t_dir == S_LEFT && rpn.t_prec >= rpn.p_prec) ||                                <* 
-    *>          (rpn.t_dir == S_RIGHT && rpn.t_prec >  rpn.p_prec)) {                                <* 
-    *>       /+> if (rpn__last != 'z') RPN__pops();                                       <+/        <* 
-    *>       if (rpn.p_prec == 'z') break;                                                           <* 
-    *>       yRPN_stack_pops ();                                                                     <* 
-    *>       yRPN_stack_peek();                                                                      <* 
-    *>    }                                                                                          <* 
-    *>    yRPN_stack_push(a_pos);                                                                    <* 
-    *>    yRPN_stack_normal (a_pos);                                                                 <* 
-    *> } else {                                                                                      <* 
-    *>    yRPN_stack_push(a_pos);                                                                    <* 
-    *>    yRPN_stack_normal (a_pos);                                                                 <* 
-    *> }                                                                                             <*/
-   /*---(save)-----------------------------*/
-   rpn.left_oper  = S_OPER_LEFT;  /* an oper after an oper must be right-only */
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
@@ -966,37 +1036,75 @@ yRPN__sequencer      (int  a_pos)
    DEBUG_YRPN    yLOG_value   ("rpn.t_len" , rpn.t_len);
    yRPN__prec ();
    /*---(handle)---------------------------*/
+   DEBUG_YRPN    yLOG_char    ("line_type" , rpn.line_type);
    switch (rpn.t_name [0]) {
    case '(' :
+      ++rpn.paren_lvl;
       yRPN_stack_tokens  ();         /* strait to tokens list                          */
       rc = yRPN_stack_peek    ();
       if (rc >= 0) {
-         if (rpn.p_type == S_TTYPE_FUNC || rpn.p_type == S_TTYPE_KEYW) {
+         DEBUG_YRPN    yLOG_note    ("something in stack");
+         DEBUG_YRPN    yLOG_info    ("rpn.p_name", rpn.p_name);
+         DEBUG_YRPN    yLOG_char    ("rpn.p_type", rpn.p_type);
+         if (rpn.p_type == S_TTYPE_FUNC || strcmp (rpn.p_name, "sizeof") == 0) {
+            DEBUG_YRPN    yLOG_note    ("function openning");
+            /*> strlcpy (rpn.t_name, "(>", S_LEN_LABEL);                              <*/
+            rpn.t_type = S_TTYPE_FUNC;
             yRPN__token_push (a_pos);
             rpn.left_oper  = S_OPER_LEFT;
          } else {
-            strlcpy (rpn.t_name, "(:", S_LEN_LABEL);
-            rpn.t_type = S_TTYPE_CAST;
-            rpn.t_prec = S_PREC_FUNC;
+            DEBUG_YRPN    yLOG_note    ("normal parenthesis");
+            /*> strlcpy (rpn.t_name, "(:", S_LEN_LABEL);                              <* 
+             *> rpn.t_type = S_TTYPE_CAST;                                            <* 
+             *> rpn.t_prec = S_PREC_FUNC;                                             <* 
+             *> yRPN__token_push (a_pos);                                             <* 
+             *> rpn.left_oper  = S_OPER_LEFT;                                         <*/
             yRPN__token_push (a_pos);
             rpn.left_oper  = S_OPER_LEFT;
          }
       } else {  /* clever pointer stuff */
-         yRPN__token_push (a_pos);
-         rpn.left_oper  = S_OPER_LEFT;
+         DEBUG_YRPN    yLOG_note    ("empty stack");
+         if (rpn.line_type == S_LINE_NORMAL) {
+            DEBUG_YRPN    yLOG_note    ("normal parenthesis");
+            yRPN__token_push (a_pos);
+            rpn.left_oper  = S_OPER_LEFT;
+         } else {
+            DEBUG_YRPN    yLOG_note    ("function pointer paren (ignore)");
+            /*> strlcpy (rpn.t_name, "(>", S_LEN_LABEL);                              <* 
+             *> rpn.t_type = S_TTYPE_FPTR;                                            <* 
+             *> yRPN__token_push (a_pos);                                             <*/
+            rpn.left_oper  = S_OPER_LEFT;
+            rpn.line_type  = S_LINE_DEF_FPTR;
+         }
       }
       break;
    case ')' :
+      --rpn.paren_lvl;
       yRPN_stack_tokens     ();
-      yRPN_stack_normal     (a_pos);
-      yRPN_stack_paren      (a_pos);
+      if (rpn.s_type == S_TTYPE_FPTR &&  rpn.line_type == S_LINE_DEF_FPTR) {
+         DEBUG_YRPN    yLOG_note    ("function pointer paren (ignore)");
+      } else {
+         DEBUG_YRPN    yLOG_note    ("normal closing parens");
+         yRPN_stack_normal     (a_pos);
+         yRPN_stack_paren      (a_pos);
+      }
       rpn.left_oper  = S_OPER_CLEAR;
       break;
    case '[' :
+      DEBUG_YRPN    yLOG_note    ("openning brace");
+      yRPN_stack_tokens     ();
+      yRPN__token_push      (a_pos);
+      rpn.left_oper  = S_OPER_LEFT;
       break;
    case ']' :
+      DEBUG_YRPN    yLOG_note    ("closing brace");
+      yRPN_stack_tokens     ();
+      yRPN_stack_paren      (a_pos);
+      rpn.t_type     = S_TTYPE_OPER;
+      yRPN_stack_shuntd     ();
       break;
    case ',' :
+      DEBUG_YRPN    yLOG_note    ("comma");
       yRPN_stack_tokens      ();
       yRPN_stack_normal     (a_pos);
       rc = yRPN_stack_paren (a_pos);
@@ -1148,26 +1256,13 @@ yRPN__enders         (int  a_pos)
    yRPN__prec ();
    /*---(handle)---------------------------*/
    switch (rpn.t_name [0]) {
-   case '(' :
+   case ';' :
       yRPN_stack_tokens  ();         /* strait to tokens list                          */
-      yRPN__token_push (a_pos);
       rpn.left_oper  = S_OPER_LEFT;
       break;
-   case ')' :
+   case '{' :
       yRPN_stack_tokens      ();
-      yRPN_stack_normal     (a_pos);
-      rc = yRPN_stack_paren (a_pos);
       rpn.left_oper  = S_OPER_CLEAR;
-      break;
-   case '[' :
-      break;
-   case ']' :
-      break;
-   case ',' :
-      yRPN_stack_tokens      ();
-      yRPN_stack_normal     (a_pos);
-      rc = yRPN_stack_paren (a_pos);
-      rpn.left_oper  = S_OPER_LEFT;
       break;
    }
    /*---(complete)-------------------------*/

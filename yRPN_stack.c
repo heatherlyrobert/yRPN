@@ -41,6 +41,7 @@ yRPN_stack_init      (void)
    /*---(line variables)-----------------*/
    rpn.line_done  = S_LINE_OPEN;
    rpn.line_type  = S_LINE_NORMAL;
+   rpn.paren_lvl  = 0;
    /*---(output)-------------------------*/
    DEBUG_YRPN    yLOG_snote   ("clear output");
    strlcpy (rpn.shuntd  ,"" , S_LEN_OUTPUT);
@@ -52,6 +53,13 @@ yRPN_stack_init      (void)
    rpn.n_shuntd   = 0;
    rpn.n_tokens   = 0;
    DEBUG_YRPN    yLOG_sint    (rpn.n_shuntd);
+   /*---(saved vars)---------------------*/
+   strlcpy (rpn.l_name  ,"" , S_LEN_TOKEN);
+   rpn.l_type     = S_TTYPE_NONE;
+   rpn.l_prec     = S_PREC_NONE;
+   strlcpy (rpn.s_name  ,"" , S_LEN_TOKEN);
+   rpn.s_type     = S_TTYPE_NONE;
+   rpn.s_prec     = S_PREC_NONE;
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_sexit   (__FUNCTION__);
    return 0;
@@ -141,8 +149,8 @@ yRPN_stack_peek         (void)
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    /*---(default)------------------------*/
-   rpn.p_type = '-';
-   rpn.p_prec = 'a';
+   rpn.p_type = S_TTYPE_NONE;
+   rpn.p_prec = S_TTYPE_FUNC;
    strlcpy (rpn.p_name, "", S_LEN_TOKEN);
    /*---(defense)------------------------*/
    DEBUG_YRPN_M  yLOG_sint    (s_nstack);
@@ -204,7 +212,7 @@ yRPN_stack_pops     (void)
    strlcat (rpn.shuntd, x_div           , S_LEN_OUTPUT);
    strlcat (rpn.shuntd, s_stack [s_nstack].name, S_LEN_OUTPUT);
    DEBUG_YRPN_M  yLOG_snote   (s_stack [s_nstack].name);
-   printf ("%s\n", rpn.shuntd);
+   /*> printf ("%s\n", rpn.shuntd);                                                   <*/
    /*---(normal stack)-------------------*/
    if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
@@ -257,7 +265,7 @@ yRPN_stack_oper      (int a_pos)
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;
    char        rc          =   0;
-   char        x_prec      = '-';
+   char        x_prec      = S_PREC_NONE;
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_enter   (__FUNCTION__);
    DEBUG_YRPN_M  yLOG_char    ("t_dir"     , rpn.t_dir);
@@ -326,6 +334,7 @@ yRPN_stack_paren     (int a_pos)
       }
       /*---(throw away open paren)----------*/
       if (strcmp (rpn.t_name, ")") == 0)  rc = yRPN_stack_toss ();
+      if (strcmp (rpn.t_name, "]") == 0)  rc = yRPN_stack_toss ();
    } else {
       DEBUG_YRPN_M  yLOG_note    ("casting parenthesis closing");
       strlcpy (rpn.t_name, "):", S_LEN_LABEL);
@@ -352,21 +361,33 @@ yRPN_stack_shuntd         (void)
    /*---(locals)-----------+-----------+-*/
    char        x_div       [S_LEN_LABEL];
    char        x_token     [S_LEN_TOKEN];
+   /*---(header)-------------------------*/
+   DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    /*---(shuntd output)------------------*/
+   DEBUG_YRPN_M  yLOG_snote   ("write shuntd");
    if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
    strlcat (rpn.shuntd, x_div           , S_LEN_OUTPUT);
    strlcat (rpn.shuntd, rpn.t_name      , S_LEN_OUTPUT);
+   /*> printf ("%s\n", rpn.shuntd);                                                   <*/
    /*---(normal stack)-------------------*/
+   DEBUG_YRPN_M  yLOG_snote   ("write detail");
    if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
    strlcat (rpn.detail, x_div           , S_LEN_OUTPUT);
    sprintf (x_token, "%c,%s", rpn.t_type, rpn.t_name);
    strlcat (rpn.detail, x_token         , S_LEN_OUTPUT);
+   /*---(save this token)----------------*/
+   DEBUG_YRPN_M  yLOG_snote   ("save in s_");
+   strlcpy (rpn.s_name, rpn.t_name, S_LEN_LABEL);
+   rpn.s_type  = rpn.t_type;
+   rpn.s_prec  = rpn.t_prec;
    /*---(update counters)----------------*/
+   DEBUG_YRPN_M  yLOG_snote   ("counters");
    ++rpn.n_shuntd;
    rpn.l_shuntd = strlen (rpn.shuntd);
    /*---(complete)-----------------------*/
+   DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
 }
 
@@ -376,10 +397,13 @@ yRPN_stack_normal       (int a_pos)
    /*---(locals)-----------+-----------+-*/
    char        x_div       [S_LEN_LABEL];
    char        x_token     [S_LEN_TOKEN];
+   /*---(header)-------------------------*/
+   DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    /*---(shuntd output)------------------*/
    if (rpn.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
    /*---(add token)----------------------*/
+   DEBUG_YRPN_M  yLOG_snote   ("write normal");
    strlcat (rpn.normal, x_div      , S_LEN_OUTPUT);
    /*> if (rpn.t_type == S_TTYPE_GROUP)  return 0;                                                <*/
    /*> if (rpn.t_type == S_TTYPE_OPER && strcmp(rpn.t_name, ",") == 0)  return 0;                 <*/
@@ -389,7 +413,8 @@ yRPN_stack_normal       (int a_pos)
    sprintf (x_token, "%c,%04d,%s", rpn.t_type, a_pos, rpn.t_name);
    strlcat (rpn.normal, x_token    , S_LEN_OUTPUT);
    rpn.l_normal = strlen (rpn.normal);
-   zRPN_DEBUG  printf("      RPN__normal     :: (---) %s\n", x_token);
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
 }
 
@@ -402,18 +427,19 @@ yRPN_stack_tokens        (void)
    if (strcmp (";"     , rpn.t_name) == 0)     rpn.line_done = S_LINE_DONE;
    if (strcmp ("{"     , rpn.t_name) == 0)     rpn.line_done = S_LINE_DONE;
    /*---(check line types)---------------*/
-   if (rpn.n_tokens == 0 && rpn.t_type == 't') {
+   if (rpn.n_tokens == 0 && rpn.t_type == S_TTYPE_TYPE) {
       if (strcmp ("extern", rpn.t_name) == 0)  rpn.line_type = S_LINE_EXTERN;
       else                                     rpn.line_type = S_LINE_DEF;
    }
    if (rpn.n_tokens >  0 && rpn.line_type == S_LINE_DEF) {
+      if (strcmp ("("     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_FPTR;
       if (strcmp ("="     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_VAR;
       if (strcmp (";"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_VAR;
       if (rpn.t_type == S_TTYPE_FUNC)          rpn.line_type = S_LINE_DEF_FUN;
    }
    if (rpn.n_tokens >  0 && rpn.line_type == S_LINE_DEF_FUN) {
-      if (strcmp (";"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_FUN;
-      if (strcmp ("{"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_PRO;
+      if (strcmp ("{"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_FUN;
+      if (strcmp (";"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_PRO;
    }
    /*---(adapt divider)------------------*/
    if (rpn.n_tokens == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
@@ -422,6 +448,10 @@ yRPN_stack_tokens        (void)
    /*---(add token)----------------------*/
    strlcat (rpn.tokens, x_div      , S_LEN_OUTPUT);
    strlcat (rpn.tokens, rpn.t_name , S_LEN_OUTPUT);
+   /*---(save this token)----------------*/
+   strlcpy (rpn.l_name, rpn.t_name, S_LEN_LABEL);
+   rpn.l_type  = rpn.t_type;
+   rpn.l_prec  = rpn.t_prec;
    /*---(update counters)----------------*/
    ++(rpn.n_tokens);
    /*> printf ("rpn.tokens after  %2d:%s\n", rpn.n_tokens, rpn.tokens);               <*/
@@ -458,43 +488,44 @@ yRPN_stack_unit      (char *a_question, int a_item)
          strlcat (unit_answer, x_temp       , S_LEN_OUTPUT);
       }
    }
-   /*---(line level)---------------------*/
-   else if   (strcmp (a_question, "line_done"     )  == 0) {
-      switch (rpn.line_done) {
-      case S_LINE_OPEN :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source status    : open");
-         break;
-      case S_LINE_DONE :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source status    : DONE");
-         break;
-      default          :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source status    : unknown");
-         break;
-      }
-   }
    /*---(line type)----------------------*/
    else if   (strcmp (a_question, "line_type"     )  == 0) {
-      switch (rpn.line_type) {
-      case S_LINE_EXTERN   :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : external variable definition");
+      strlcpy (unit_answer, "source decision  : ", S_LEN_OUTPUT);
+      switch (rpn.line_done) {
+      case S_LINE_OPEN :
+         strlcat (unit_answer, "OPEN ", S_LEN_OUTPUT);
          break;
-      case S_LINE_DEF      :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : unknown type of definition");
-         break;
-      case S_LINE_DEF_VAR  :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : variable definition");
-         break;
-      case S_LINE_DEF_PRO  :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : function prototype");
-         break;
-      case S_LINE_DEF_FUN  :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : function definition");
-         break;
-      case S_LINE_NORMAL   :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : normal statement");
+      case S_LINE_DONE :
+         strlcat (unit_answer, "DONE ", S_LEN_OUTPUT);
          break;
       default          :
-         snprintf (unit_answer, S_LEN_OUTPUT, "source type      : unknown");
+         strlcat (unit_answer, "???? ", S_LEN_OUTPUT);
+         break;
+      }
+      switch (rpn.line_type) {
+      case S_LINE_EXTERN   :
+         strlcat (unit_answer, "external variable definition", S_LEN_OUTPUT);
+         break;
+      case S_LINE_DEF      :
+         strlcat (unit_answer, "unknown type of definition", S_LEN_OUTPUT);
+         break;
+      case S_LINE_DEF_VAR  :
+         strlcat (unit_answer, "variable definition", S_LEN_OUTPUT);
+         break;
+      case S_LINE_DEF_PRO  :
+         strlcat (unit_answer, "function prototype", S_LEN_OUTPUT);
+         break;
+      case S_LINE_DEF_FUN  :
+         strlcat (unit_answer, "function definition", S_LEN_OUTPUT);
+         break;
+      case S_LINE_DEF_FPTR :
+         strlcat (unit_answer, "function pointer definition", S_LEN_OUTPUT);
+         break;
+      case S_LINE_NORMAL   :
+         strlcat (unit_answer, "normal statement", S_LEN_OUTPUT);
+         break;
+      default          :
+         strlcat (unit_answer, "unknown", S_LEN_OUTPUT);
          break;
       }
    }

@@ -100,14 +100,14 @@ yRPN__load         (char *a_source)   /* source infix string                    
    strncpy (rpn.t_name  , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
    rpn.t_type     = S_TTYPE_ERROR;
    rpn.t_len      = 0;
-   rpn.t_type     = 'e';
-   rpn.t_prec     = '-';
+   rpn.t_type     = S_TTYPE_ERROR;
+   rpn.t_prec     = S_PREC_NONE;
    rpn.t_dir      = S_LEFT;
    rpn.t_arity    = 0;
    rpn.left_oper  = S_OPER_LEFT;
    rpn.pproc      = '-';
-   rpn.p_type     = '-';
-   rpn.p_prec     = '-';
+   rpn.p_type     = S_TTYPE_NONE;
+   rpn.p_prec     = S_PREC_NONE;
    /*---(set the stack vars)-------------*/
    yRPN_stack_init   ();
    /*---(complete)-----------------------*/
@@ -282,6 +282,7 @@ yRPN_convert       (char *a_source)
       if (rc <= x_pos && strchr (v_number  , x_ch) != 0)  rc = yRPN__numbers    (x_pos);
       if (rc <= x_pos && strchr (v_sequence, x_ch) != 0)  rc = yRPN__sequencer  (x_pos);
       if (rc <= x_pos && strchr (v_operator, x_ch) != 0)  rc = yRPN__operators  (x_pos);
+      if (rc <= x_pos && strchr (v_enders  , x_ch) != 0)  rc = yRPN__enders     (x_pos);
       /*> if (rc <= x_pox_pos && x_ch == '<' && rpn.pproc == S_PPROC_INCL)  rc = yRPN__strings    (x_pos);   <* 
        *> if (rc <= x_pos &&                rpn.pproc == S_PPROC_OTHER) rc = yRPN__text       (i);   <*/
       /*---(unrecognized)----------------*/

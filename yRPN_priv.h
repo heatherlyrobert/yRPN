@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7q"
-#define   zRPN_VER_TXT       "very basic type casting working in unit test"
+#define   zRPN_VER_NUM       "0.7r"
+#define   zRPN_VER_TXT       "function pointers, declarations and protopytes are nice now"
 
 
 
@@ -38,6 +38,7 @@ extern char     *v_hex;
 extern char     *v_octal;
 extern char     *v_binary;
 extern char     *v_sequence;
+extern char     *v_enders;
 extern char     *v_operator;
 extern char     *v_preproc;
 extern char     *v_address;
@@ -53,18 +54,22 @@ extern char      zRPN_olddebug;
 #define      S_LEN_DESC        100
 #define      S_LEN_LABEL        20
 /*---(token types)--------------------*/
+#define      S_TTYPE_NONE       '-'
 /*---(grouping)--------*/
 #define      S_TTYPE_GROUP      '('
 /*---(lower)-----------*/
 #define      S_TTYPE_KEYW       'k'
 #define      S_TTYPE_TYPE       't'
+#define      S_TTYPE_PTYPE      'p'
 #define      S_TTYPE_ERROR      'e'
 #define      S_TTYPE_CONST      'n'
 #define      S_TTYPE_OPER       'o'
 #define      S_TTYPE_FUNC       'f'
 #define      S_TTYPE_ADDR       '@'
 #define      S_TTYPE_VARS       'v'
+#define      S_TTYPE_HOLDER     'h'
 #define      S_TTYPE_CAST       'c'
+#define      S_TTYPE_FPTR       '*'
 /*---(upper)-----------*/
 #define      S_TTYPE_CHAR       'C'
 #define      S_TTYPE_STR        'S'
@@ -102,6 +107,7 @@ extern char      zRPN_olddebug;
 #define      S_LINE_DEF_VAR     'v'
 #define      S_LINE_DEF_PRO     'p'
 #define      S_LINE_DEF_FUN     'f'
+#define      S_LINE_DEF_FPTR    '*'
 #define      S_LINE_NORMAL      's'
 /*---(line complete)------------------*/
 #define      S_LINE_OPEN        '-'
@@ -136,6 +142,7 @@ struct  cRPN {
    /*---(overall working)----------------*/
    char        line_type;                   /* source line type               */
    char        line_done;                   /* source line complete           */
+   char        paren_lvl;                   /* how deep in parenthesis (any)  */
    /*---(token working)------------------*/
    char        t_token     [S_LEN_TOKEN];   /* current token (full)           */
    char        t_type;                      /* current token type             */
@@ -150,6 +157,14 @@ struct  cRPN {
    char        p_name      [S_LEN_TOKEN];   /* peek token from stack          */
    char        p_type;                      /* peek token from stack          */
    char        p_prec;                      /* peek token from stack          */
+   /*---(shuntd)-------------------------*/
+   char        l_name      [S_LEN_TOKEN];   /* last token touched             */
+   char        l_type;                      /* last token touched             */
+   char        l_prec;                      /* last token touched             */
+   /*---(shuntd)-------------------------*/
+   char        s_name      [S_LEN_TOKEN];   /* last token shuntd              */
+   char        s_type;                      /* last token shuntd              */
+   char        s_prec;                      /* last token shuntd              */
    /*---(infix output)-------------------*/
    char        tokens      [S_LEN_OUTPUT];
    char        normal      [S_LEN_OUTPUT];
@@ -241,6 +256,9 @@ yRPN__keywords     (int  a_pos);
 
 int        /* ---- : save off type declarations ------------------------------*/
 yRPN__types        (int  a_pos);
+
+int          /*--> check for statement enders ------------[--------[--------]-*/
+yRPN__enders         (int  a_pos);
 
 char       /* ---- : set spreadsheet human readable --------------------------*/
 yRPN__shuman       (int *a_ntoken);
