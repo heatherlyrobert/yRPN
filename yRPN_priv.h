@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7u"
-#define   zRPN_VER_TXT       "added ability to see var vs structure member"
+#define   zRPN_VER_NUM       "0.7v"
+#define   zRPN_VER_TXT       "pointer operations unit test is clean"
 
 
 
