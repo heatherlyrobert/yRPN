@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7s"
-#define   zRPN_VER_TXT       "fixed keywords as now some report as function-like"
+#define   zRPN_VER_NUM       "0.7t"
+#define   zRPN_VER_TXT       "handled unnamed parameters in function prototyes"
 
 
 

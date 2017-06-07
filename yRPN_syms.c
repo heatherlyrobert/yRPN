@@ -1012,6 +1012,7 @@ yRPN__sequencer      (int  a_pos)
    int         x_pos       =    0;     /* updated position in input           */
    int         i           =    0;     /* iterator for keywords               */
    int         x_found     =   -1;     /* index of keyword                    */
+   int         x_type      =  '-';
    /*---(header)------------------------*/
    DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(defenses)-----------------------*/
@@ -1081,6 +1082,21 @@ yRPN__sequencer      (int  a_pos)
       }
       break;
    case ')' :
+      x_type  = rpn.s_type;
+      DEBUG_YRPN    yLOG_char    ("x_type"    , x_type);
+      DEBUG_YRPN    yLOG_char    ("line_type" , rpn.line_type);
+      if (rpn.line_type == S_LINE_DEF_FPTR || rpn.line_type == S_LINE_DEF_PRO) {
+         if (x_type == S_TTYPE_PTYPE) {
+            strlcpy (rpn.t_name, "?", S_LEN_LABEL);
+            rpn.t_type = S_TTYPE_VARS;
+            rpn.t_prec = S_PREC_NONE;
+            yRPN_stack_tokens      ();
+            yRPN__token_save (a_pos);
+            strlcpy (rpn.t_name, ")", S_LEN_LABEL);
+            rpn.t_type = S_TTYPE_GROUP;
+            yRPN__prec ();
+         }
+      }
       --rpn.paren_lvl;
       yRPN_stack_tokens     ();
       if (rpn.s_type == S_TTYPE_FPTR &&  rpn.line_type == S_LINE_DEF_FPTR) {
@@ -1107,6 +1123,21 @@ yRPN__sequencer      (int  a_pos)
       break;
    case ',' :
       DEBUG_YRPN    yLOG_note    ("comma");
+      x_type  = rpn.s_type;
+      DEBUG_YRPN    yLOG_char    ("x_type"    , x_type);
+      DEBUG_YRPN    yLOG_char    ("line_type" , rpn.line_type);
+      if (rpn.line_type == S_LINE_DEF_FPTR || rpn.line_type == S_LINE_DEF_PRO) {
+         if (x_type == S_TTYPE_PTYPE) {
+            strlcpy (rpn.t_name, "?", S_LEN_LABEL);
+            rpn.t_type = S_TTYPE_VARS;
+            rpn.t_prec = S_PREC_NONE;
+            yRPN_stack_tokens      ();
+            yRPN__token_save (a_pos);
+            strlcpy (rpn.t_name, ",", S_LEN_LABEL);
+            rpn.t_type = S_TTYPE_GROUP;
+            yRPN__prec ();
+         }
+      }
       yRPN_stack_tokens      ();
       yRPN_stack_normal     (a_pos);
       rc = yRPN_stack_paren (a_pos);
