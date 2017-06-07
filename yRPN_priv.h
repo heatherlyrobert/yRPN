@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7r"
-#define   zRPN_VER_TXT       "function pointers, declarations and protopytes are nice now"
+#define   zRPN_VER_NUM       "0.7s"
+#define   zRPN_VER_TXT       "fixed keywords as now some report as function-like"
 
 
 

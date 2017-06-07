@@ -324,6 +324,7 @@ yRPN__keywords       (int  a_pos)
    /*---(accumulate characters)------------*/
    DEBUG_YRPN    yLOG_note    ("accumulate characters");
    rpn.t_type   = S_TTYPE_KEYW;
+   rpn.t_prec   = S_PREC_FUNC;
    x_pos        = a_pos;  /* starting point */
    while (yRPN__token_add (&x_pos) == 0);
    /*---(try to match keyword)-------------*/
@@ -355,8 +356,9 @@ yRPN__keywords       (int  a_pos)
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("keyword is a function");
    yRPN_stack_tokens  ();         /* strait to tokens list                          */
-   yRPN__token_push    (a_pos);
-   rpn.left_oper = S_OPER_CLEAR;
+   if (x_use == 'f')  yRPN__token_push    (a_pos);
+   else               yRPN__token_save    (a_pos);
+   rpn.left_oper = S_OPER_LEFT;
    /*---(complete)-------------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
