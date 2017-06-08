@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.7v"
-#define   zRPN_VER_TXT       "pointer operations unit test is clean"
+#define   zRPN_VER_NUM       "0.8a"
+#define   zRPN_VER_TXT       "broke out cell verification, added init and unit testing"
 
 
 
@@ -112,6 +112,10 @@ extern char      zRPN_olddebug;
 /*---(line complete)------------------*/
 #define      S_LINE_OPEN        '-'
 #define      S_LINE_DONE        'y'
+/*---(characters)---------------------*/
+#define      S_CHAR_WORM        '@'
+#define      S_CHAR_GREED       '$'
+#define      S_CHAR_ZERO        '0'
 
 
 
@@ -242,8 +246,14 @@ yRPN__operators    (int  a_pos);
 int        /* ---- : process grouping ----------------------------------------*/
 yRPN__sequence     (int  a_pos);
 
+char         /*--> prepare for cell analysis -------------[-leaf---[--------]-*/
+yRPN_cell_init      (char *a_label, short *a_pos, short *a_tab, short *a_col, short *a_row, char *a_abs, char *a_max);
+
 char       /* ---- : interpret cell address ----------------------------------*/
-yRPN__cells        (char *a_label, int *a_tab, int *a_col, int *a_row, char *a_sign);
+yRPN_cell_tab       (char *a_label, int *a_pos, int *a_tab, char *a_abs, char  a_max);
+
+char       /* ---- : interpret cell address ----------------------------------*/
+yRPN__cell          (char *a_label, int *a_tab, int *a_col, int *a_row, char *a_sign);
 
 int        /* ---- : save off cell addresses ---------------------------------*/
 yRPN__addresses    (int  a_pos);

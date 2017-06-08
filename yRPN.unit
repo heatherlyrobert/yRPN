@@ -3906,25 +3906,150 @@ SCRP          mathmatical expression interpretation                        yRP
 
 
 
+
+#23456789-12  123  123456789-123456789-123456789-12345  123456789-123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-  -  123456789-123456789- 
+#==(verb)===  ver  ===========(description)===========  =====(function)=====  ========================(arguments)===================================  ==(test)==  ==========================(results)===================================  t  ========(var)======= 
+SCRP          v21  cell address analysis by parts                               yRPN_cell_tab, yRPN_cell_col, yRPN_cell_row                             ((14.---))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       v21  verify program setup                                         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  prepare for testing                  yRPN__testquiet                                                                                i_equal     0                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_GYGES;                                                                                                                                   
+     code     v21  define label                         - - - - - - - - - -   char   x_label [S_LEN_LABEL] = "";                                                                                                                             
+     code     v21  define values                        - - - - - - - - - -   short  x_pos, x_tab, x_col, x_row;                                                                                                                             
+     code     v21  define values                        - - - - - - - - - -   char   x_abs, x_max;                                                                                                                                           
+
+   GROUP      v21  check on initialization                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       v21  initialize with simple address                               - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "a1"           , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_equal     0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 2) a1                                             
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with blank address                                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        ""             , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with null address                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        NULL           , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with missing pos                                  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "a1"           , NULL  , &x_tab, &x_col, &x_row, &x_abs, &x_max         i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with missing row                                  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "a1"           , &x_pos, &x_tab, &x_col, NULL  , &x_abs, &x_max         i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with missing max                                  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "a1"           , &x_pos, &x_tab, &x_col, &x_row, &x_abs, NULL           i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with one character                                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "a"            , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with too many characters                          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "123456789012" , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with normal address                               - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "ab342"        , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_equal     0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 5) ab342                                          
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with absolute markers                             - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "$c92"         , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_equal     0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 4) $c92                                           
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with dash                                         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "a-1"          , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with comma                                        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        ",a1"          , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with underscore                                   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "a1_"          , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_lesser    0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 0)                                                
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   COND       v21  initialize with full absolute marker                         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  initialize cell analysis             yRPN_cell_init        "@f30"         , &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max         i_equal     0                                                                      
+     get      v21  review the address                   yRPN_cell_unit        "address"      ,   0                                                    s_equal     cell address     : ( 4) @f30                                           
+     get      v21  review the parsing values            yRPN_cell_unit        "break-out"    ,   0                                                    s_equal     cell break-out   : tab=  -1, col=  -1, row=  -1, abs=0                 
+     get      v21  review the position                  yRPN_cell_unit        "position"     ,   0                                                    s_equal     cell position    : 0                                                   
+
+   GROUP      v21  check on tab parsing                                         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   GROUP      v21  verify program wrap-up                                       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                      
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                       
+
+
+
 #23456789012  123456789-123456789-123456789-12345  123456789-123456789-  123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789- 
 #==(verb)===  ===========(description)===========  =====(function)=====  ========================(arguments)=========================  ==(test)==  ==========================(results)=================================== 
 SCRP          cell address verification                                    yRPN__cells                                                                                                                                          
 
-   COND       setup some testing variables                                 ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
-#    code     set the debug on                     zRPN_olddebug= 'y';
-     code     set the debug off                    zRPN_olddebug= 'n';
-     code     set the spreadsheet mode             zRPN_lang    = 's';
+   COND       setup some testing variables                                                                                                                                                                          
+     exec     prepare for testing                  yRPN__testquiet                                                                     i_equal     0                                                            
+     code     set the compiler mode                zRPN_lang    = S_LANG_GYGES;
 
-   COND       setup some testing variables                                                                                                                                                                                    
-     code     create a custom expect string        char custom[2000];                                                                                                                                                         
+   GROUP      v21  simple single digit col/row calls, no return vars     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
-   COND       try a very simple address                                    ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
+   COND       start with home address                                      ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
      exec     call the function                    yRPN__cells           "a1"           , NULL     , NULL     , NULL    , NULL         i_equal     0                                                                      
      get      review the parsing                   yRPN_syms_unit        "address"    ,   0                                            s_equal     yRPN address     : tab=   0, col=   0, row=   0, abs=0                 
 
-   COND       try a larger address                                         ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
+   COND       try one in the middle                                        ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
      exec     call the function                    yRPN__cells           "d6"           , NULL     , NULL     , NULL    , NULL         i_equal     0                                                                      
      get      review the parsing                   yRPN_syms_unit        "address"    ,   0                                            s_equal     yRPN address     : tab=   0, col=   3, row=   5, abs=0                 
+
+   COND       try near the edge of single digit space                      ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
+     exec     call the function                    yRPN__cells           "i9"           , NULL     , NULL     , NULL    , NULL         i_equal     0                                                                      
+     get      review the parsing                   yRPN_syms_unit        "address"    ,   0                                            s_equal     yRPN address     : tab=   0, col=   8, row=   8, abs=0                 
+
+   COND       try higher col and lower row                                 ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
+     exec     call the function                    yRPN__cells           "j4"           , NULL     , NULL     , NULL    , NULL         i_equal     0                                                                      
+     get      review the parsing                   yRPN_syms_unit        "address"    ,   0                                            s_equal     yRPN address     : tab=   0, col=   9, row=   3, abs=0                 
+
+   COND       try lower col and higher row                                 ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
+     exec     call the function                    yRPN__cells           "c7"           , NULL     , NULL     , NULL    , NULL         i_equal     0                                                                      
+     get      review the parsing                   yRPN_syms_unit        "address"    ,   0                                            s_equal     yRPN address     : tab=   0, col=   2, row=   6, abs=0                 
+
+   GROUP      v21  put in some simple mistakes                                  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       try col without row                                          ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
+     exec     call the function                    yRPN__cells           "b"            , NULL     , NULL     , NULL    , NULL         i_lesser    0                                                                      
+     get      review the parsing                   yRPN_syms_unit        "address"    ,   0                                            s_equal     yRPN address     : tab=  -1, col=  -1, row=  -1, abs=-1                
+
+
+
 
    COND       try a two digit row                                          ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
      exec     call the function                    yRPN__cells           "d65"          , NULL     , NULL     , NULL    , NULL         i_equal     0                                                                      
@@ -3933,6 +4058,8 @@ SCRP          cell address verification                                    yRP
    COND       try a three digit row                                        ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
      exec     call the function                    yRPN__cells           "d652"         , NULL     , NULL     , NULL    , NULL         i_equal     0                                                                      
      get      review the parsing                   yRPN_syms_unit        "address"    ,   0                                            s_equal     yRPN address     : tab=   0, col=   3, row= 651, abs=0                 
+
+   GROUP      v21  simple calls, not return vars                                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
    COND       try error row specifications                                 ------------------------------------------------------------  ------------------------------------------------------------------------------------ 
      exec     call the function                    yRPN__cells           "ac"           , NULL     , NULL     , NULL    , NULL         i_lesser    0                                                                      
@@ -4332,6 +4459,15 @@ SCRP          pointer operations (compilier)       yRPN_convert              
      get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 6                                         
      get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,b v,a o,*: v,c o,+ o,=                              
      get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                          
+
+   COND       common increment to a pointer                                                                                                                                                                         
+     exec     feed in the expression               yRPN_convert          "++*x_count"                                                  s_equal     x_count *: ++                                                
+     get      output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                            s_equal     infix count      : 3                                         
+     get      output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                            s_equal     infix output     :++ *: x_count                              
+     get      output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                            s_equal     postfix count    : 3                                         
+     get      output -- postfix summary            yRPN_accessor         "output"   ,     0                                            s_equal     postfix output   :x_count *: ++                              
+     get      output -- postfix detail             yRPN_accessor         "detail"   ,     0                                            s_equal     postfix detail   :v,x_count o,*: o,++                        
+     get      check line type decision             yRPN_stack_unit       "line_type"  ,   0                                            s_equal     source decision  : OPEN normal statement                     
 
    COND       more complicated combination                                                                                                                                                                          
      exec     feed in the expression               yRPN_convert          "b=!++*&a"                                                    s_equal     b a &: *: ++ ! =                                                                
