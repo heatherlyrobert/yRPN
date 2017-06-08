@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.8a"
-#define   zRPN_VER_TXT       "broke out cell verification, added init and unit testing"
+#define   zRPN_VER_NUM       "0.8b"
+#define   zRPN_VER_TXT       "cell break down and reassemply is unit tested"
 
 
 
@@ -246,15 +246,6 @@ yRPN__operators    (int  a_pos);
 int        /* ---- : process grouping ----------------------------------------*/
 yRPN__sequence     (int  a_pos);
 
-char         /*--> prepare for cell analysis -------------[-leaf---[--------]-*/
-yRPN_cell_init      (char *a_label, short *a_pos, short *a_tab, short *a_col, short *a_row, char *a_abs, char *a_max);
-
-char       /* ---- : interpret cell address ----------------------------------*/
-yRPN_cell_tab       (char *a_label, int *a_pos, int *a_tab, char *a_abs, char  a_max);
-
-char       /* ---- : interpret cell address ----------------------------------*/
-yRPN__cell          (char *a_label, int *a_tab, int *a_col, int *a_row, char *a_sign);
-
 int        /* ---- : save off cell addresses ---------------------------------*/
 yRPN__addresses    (int  a_pos);
 
@@ -320,6 +311,20 @@ char        yRPN_stack_tokens     (void);
 /*---(unittest)----------------*/
 char*       yRPN_stack_unit      (char *a_question, int a_item);
 /*---(done)--------------------*/
+
+
+/*===[[ yRPN_cell.c ]]=========================================*/
+/*345678901-12345678901234567890->-----------------------------*/
+/*---(parsing)-----------------*/
+char        yRPN_cell_init       (char *a_label, short *a_pos, short *a_tab, short *a_col, short *a_row, char *a_abs, char *a_max);
+char        yRPN_cell_tab        (char *a_label, short *a_pos, short *a_tab, char *a_abs, char  a_max);
+char        yRPN_cell_col        (char *a_label, short *a_pos, short *a_col, char *a_abs, char  a_max);
+char        yRPN_cell_row        (char *a_label, short *a_pos, short *a_row, char *a_abs, char  a_max);
+char        yRPN_cell_pretty     (short a_tab, short a_col, short a_row, char a_abs, char *a_pretty);
+char        yRPN_cell            (char *a_label);
+char        yRPN__cells          (char *a_label, int *a_tab, int *a_col, int *a_row, char *a_sign);
+
+
 
 
 #endif
