@@ -89,6 +89,11 @@ yRPN__token_add      (int *a_pos)
       if (strchr (v_alphanum, x_ch) == 0)                       x_bad = 'y';
       break;
       /*---(done)------------------------*/
+   case S_TTYPE_ADDR   :
+      DEBUG_YRPN_M  yLOG_snote   ("v_address");
+      if (strchr (v_address, x_ch) == 0)                        x_bad = 'y';
+      break;
+      /*---(done)------------------------*/
    case S_TTYPE_STR    :
       /*---(check pre-processor)---------*/
       if (rpn.pproc == S_PPROC_INCL) {

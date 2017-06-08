@@ -76,6 +76,7 @@ yRPN_cell_tab        (char *a_label, short *a_pos, short *a_tab, char *a_abs, ch
    --rce;  if (a_max   == NULL)    return rce;
    --rce;  if (*a_pos  <  0)       return rce;
    --rce;  if (*a_pos  >= a_max)   return rce;
+   /*> printf ("   t :     : l=%-15.15s, t=%4d,       ,       , a=%2d, p=%2d, m=%2d\n", a_label, *a_tab, *a_abs, *a_pos, a_max);   <*/
    /*---(absolute marker)----------------*/
    if        (a_label [*a_pos] == S_CHAR_WORM ) {
       *a_abs  = 7;
@@ -151,6 +152,8 @@ yRPN_cell_row        (char *a_label, short *a_pos, short *a_row, char *a_abs, ch
    /*---(locals)-----------+-----------+-*/
    char        rce         =  -10;
    int         i           =    0;
+   /*---(header)-------------------------*/
+   DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    /*---(defense)------------------------*/
    --rce;  if (a_label == NULL)    return rce;
    --rce;  if (a_pos   == NULL)    return rce;
@@ -184,6 +187,7 @@ yRPN_cell_row        (char *a_label, short *a_pos, short *a_row, char *a_abs, ch
    s_row  = *a_row;
    s_abs  = *a_abs;
    /*---(complete)-----------------------*/
+   DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
 }
 
@@ -250,7 +254,7 @@ char         /*--> validate and clean cell addresses -----[--------[--------]-*/
 yRPN_cell         (char *a_label)
 {
    /*---(locals)-----------+-----------+-*/
-   char        rc          =  -10;
+   char        rc          =    0;
    short       x_pos       =    0;
    short       x_tab       =    0;
    short       x_col       =    0;
@@ -258,13 +262,20 @@ yRPN_cell         (char *a_label)
    char        x_abs       =    0;
    char        x_max       =    0;
    /*---(process)------------------------*/
+   /*> printf ("rc < : %3d : l=%-15.15s\n", rc, a_label);                             <*/
    if (rc >= 0)  rc = yRPN_cell_init   (a_label, &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max);
-   if (rc >= 0)  rc = yRPN_cell_tab    (a_label, &x_pos, &x_tab, &x_abs, &x_max);
-   if (rc >= 0)  rc = yRPN_cell_col    (a_label, &x_pos, &x_col, &x_abs, &x_max);
-   if (rc >= 0)  rc = yRPN_cell_row    (a_label, &x_pos, &x_row, &x_abs, &x_max);
+   /*> printf ("rc i : %3d : l=%-15.15s, t=%4d, c=%4d, r=%4d, a=%2d, p=%2d, m=%2d\n", rc, a_label, x_tab, x_col, x_row, x_abs, x_pos, x_max);   <*/
+   if (rc >= 0)  rc = yRPN_cell_tab    (a_label, &x_pos, &x_tab, &x_abs, x_max);
+   /*> printf ("rc t : %3d : l=%-15.15s, t=%4d, c=%4d, r=%4d, a=%2d, p=%2d, m=%2d\n", rc, a_label, x_tab, x_col, x_row, x_abs, x_pos, x_max);   <*/
+   if (rc >= 0)  rc = yRPN_cell_col    (a_label, &x_pos, &x_col, &x_abs, x_max);
+   /*> printf ("rc c : %3d : l=%-15.15s, t=%4d, c=%4d, r=%4d, a=%2d, p=%2d, m=%2d\n", rc, a_label, x_tab, x_col, x_row, x_abs, x_pos, x_max);   <*/
+   if (rc >= 0)  rc = yRPN_cell_row    (a_label, &x_pos, &x_row, &x_abs, x_max);
+   /*> printf ("rc r : %3d : l=%-15.15s, t=%4d, c=%4d, r=%4d, a=%2d, p=%2d, m=%2d\n", rc, a_label, x_tab, x_col, x_row, x_abs, x_pos, x_max);   <*/
    if (rc >= 0)  rc = yRPN_cell_pretty (x_tab, x_col, x_row, x_abs, a_label);
+   /*> printf ("rc p : %3d : l=%-15.15s, t=%4d, c=%4d, r=%4d, a=%2d, p=%2d, m=%2d\n", rc, a_label, x_tab, x_col, x_row, x_abs, x_pos, x_max);   <*/
    /*---(worst case)---------------------*/
-   if (rc <  0)  rc = yRPN_cell_init   (a_label, &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max);
+   if (rc <  0)       yRPN_cell_init   (a_label, &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max);
+   /*> printf ("rc > : %3d : l=%-15.15s, t=%4d, c=%4d, r=%4d, a=%2d, p=%2d, m=%2d\n", rc, a_label, x_tab, x_col, x_row, x_abs, x_pos, x_max);   <*/
    /*---(complete)-----------------------*/
    return rc;
 }
@@ -276,8 +287,60 @@ yRPN_cell         (char *a_label)
 /*====================------------------------------------====================*/
 static void        o___GYGES___________________o (void) {;}
 
+int          /*--> chec for cell addresses ---------------[--------[--------]-*/
+yRPN__addresses      (int  a_pos)
+{  /*---(design notes)--------------------------------------------------------*/
+   /* addresses are only lowercase alphanumerics plus $ and @.                */
+   /*---(locals)-----------+-----------+-*/
+   char        rce         =  -10;     /* return code for errors              */
+   char        rc          =    0;     /* generic return code                 */
+   int         x_pos       =    0;     /* updated position in input           */
+   char        x_addr      [S_LEN_LABEL];
+   /*---(header)------------------------*/
+   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
+   /*---(defenses)-----------------------*/
+   yRPN__token_error ();
+   --rce;  if (zRPN_lang == S_LANG_C) {
+      DEBUG_YRPN    yLOG_note    ("skip in c lang mode");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   DEBUG_YRPN    yLOG_value   ("a_pos"     , a_pos);
+   --rce;  if (a_pos <  0) {
+      DEBUG_YRPN    yLOG_note    ("start can not be negative");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(accumulate characters)------------*/
+   DEBUG_YRPN    yLOG_note    ("accumulate characters");
+   rpn.t_type   = S_TTYPE_ADDR;
+   x_pos        = a_pos;  /* starting point */
+   while (yRPN__token_add (&x_pos) == 0);
+   /*---(validate the address)-------------*/
+   /*> printf ("%s\n", rpn.t_name);                                                   <*/
+   strlcpy (x_addr, rpn.t_name, S_LEN_LABEL);
+   rc = yRPN_cell (x_addr);
+   /*---(handle misses)------------------*/
+   --rce;  if (rc < 0) {
+      yRPN__token_error ();
+      DEBUG_YRPN    yLOG_note    ("address not valid");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(handle)-------------------------*/
+   strlcpy (rpn.t_name, x_addr, S_LEN_LABEL);
+   rpn.t_len = strlen (rpn.t_name);
+   yRPN_stack_tokens ();
+   yRPN_stack_shuntd ();
+   yRPN_stack_normal (a_pos);
+   rpn.left_oper  = S_OPER_CLEAR;
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
+   return x_pos;
+}
+
 int        /* ---- : save off cell addresses ---------------------------------*/
-yRPN__addresses    (int  a_pos)
+yRPN__addresses_OLD  (int  a_pos)
 {
    /*---(design notes)-------------------*/
    /*

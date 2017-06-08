@@ -4532,9 +4532,9 @@ SCRP          simple cell addresses (spreadsheet)  yRPN__addresses           
      get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :0a1                                       
 
    COND       try with a larger tab number                                                                                                                                                                          
-     exec     load the string                      yRPN__load            "12a1"                                                        i_equal     4                                                            
-     exec     check the address                    yRPN__addresses       0                                                             i_equal     4                                                            
-     get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :12a1                                      
+     exec     load the string                      yRPN__load            "9a1"                                                         i_equal     3                                                            
+     exec     check the address                    yRPN__addresses       0                                                             i_equal     3                                                            
+     get      token extracted                      yRPN_accessor         "token"      ,   0                                            s_equal     current token    :9a1                                      
 
    COND       try a absolute address                                                                                                                                                                                
      exec     load the string                      yRPN__load            "$0$y$12"                                                     i_equal     7                                                            
