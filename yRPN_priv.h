@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.8c"
-#define   zRPN_VER_TXT       "cell addresses are evaluated correctly, but not ops on them yet"
+#define   zRPN_VER_NUM       "0.8d"
+#define   zRPN_VER_TXT       "fixed all unit testing related to gyges"
 
 
 
