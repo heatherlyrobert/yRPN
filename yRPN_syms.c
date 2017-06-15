@@ -97,7 +97,7 @@ tOPER     s_opers [MAX_OPER] = {
    { "?"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, "trinary conditional"                  },
    { ":"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, "trinary conditional"                  },
    /*---(assignment)-------------*/
-   { "="   , 'c', 'r', 14, 'r',  S_RIGHT, 2, "direct assignment"                    },
+   { "="   , 'B', 'r', 14, 'r',  S_RIGHT, 2, "direct assignment"                    },
    { "+="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
    { "-="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
    { "*="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
