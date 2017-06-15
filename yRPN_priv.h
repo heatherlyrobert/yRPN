@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.8d"
-#define   zRPN_VER_TXT       "fixed all unit testing related to gyges"
+#define   zRPN_VER_NUM       "0.8e"
+#define   zRPN_VER_TXT       "pre-processor lines work"
 
 
 
@@ -102,13 +102,14 @@ extern char      zRPN_olddebug;
 #define      S_PPROC_INCL       'i'
 #define      S_PPROC_OTHER      'o'
 /*---(line types)---------------------*/
+#define      S_LINE_NORMAL      's'
+#define      S_LINE_PREPROC     '#'
 #define      S_LINE_EXTERN      'e'
 #define      S_LINE_DEF         'D'
 #define      S_LINE_DEF_VAR     'v'
 #define      S_LINE_DEF_PRO     'p'
 #define      S_LINE_DEF_FUN     'f'
 #define      S_LINE_DEF_FPTR    '*'
-#define      S_LINE_NORMAL      's'
 /*---(line complete)------------------*/
 #define      S_LINE_OPEN        '-'
 #define      S_LINE_DONE        'y'
@@ -145,6 +146,7 @@ struct  cRPN {
    int         l_working;                   /* position in working string     */
    /*---(overall working)----------------*/
    char        line_type;                   /* source line type               */
+   char        line_sect;                   /* source section pre or post =   */
    char        line_done;                   /* source line complete           */
    char        paren_lvl;                   /* how deep in parenthesis (any)  */
    /*---(token working)------------------*/
@@ -304,6 +306,7 @@ char        yRPN_stack_toss      (void);
 /*---(specialty)---------------*/
 char        yRPN_stack_oper      (int a_pos);
 char        yRPN_stack_paren     (int a_pos);
+char        yRPN_stack_comma     (int a_pos);
 /*---(output)------------------*/
 char        yRPN_stack_shuntd    (void);
 char        yRPN_stack_normal    (int a_pos);

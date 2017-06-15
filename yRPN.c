@@ -105,7 +105,7 @@ yRPN__load         (char *a_source)   /* source infix string                    
    rpn.t_dir      = S_LEFT;
    rpn.t_arity    = 0;
    rpn.left_oper  = S_OPER_LEFT;
-   rpn.pproc      = '-';
+   rpn.pproc      = S_PPROC_NO;
    rpn.p_type     = S_TTYPE_NONE;
    rpn.p_prec     = S_PREC_NONE;
    /*---(set the stack vars)-------------*/
@@ -272,7 +272,7 @@ yRPN_convert       (char *a_source)
       x_ch    = rpn.working [x_pos];
       rc      = x_pos;
       /*---(pick handler)----------------*/
-      if (rc <= x_pos && x_ch == '\"')                    rc = yRPN__strings    (x_pos);
+      if (rc <= x_pos && (x_ch == '\"' || x_ch == '<'))   rc = yRPN__strings    (x_pos);
       if (rc <= x_pos && x_ch == '\'')                    rc = yRPN__chars      (x_pos);
       if (rc <= x_pos && strchr (v_address , x_ch) != 0)  rc = yRPN__addresses  (x_pos);
       if (rc <= x_pos && strchr (v_lower   , x_ch) != 0)  rc = yRPN__keywords   (x_pos);
@@ -283,8 +283,7 @@ yRPN_convert       (char *a_source)
       if (rc <= x_pos && strchr (v_sequence, x_ch) != 0)  rc = yRPN__sequencer  (x_pos);
       if (rc <= x_pos && strchr (v_operator, x_ch) != 0)  rc = yRPN__operators  (x_pos);
       if (rc <= x_pos && strchr (v_enders  , x_ch) != 0)  rc = yRPN__enders     (x_pos);
-      /*> if (rc <= x_pox_pos && x_ch == '<' && rpn.pproc == S_PPROC_INCL)  rc = yRPN__strings    (x_pos);   <* 
-       *> if (rc <= x_pos &&                rpn.pproc == S_PPROC_OTHER) rc = yRPN__text       (i);   <*/
+      /*> if (rc <= x_pos &&                rpn.pproc == S_PPROC_OTHER) rc = yRPN__text       (x_pos);   <*/
       /*---(unrecognized)----------------*/
       if (rc <= x_pos) {
          if (x_ch == ' ')  zRPN_DEBUG  printf ("   whitespace\n");

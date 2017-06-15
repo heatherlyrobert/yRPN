@@ -41,6 +41,7 @@ yRPN_stack_init      (void)
    /*---(line variables)-----------------*/
    rpn.line_done  = S_LINE_OPEN;
    rpn.line_type  = S_LINE_NORMAL;
+   rpn.line_sect  = '-';
    rpn.paren_lvl  = 0;
    /*---(output)-------------------------*/
    DEBUG_YRPN    yLOG_snote   ("clear output");
@@ -278,12 +279,11 @@ yRPN_stack_oper      (int a_pos)
    --rce;
    rc = yRPN_stack_peek ();
    DEBUG_YRPN_M  yLOG_value   ("peek_rc"   , rc);
-   while (rc >= 0  &&  rpn.p_prec < x_prec) {
+   while (rc >= 0  && rpn.p_type != '(' && rpn.p_prec < x_prec) {
       DEBUG_YRPN_M  yLOG_char    ("p_type"    , rpn.p_type);
       DEBUG_YRPN_M  yLOG_char    ("p_prec"    , rpn.p_prec);
       rc = yRPN_stack_pops  ();
       DEBUG_YRPN_M  yLOG_value   ("pops_rc"   , rc);
-      /*> if (rc < 0)  return rce;                                                    <*/
       rc = yRPN_stack_peek ();
       DEBUG_YRPN_M  yLOG_value   ("peek_rc"   , rc);
    }
@@ -311,10 +311,23 @@ yRPN_stack_paren     (int a_pos)
    /*---(locals)-----------+-----------+-*/
    char        rce         = -10;
    char        rc          =   0;
+   char        x_match     [LEN_LABEL]  = "--";
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_enter   (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_info    ("t_name"    , rpn.t_name);
    DEBUG_YRPN_M  yLOG_char    ("t_type"    , rpn.t_type);
    DEBUG_YRPN_M  yLOG_char    ("t_prec"    , rpn.t_prec);
+   /*---(identify match)-----------------*/
+   --rce; if (strcmp (rpn.t_name, ")" ) == 0)   strlcpy (x_match, "(" , LEN_LABEL);
+   else if   (strcmp (rpn.t_name, "]" ) == 0)   strlcpy (x_match, "[" , LEN_LABEL);
+   else if   (strcmp (rpn.t_name, "}" ) == 0)   strlcpy (x_match, "{" , LEN_LABEL);
+   else if   (strcmp (rpn.t_name, "):") == 0)   strlcpy (x_match, "):", LEN_LABEL);
+   else {
+      DEBUG_YRPN_M  yLOG_note    ("do not recognize paren type");
+      DEBUG_YRPN_M  yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   DEBUG_YRPN_M  yLOG_info    ("x_match"   , x_match);
    /*---(check for stack)----------------*/
    rc = yRPN_stack_peek ();
    --rce;  if (rc < 0) {
@@ -325,16 +338,18 @@ yRPN_stack_paren     (int a_pos)
    /*---(cycle)--------------------------*/
    DEBUG_YRPN_M  yLOG_char    ("p_type"    , rpn.p_type);
    if (rpn.p_type != S_TTYPE_CAST) {
-      DEBUG_YRPN_M  yLOG_note    ("normal parenthesis closing");
-      DEBUG_YRPN_M  yLOG_char    ("p_prec"    , rpn.p_prec);
-      while (rc >= 0  &&  rpn.p_prec < rpn.t_prec) {
-         rc = yRPN_stack_pops  ();
+      DEBUG_YRPN_M  yLOG_note    ("normal paren/bracket closing");
+      DEBUG_YRPN_M  yLOG_info    ("p_name"    , rpn.p_name);
+      DEBUG_YRPN_M  yLOG_char    ("p_type"    , rpn.p_type);
+      while (rc >= 0 && strcmp (rpn.p_name, x_match) != 0) {
+         rc = yRPN_stack_pops ();
          rc = yRPN_stack_peek ();
-         DEBUG_YRPN_M  yLOG_char    ("p_prec"    , rpn.p_prec);
+         DEBUG_YRPN_M  yLOG_info    ("p_name"    , rpn.p_name);
+         DEBUG_YRPN_M  yLOG_char    ("p_type"    , rpn.p_type);
       }
-      /*---(throw away open paren)----------*/
-      if (strcmp (rpn.t_name, ")") == 0)  rc = yRPN_stack_toss ();
-      if (strcmp (rpn.t_name, "]") == 0)  rc = yRPN_stack_toss ();
+      /*---(throw away open paren/bracket)--*/
+      if (rc >= 0 && strcmp (rpn.t_name, ")") == 0)   rc = yRPN_stack_toss ();
+      if (rc >= 0 && strcmp (rpn.t_name, "]") == 0)   rc = yRPN_stack_toss ();
    } else {
       DEBUG_YRPN_M  yLOG_note    ("casting parenthesis closing");
       strlcpy (rpn.t_name, "):", S_LEN_LABEL);
@@ -342,6 +357,42 @@ yRPN_stack_paren     (int a_pos)
       rpn.t_type = S_TTYPE_CAST;
       DEBUG_YRPN_M  yLOG_char    ("new type"  , rpn.t_type);
       yRPN_stack_push   (a_pos);
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN_M  yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
+char
+yRPN_stack_comma     (int a_pos)
+{
+   /*---(locals)-----------+-----------+-*/
+   char        rce         = -10;
+   char        rc          =   0;
+   char        x_match     [LEN_LABEL]  = "--";
+   /*---(header)-------------------------*/
+   DEBUG_YRPN_M  yLOG_enter   (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_char    ("t_type"    , rpn.t_type);
+   DEBUG_YRPN_M  yLOG_char    ("t_prec"    , rpn.t_prec);
+   /*---(identify match)-----------------*/
+   strlcpy (x_match, "(" , LEN_LABEL);
+   DEBUG_YRPN_M  yLOG_info    ("x_match"   , x_match);
+   /*---(check for stack)----------------*/
+   rc = yRPN_stack_peek ();
+   --rce;  if (rc < 0) {
+      DEBUG_YRPN_M  yLOG_note    ("stack empty");
+      DEBUG_YRPN_M  yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(cycle)--------------------------*/
+   DEBUG_YRPN_M  yLOG_note    ("normal paren/bracket closing");
+   DEBUG_YRPN_M  yLOG_info    ("p_name"    , rpn.p_name);
+   DEBUG_YRPN_M  yLOG_char    ("p_type"    , rpn.p_type);
+   while (rc >= 0 && strcmp (rpn.p_name, x_match) != 0) {
+      rc = yRPN_stack_pops ();
+      rc = yRPN_stack_peek ();
+      DEBUG_YRPN_M  yLOG_info    ("p_name"    , rpn.p_name);
+      DEBUG_YRPN_M  yLOG_char    ("p_type"    , rpn.p_type);
    }
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_exit    (__FUNCTION__);
@@ -423,25 +474,39 @@ yRPN_stack_tokens        (void)
 {
    /*---(locals)-----------+-----------+-*/
    char        x_div       [S_LEN_LABEL];
+   /*---(header)-------------------------*/
+   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(check line done)----------------*/
-   if (strcmp (";"     , rpn.t_name) == 0)     rpn.line_done = S_LINE_DONE;
-   if (strcmp ("{"     , rpn.t_name) == 0)     rpn.line_done = S_LINE_DONE;
+   if (strcmp (";"     , rpn.t_name) == 0)      rpn.line_done = S_LINE_DONE;
+   if (strcmp ("{"     , rpn.t_name) == 0)      rpn.line_done = S_LINE_DONE;
    /*---(check line types)---------------*/
    if (rpn.n_tokens == 0 && rpn.t_type == S_TTYPE_TYPE) {
-      if (strcmp ("extern", rpn.t_name) == 0)  rpn.line_type = S_LINE_EXTERN;
-      else                                     rpn.line_type = S_LINE_DEF;
+      if (strcmp ("extern", rpn.t_name) == 0)   rpn.line_type = S_LINE_EXTERN;
+      else                                      rpn.line_type = S_LINE_DEF;
+   }
+   if (rpn.n_tokens == 0 && rpn.t_type == S_TTYPE_OPER && zRPN_lang == S_LANG_C) {
+      if (strcmp ("#"     , rpn.t_name) == 0) {
+         rpn.line_type = S_LINE_PREPROC;
+         rpn.pproc     = S_PPROC_YES;
+      }
    }
    if (rpn.n_tokens >  0 && rpn.line_type == S_LINE_DEF) {
-      if (strcmp ("("     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_FPTR;
-      if (strcmp ("="     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_VAR;
-      if (strcmp (";"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_VAR;
-      if (rpn.t_type == S_TTYPE_FUNC)          rpn.line_type = S_LINE_DEF_FUN;
-      if (rpn.t_type == S_TTYPE_VARS)          rpn.line_type = S_LINE_DEF_VAR;
+      if (strcmp ("("     , rpn.t_name) == 0)   rpn.line_type = S_LINE_DEF_FPTR;
+      if (strcmp ("="     , rpn.t_name) == 0)   rpn.line_type = S_LINE_DEF_VAR;
+      if (strcmp (";"     , rpn.t_name) == 0)   rpn.line_type = S_LINE_DEF_VAR;
+      if (rpn.t_type == S_TTYPE_FUNC)           rpn.line_type = S_LINE_DEF_FUN;
+      if (rpn.t_type == S_TTYPE_VARS)           rpn.line_type = S_LINE_DEF_VAR;
    }
    if (rpn.n_tokens >  0 && rpn.line_type == S_LINE_DEF_FUN) {
-      if (strcmp ("{"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_FUN;
-      if (strcmp (";"     , rpn.t_name) == 0)  rpn.line_type = S_LINE_DEF_PRO;
+      if (strcmp ("{"     , rpn.t_name) == 0)   rpn.line_type = S_LINE_DEF_FUN;
+      if (strcmp (";"     , rpn.t_name) == 0)   rpn.line_type = S_LINE_DEF_PRO;
    }
+   if (rpn.n_tokens >  0 && rpn.line_type == S_LINE_DEF_VAR) {
+      if (strcmp ("="     , rpn.t_name) == 0)   rpn.line_sect = '=';
+   }
+   DEBUG_YRPN    yLOG_char    ("line_done" , rpn.line_done);
+   DEBUG_YRPN    yLOG_char    ("line_type" , rpn.line_type);
+   DEBUG_YRPN    yLOG_char    ("line_sect" , rpn.line_sect);
    /*---(adapt divider)------------------*/
    if (rpn.n_tokens == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
@@ -457,6 +522,7 @@ yRPN_stack_tokens        (void)
    ++(rpn.n_tokens);
    /*> printf ("rpn.tokens after  %2d:%s\n", rpn.n_tokens, rpn.tokens);               <*/
    /*---(complete)-----------------------*/
+   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return 0;
 }
 

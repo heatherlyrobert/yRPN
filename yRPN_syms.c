@@ -42,7 +42,7 @@ tOPER     s_opers [MAX_OPER] = {
    /*---(spreadsheet)------------*/
    { ".."  , 'g', 'r',  0, 'd',  S_LEFT , 2, "cell range"                           },
    /*---(preprocessor)-----------*/
-   { "#"   , 'c', '-',  0, 'd',  S_LEFT , 2, "prefix"                               },
+   { "#"   , 'c', 'r',  0, 'd',  S_LEFT , 2, "prefix"                               },
    { "##"  , 'c', '-',  0, 'd',  S_LEFT , 2, "stringification"                      },
    /*---(unary/suffix)-----------*/
    { ":+"  , 'B', 'I',  1, 'e',  S_LEFT , 1, "suffix increment"                     },
@@ -349,7 +349,7 @@ yRPN__keywords       (int  a_pos)
    }
    /*---(mark includes)--------------------*/
    DEBUG_YRPN    yLOG_note    ("check for preprocessor keywords");
-   if (rpn.pproc == 'y') {
+   if (rpn.pproc == S_PPROC_YES) {
       if (strcmp (rpn.t_name, "include") == 0)  rpn.pproc = S_PPROC_INCL;
       else                                      rpn.pproc = S_PPROC_OTHER;
    }
@@ -818,6 +818,7 @@ yRPN__oper_splat     (int  a_pos)
 {  /*---(design notes)--------------------------------------------------------*/
    char  rc = 0;
    DEBUG_YRPN    yLOG_note    ("special pointer handling");
+   DEBUG_YRPN    yLOG_char    ("line_type" , rpn.line_type);
    rc = yRPN_stack_peek ();
    DEBUG_YRPN    yLOG_info    ("p_name"    , rpn.p_name);
    DEBUG_YRPN    yLOG_char    ("p_type"    , rpn.p_type);
@@ -848,7 +849,7 @@ yRPN__oper_splat     (int  a_pos)
       DEBUG_YRPN    yLOG_char    ("t_type"    , rpn.t_type);
       yRPN__token_save    (a_pos);
       rpn.left_oper  = S_OPER_CLEAR;
-   } else if (rpn.line_type == S_LINE_DEF) {
+   } else if ((rpn.line_type == S_LINE_DEF || rpn.line_type == S_LINE_DEF_VAR) && rpn.line_sect != '=') {
       DEBUG_YRPN    yLOG_note    ("working in * type modifier mode");
       strlcpy (rpn.t_name, "(*)", S_LEN_LABEL);
       rpn.t_type = S_TTYPE_TYPE;
@@ -895,15 +896,18 @@ yRPN__operators      (int  a_pos)
    /*---(try to match operators)-----------*/
    DEBUG_YRPN    yLOG_note    ("search operators");
    for (i = 0; i < MAX_OPER; ++i) {
-      if  (s_opers [i].name [0] == '\0')                   break;
-      if  (s_opers [i].real     != 'r' )                   continue;
-      if  (s_opers [i].name [0] != rpn.t_name [0])         continue;
-      if  (strcmp (s_opers [i].name, rpn.t_name ) != 0)    continue;
+      if  (s_opers [i].name [0] == '\0')                            break;
+      if  (s_opers [i].real     != 'r' )                            continue;
+      if  (s_opers [i].who != zRPN_lang && s_opers [i].who != 'B')  continue;
+      if  (s_opers [i].name [0] != rpn.t_name [0])                  continue;
+      if  (strcmp (s_opers [i].name, rpn.t_name ) != 0)             continue;
       x_found = i;
       DEBUG_YRPN    yLOG_value   ("x_found"   , x_found);
       break;
    }
    if (x_found < 0 && rpn.t_len == 2) {
+      DEBUG_YRPN    yLOG_note    ("two character operator not found");
+      DEBUG_YRPN    yLOG_note    ("switching to single character operator mode");
       rpn.t_name [1] = '\0';
       rpn.t_len      = 1;
       --x_pos;
@@ -941,7 +945,11 @@ yRPN__operators      (int  a_pos)
    /*---(handle it)------------------------*/
    yRPN__prec ();
    yRPN_stack_tokens      ();
-   if (strcmp (rpn.t_name, "*:") == 0) {
+   if        (rpn.pproc == S_PPROC_YES) {
+      DEBUG_YRPN    yLOG_note    ("pre-processor directive");
+      yRPN__token_save    (a_pos);
+      rpn.left_oper  = S_OPER_LEFT;  /* an oper after an oper must be right-only */
+   } else if (strcmp (rpn.t_name, "*:") == 0) {
       DEBUG_YRPN    yLOG_note    ("working with a pointer");
       yRPN__oper_splat  (a_pos);
    } else {
@@ -1129,8 +1137,9 @@ yRPN__sequencer      (int  a_pos)
    case ',' :
       DEBUG_YRPN    yLOG_note    ("comma");
       x_type  = rpn.s_type;
+      rpn.line_sect = '-';
       DEBUG_YRPN    yLOG_char    ("x_type"    , x_type);
-      DEBUG_YRPN    yLOG_char    ("line_type" , rpn.line_type);
+      DEBUG_YRPN    yLOG_char    ("line_sect" , rpn.line_sect);
       if (rpn.line_type == S_LINE_DEF_FPTR || rpn.line_type == S_LINE_DEF_PRO) {
          if (x_type == S_TTYPE_PTYPE) {
             strlcpy (rpn.t_name, "?", S_LEN_LABEL);
@@ -1145,7 +1154,7 @@ yRPN__sequencer      (int  a_pos)
       }
       yRPN_stack_tokens      ();
       yRPN_stack_normal     (a_pos);
-      rc = yRPN_stack_paren (a_pos);
+      rc = yRPN_stack_comma (a_pos);
       rpn.left_oper  = S_OPER_LEFT;
       break;
    }
@@ -1153,109 +1162,6 @@ yRPN__sequencer      (int  a_pos)
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
 }
-
-/*> int        /+ ---- : process grouping ----------------------------------------+/                       <* 
- *> yRPN__sequencer      (int  a_pos)                                                                      <* 
- *> {                                                                                                      <* 
- *>    /+---(design notes)-------------------+/                                                            <* 
- *>    /+                                                                                                  <* 
- *>     *  operators can have a wild number of forms and precedences                                       <* 
- *>     *                                                                                                  <* 
- *>     +/                                                                                                 <* 
- *>    /+---(begin)--------------------------+/                                                            <* 
- *>    zRPN_DEBUG  printf("   group------------------\n");                                                 <* 
- *>    /+---(locals)---------------------------+/                                                          <* 
- *>    int       i         = a_pos;                                                                        <* 
- *>    int       rc        = 0;                                                                            <* 
- *>    char      x_match   = ' ';                                                                          <* 
- *>    char      x_fake    = 'n';                                                                          <* 
- *>    /+---(prepare)------------------------+/                                                            <* 
- *>    strlcpy (rpn.t_name, YRPN_TOKEN_NULL, S_LEN_TOKEN);                                                 <* 
- *>    rpn.t_name[0] = rpn.working[i];                                                                     <* 
- *>    rpn.t_name[1] = '\0';                                                                               <* 
- *>    rpn.t_type     = S_TTYPE_GROUP;                                                                     <* 
- *>    rpn.t_prec     = S_PREC_NONE;                                                                       <* 
- *>    /+---(defenses)-----------------------+/                                                            <* 
- *>    if (i              >= rpn.l_working)           return  zRPN_ERR_INPUT_NOT_AVAIL;                    <* 
- *>    if (strchr(v_sequence   , rpn.working[i]) == 0)  return  zRPN_ERR_NOT_GROUPING;                     <* 
- *>    /+---(main loop)------------------------+/                                                          <* 
- *>    rpn.t_len  = 1;                                                                                     <* 
- *>    ++i;                                                                                                <* 
- *>    /+---(end)------------------------------+/                                                          <* 
- *>    zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);                            <* 
- *>    /+---(handle it)------------------------+/                                                          <* 
- *>    yRPN__prec ();                                                                                <* 
- *>    zRPN_DEBUG  printf("      prec = %c\n", rpn.t_prec);                                                <* 
- *>    /+---(open bracket)---------------------+/                                                          <* 
- *>    /+> if (rpn.t_name[0] == '[') {                                                               <*    <* 
- *>     *>    yRPN_stack_tokens ();                                                                        <*    <* 
- *>     *>    /+> strcpy (rpn.t_name, "]*");                                                   <+/   <*    <* 
- *>     *>    strcpy (rpn.t_name, "]");                                                              <*    <* 
- *>     *>    rpn.t_type         = S_TTYPE_OPER;                                                     <*    <* 
- *>     *>    yRPN_stack_push(a_pos);                                                                     <*    <* 
- *>     *>    strcpy (rpn.t_name, "[");                                                              <*    <* 
- *>     *>    yRPN_stack_normal (a_pos);                                                                  <*    <* 
- *>     *>    x_fake = 'y';                                                                          <*    <* 
- *>     *>    strcpy (rpn.t_name, "(");                                                              <*    <* 
- *>     *>    rpn.t_type         = S_TTYPE_GROUP;                                                    <*    <* 
- *>     *>    yRPN__prec ();                                                                   <*    <* 
- *>     *> }                                                                                         <+/   <* 
- *>    /+---(open paren)-----------------------+/                                                          <* 
- *>    if (rpn.t_name[0] == '(') {                                                                         <* 
- *>       yRPN_stack_tokens ();                                                                                  <* 
- *>       yRPN_stack_push(a_pos);                                                                               <* 
- *>       if (x_fake == 'n')  yRPN_stack_normal (a_pos);                                                        <* 
- *>       rpn.left_oper  = S_OPER_LEFT;                                                                    <* 
- *>       return 0;                                                                                        <* 
- *>    }                                                                                                   <* 
- *>    /+---(close bracket)-------------------+/                                                           <* 
- *>    /+> if (rpn.t_name[0] == ']') {                                                    <*               <* 
- *>     *>    yRPN_stack_tokens ();                                                             <*               <* 
- *>     *>    strcpy (rpn.t_name, ")");                                                   <*               <* 
- *>     *>    rpn.t_type         = S_TTYPE_GROUP;                                         <*               <* 
- *>     *>    yRPN__prec ();                                                        <*               <* 
- *>     *>    x_fake = 'y';                                                               <*               <* 
- *>     *> }                                                                              <+/              <* 
- *>    /+---(close paren)----------------------+/                                                          <* 
- *>    if (rpn.t_name[0] == ')') {                                                                         <* 
- *>       yRPN_stack_tokens ();                                                                                  <* 
- *>       if (x_fake == 'n')  yRPN_stack_normal (a_pos);                                                        <* 
- *>       rc = yRPN_stack_peek();                                                                               <* 
- *>       while (rc >= 0  &&  rpn.p_prec != 'd' + 16) {                                                    <* 
- *>          yRPN_stack_pops ();                                                                                 <* 
- *>          rc = yRPN_stack_peek();                                                                            <* 
- *>       }                                                                                                <* 
-*>       if (rc < 0) {                                                                                    <* 
-   *>          zRPN_DEBUG  printf ("      FATAL :: nothing more on stack\n");                                <* 
-      *>          return rc;                                                                                    <* 
-      *>       }                                                                                                <* 
-      *>       yRPN_stack_toss();                                                                                    <* 
-      *>       rc = yRPN_stack_peek();                                                                               <* 
-      *>       if (rpn.t_token[0] == ']')  yRPN_stack_pops ();                                                        <* 
-      *>       rpn.left_oper  = S_OPER_CLEAR;                                                                   <* 
-      *>    }                                                                                                   <* 
-      *>    /+---(comma)----------------------------+/                                                          <* 
-      *>    /+> if (strncmp(rpn.t_name, ",", 1) == 0) {                                                  <*     <* 
-         *>     *>    yRPN_stack_tokens ();                                                                       <*     <* 
-            *>     *>    rc = yRPN_stack_peek();                                                                    <*     <* 
-            *>     *>    while (rc >= 0  &&  rpn.p_prec != 'd' + 16) {                                         <*     <* 
-               *>     *>       yRPN_stack_pops ();                                                                      <*     <* 
-                  *>     *>       rc = yRPN_stack_peek();                                                                 <*     <* 
-                  *>     *>    }                                                                                     <*     <* 
-                  *>     *>    if (rc < 0) {                                                                         <*     <* 
-                     *>     *>       /+> zRPN_DEBUG  printf ("      FATAL :: nothing more on stack\n");           <+/   <*     <* 
-                        *>     *>       /+> return rc;                                                               <+/   <*     <* 
-                        *>     *>    }                                                                                     <*     <* 
-                        *>     *>    if (zRPN_lang != S_LANG_GYGES) {                                                      <*     <* 
-                           *>     *>       rpn.t_type = S_TTYPE_OPER;                                                         <*     <* 
-                              *>     *>       yRPN_stack_shuntd ();                                                                     <*     <* 
-                              *>     *>       yRPN_stack_normal (a_pos);                                                              <*     <* 
-                              *>     *>       rpn.left_oper  = S_OPER_LEFT;                                                      <*     <* 
-                              *>     *>    }                                                                                     <*     <* 
-                              *>     *> }                                                                                        <+/    <* 
-                              *>    /+---(complete)-------------------------+/                                                          <* 
-                              *>    return i;                                                                                           <* 
-                              *> }                                                                                                      <*/
 
 int          /*--> check for statement enders ------------[--------[--------]-*/
 yRPN__enders         (int  a_pos)
