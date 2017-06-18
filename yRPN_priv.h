@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.8f"
-#define   zRPN_VER_TXT       "all unit tests one-hundred precent pass };>"
+#define   zRPN_VER_NUM       "0.8g"
+#define   zRPN_VER_TXT       "final unit test clean up"
 
 
 
