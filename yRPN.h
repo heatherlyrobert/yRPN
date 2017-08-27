@@ -159,7 +159,7 @@ char*        /*--> convert complier infix to rpn ---------[--------[--------]-*/
 yRPN_convert       (char *a_source);
 
 char*        /*--> convert spreadsheet infix to rpn ------[--------[--------]-*/
-yRPN_spreadsheet   (char *a_source, int *a_ntoken);
+yRPN_spreadsheet   (char *a_source, int *a_ntoken, short a_tab);
 
 char*        /*--> retrieve tokenized format -------------[--------[--------]-*/
 yRPN_stokens       (char *a_source);

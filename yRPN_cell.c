@@ -62,7 +62,7 @@ yRPN_cell_init       (char *a_label, short *a_pos, short *a_tab, short *a_col, s
 }
 
 char         /*--> interpret tab in cell address ---------[-leaf---[--------]-*/
-yRPN_cell_tab        (char *a_label, short *a_pos, short *a_tab, char *a_abs, char  a_max)
+yRPN_cell_tab        (char *a_label, short *a_pos, short *a_tab, char *a_abs, char  a_max, short a_ctab)
 {  /*---(design notes)--------------------------------------------------------*/
    /* tabs can only be 0-9.  i am keeping this simple with rational limits    */
    /*---(locals)-----------+-----------+-*/
@@ -89,10 +89,13 @@ yRPN_cell_tab        (char *a_label, short *a_pos, short *a_tab, char *a_abs, ch
    if (strchr (v_number, a_label [*a_pos]) != NULL) {
       *a_tab  = a_label [*a_pos] - S_CHAR_ZERO;
       ++*a_pos;
+   } else if (strchr (v_upper, a_label [*a_pos]) != NULL) {
+      *a_tab  = a_label [*a_pos] - 'A' + 10;
+      ++*a_pos;
    }
    /*---(catch problem)------------------*/
    if (*a_tab <  0)  {
-      *a_tab = 0;  /* blank tab means tab 0 */
+      *a_tab = a_ctab;  /* blank tab means current tab  */
       if (*a_abs == 4) {
          *a_abs = 0;    /* this was really the col marker */
          *a_pos = 0;
@@ -205,7 +208,7 @@ yRPN_cell_pretty     (short a_tab, short a_col, short a_row, char a_abs, char *a
    s_max = strlen (x_addr);
    /*---(defense)------------------------*/
    --rce;  if (a_tab    <  0   )         return rce;
-   --rce;  if (a_tab    >  9   )         return rce;
+   --rce;  if (a_tab    >  35  )         return rce;
    --rce;  if (a_col    <  0   )         return rce;
    --rce;  if (a_col    >  701 )         return rce;
    --rce;  if (a_row    <  0   )         return rce;
@@ -223,7 +226,8 @@ yRPN_cell_pretty     (short a_tab, short a_col, short a_row, char a_abs, char *a
       strlcat (x_addr, "$", S_LEN_LABEL);
       a_abs -= 4;
    }
-   sprintf (x_temp, "%d", a_tab);
+   if (a_tab <= 9)  sprintf (x_temp, "%d", a_tab);
+   else             sprintf (x_temp, "%c", a_tab - 10 + 'A');
    strlcat (x_addr, x_temp, S_LEN_LABEL);
    /*---(col)---------------*/
    if (a_abs >= 2) {
@@ -251,7 +255,7 @@ yRPN_cell_pretty     (short a_tab, short a_col, short a_row, char a_abs, char *a
 }
 
 char         /*--> validate and clean cell addresses -----[--------[--------]-*/
-yRPN_cell         (char *a_label)
+yRPN_cell         (char *a_label, short a_ctab)
 {
    /*---(locals)-----------+-----------+-*/
    char        rc          =    0;
@@ -265,7 +269,7 @@ yRPN_cell         (char *a_label)
    /*> printf ("rc < : %3d : l=%-15.15s\n", rc, a_label);                             <*/
    if (rc >= 0)  rc = yRPN_cell_init   (a_label, &x_pos, &x_tab, &x_col, &x_row, &x_abs, &x_max);
    /*> printf ("rc i : %3d : l=%-15.15s, t=%4d, c=%4d, r=%4d, a=%2d, p=%2d, m=%2d\n", rc, a_label, x_tab, x_col, x_row, x_abs, x_pos, x_max);   <*/
-   if (rc >= 0)  rc = yRPN_cell_tab    (a_label, &x_pos, &x_tab, &x_abs, x_max);
+   if (rc >= 0)  rc = yRPN_cell_tab    (a_label, &x_pos, &x_tab, &x_abs, x_max, a_ctab);
    /*> printf ("rc t : %3d : l=%-15.15s, t=%4d, c=%4d, r=%4d, a=%2d, p=%2d, m=%2d\n", rc, a_label, x_tab, x_col, x_row, x_abs, x_pos, x_max);   <*/
    if (rc >= 0)  rc = yRPN_cell_col    (a_label, &x_pos, &x_col, &x_abs, x_max);
    /*> printf ("rc c : %3d : l=%-15.15s, t=%4d, c=%4d, r=%4d, a=%2d, p=%2d, m=%2d\n", rc, a_label, x_tab, x_col, x_row, x_abs, x_pos, x_max);   <*/
@@ -288,7 +292,7 @@ yRPN_cell         (char *a_label)
 static void        o___GYGES___________________o (void) {;}
 
 int          /*--> chec for cell addresses ---------------[--------[--------]-*/
-yRPN__addresses      (int  a_pos)
+yRPN__addresses      (int  a_pos, short a_ctab)
 {  /*---(design notes)--------------------------------------------------------*/
    /* addresses are only lowercase alphanumerics plus $ and @.                */
    /*---(locals)-----------+-----------+-*/
@@ -319,7 +323,7 @@ yRPN__addresses      (int  a_pos)
    /*---(validate the address)-------------*/
    /*> printf ("%s\n", rpn.t_name);                                                   <*/
    strlcpy (x_addr, rpn.t_name, S_LEN_LABEL);
-   rc = yRPN_cell (x_addr);
+   rc = yRPN_cell (x_addr, a_ctab);
    /*---(handle misses)------------------*/
    --rce;  if (rc < 0) {
       yRPN__token_error ();
@@ -337,74 +341,6 @@ yRPN__addresses      (int  a_pos)
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;
-}
-
-int        /* ---- : save off cell addresses ---------------------------------*/
-yRPN__addresses_OLD  (int  a_pos)
-{
-   /*---(design notes)-------------------*/
-   /*
-    *  cell addresses can take on a number of forms...
-    *     a1
-    *     0a1
-    *     $a1, a$1, $a$1, $0a1
-    *     b6:b10
-    *
-    */
-   /*---(locals)---------------------------*/
-   int       i         = a_pos;
-   int       j         = 0;
-   int       rc        = 0;
-   int       len       = 0;
-   /*---(prepare)------------------------*/
-   zRPN_DEBUG  printf("entering yRPN_addresses");
-   strlcpy (rpn.t_name, YRPN_TOKEN_NULL, S_LEN_TOKEN);
-   rpn.t_type = S_TTYPE_ADDR;
-   rpn.t_prec = S_PREC_NONE;
-   /*---(defenses)-----------------------*/
-   zRPN_DEBUG  printf("entering defenses");
-   if (zRPN_lang       != S_LANG_GYGES)         return  zRPN_ERR_NOT_SPREADSHEET;
-   if (i               >= rpn.l_working)         return  zRPN_ERR_INPUT_NOT_AVAIL;
-   if (strchr(v_address, rpn.working[i]) == 0)  return  zRPN_ERR_NOT_ADDRESS_CHAR;
-   /*---(main loop)------------------------*/
-   zRPN_DEBUG  printf("passed defenses");
-   zRPN_DEBUG  printf("   address----------------\n");
-   rpn.t_len  = 0;
-   while (i < rpn.l_working) {
-      /*---(test for right characters)-----*/
-      if (strchr(v_address , rpn.working[i]) == 0)  break;
-      /*---(normal number)-----------------*/
-      rpn.t_name[j]     = rpn.working[i];
-      rpn.t_name[j + 1] = '\0';
-      ++rpn.t_len ;
-      /*---(output)----------------------*/
-      zRPN_DEBUG  printf("      %03d (%02d) <<%s>>\n", j, rpn.t_len , rpn.t_name);
-      /*---(prepare for next char)-------*/
-      ++i;
-      ++j;
-   }
-   /*---(check size)-----------------------*/
-   len = strlen(rpn.t_name);
-   if (len <= 0) return -1;
-   /*---(handle it)------------------------*/
-   rc = yRPN_cell (rpn.t_name);
-   zRPN_DEBUG  printf("\n");
-   if (rc >= 0)  {
-      strcpy  (rpn.t_name, s_addr);
-   } else if (rc < 0)  {
-      strcpy  (rpn.t_name, YRPN_TOKEN_NULL);
-      rpn.t_len  = 0;
-      return  zRPN_ERR_BAD_ADDRESS;
-   }
-   yRPN_stack_tokens ();
-   yRPN_stack_shuntd();
-   yRPN_stack_normal (a_pos);
-   /*---(end)------------------------------*/
-   zRPN_DEBUG  printf("      fin (%02d) <<%s>>\n", rpn.t_len , rpn.t_name);
-   rpn.left_oper  = S_OPER_CLEAR;
-   /*---(complete)-------------------------*/
-   zRPN_DEBUG  printf("exiting yRPN_addresses");
-   return i;
 }
 
 

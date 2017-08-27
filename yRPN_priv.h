@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.8g"
-#define   zRPN_VER_TXT       "final unit test clean up"
+#define   zRPN_VER_NUM       "0.8h"
+#define   zRPN_VER_TXT       "updated for default tab numbers in spreadsheets"
 
 
 
@@ -30,6 +30,7 @@ extern char s_divtech [5];
 
 extern char     *v_alphanum;
 extern char     *v_alpha;
+extern char     *v_upper;
 extern char     *v_upnum;
 extern char     *v_lower;
 extern char     *v_number;
@@ -249,7 +250,7 @@ int        /* ---- : process grouping ----------------------------------------*/
 yRPN__sequence     (int  a_pos);
 
 int        /* ---- : save off cell addresses ---------------------------------*/
-yRPN__addresses    (int  a_pos);
+yRPN__addresses    (int  a_pos, short a_ctab);
 
 int        /* ---- : save off constants --------------------------------------*/
 yRPN__constants    (int  a_pos);
@@ -320,11 +321,11 @@ char*       yRPN_stack_unit      (char *a_question, int a_item);
 /*345678901-12345678901234567890->-----------------------------*/
 /*---(parsing)-----------------*/
 char        yRPN_cell_init       (char *a_label, short *a_pos, short *a_tab, short *a_col, short *a_row, char *a_abs, char *a_max);
-char        yRPN_cell_tab        (char *a_label, short *a_pos, short *a_tab, char *a_abs, char  a_max);
+char        yRPN_cell_tab        (char *a_label, short *a_pos, short *a_tab, char *a_abs, char  a_max, short a_ctab);
 char        yRPN_cell_col        (char *a_label, short *a_pos, short *a_col, char *a_abs, char  a_max);
 char        yRPN_cell_row        (char *a_label, short *a_pos, short *a_row, char *a_abs, char  a_max);
 char        yRPN_cell_pretty     (short a_tab, short a_col, short a_row, char a_abs, char *a_pretty);
-char        yRPN_cell            (char *a_label);
+char        yRPN_cell            (char *a_label, short a_ctab);
 char        yRPN__cells          (char *a_label, int *a_tab, int *a_col, int *a_row, char *a_sign);
 
 

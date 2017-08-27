@@ -29,6 +29,7 @@ char    zRPN_ERRORS [100][50] = {
 };
 
 tRPN      rpn;
+short     s_ctab     = 0;
 
 
 
@@ -144,7 +145,8 @@ char*        /*--> convert spreadsheet infix to rpn ------[ ------ [ ------ ]-*/
 yRPN_spreadsheet   (
       /*----------+-----------+-----------------------------------------------*/
       char       *a_source,   /* source infix string                          */
-      int        *a_ntoken)   /* number of rpn tokens in result (return)      */
+      int        *a_ntoken,   /* number of rpn tokens in result (return)      */
+      short       a_tab)
 {
    /*---(locals)-----------+-----------+-*/
    char       *x_rpn       = NULL;          /* return string of rpn notation  */
@@ -152,6 +154,7 @@ yRPN_spreadsheet   (
    zRPN_lang    = S_LANG_GYGES;
    strcpy (s_divider, ",");
    /*---(convert)------------------------*/
+   s_ctab = a_tab;
    x_rpn = yRPN_convert (a_source);
    zRPN_DEBUG  printf("   ready   = <<%s>>\n", x_rpn);
    /*---(interprete results)-------------*/
@@ -274,7 +277,7 @@ yRPN_convert       (char *a_source)
       /*---(pick handler)----------------*/
       if (rc <= x_pos && (x_ch == '\"' || x_ch == '<'))   rc = yRPN__strings    (x_pos);
       if (rc <= x_pos && x_ch == '\'')                    rc = yRPN__chars      (x_pos);
-      if (rc <= x_pos && strchr (v_address , x_ch) != 0)  rc = yRPN__addresses  (x_pos);
+      if (rc <= x_pos && strchr (v_address , x_ch) != 0)  rc = yRPN__addresses  (x_pos, s_ctab);
       if (rc <= x_pos && strchr (v_lower   , x_ch) != 0)  rc = yRPN__keywords   (x_pos);
       if (rc <= x_pos && strchr (v_lower   , x_ch) != 0)  rc = yRPN__types      (x_pos);
       if (rc <= x_pos && strchr (v_alpha   , x_ch) != 0)  rc = yRPN__constants  (x_pos);

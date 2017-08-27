@@ -7,6 +7,7 @@
 
 char     *v_alphanum  = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
 char     *v_alpha     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_";
+char     *v_upper     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 char     *v_upnum     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
 char     *v_lower     = "abcdefghijklmnopqrstuvwxyz";
 char     *v_number    = "0123456789";
