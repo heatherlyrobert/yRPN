@@ -43,11 +43,11 @@ yRPN_version       (void)
 {
    char    t [20] = "";
 #if    __TINYC__ > 0
-   strncpy (t, "[tcc built]", 15);
+   strncpy (t, "[tcc built  ]", 15);
 #elif  __GNUC__  > 0
-   strncpy (t, "[gnu gcc  ]", 15);
+   strncpy (t, "[gnu gcc    ]", 15);
 #else
-   strncpy (t, "[unknown  ]", 15);
+   strncpy (t, "[unknown    ]", 15);
 #endif
    snprintf (rpn.about, 100, "%s   %s : %s", t, zRPN_VER_NUM, zRPN_VER_TXT);
    return rpn.about;
@@ -67,8 +67,8 @@ yRPN_debug         (char *a_urgent)
    /*---(parse)--------------------------*/
    if (strcmp ("@@yRPN"       , a_urgent) == 0)  zRPN_debug.tops  = 'y';
    if (strcmp ("@@yRPN_oper"  , a_urgent) == 0)  zRPN_debug.tops  = zRPN_debug.oper  = 'y';
-   DEBUG_TOPS  yLOG_char    ("zRPN_tops" , zRPN_debug.tops);
-   DEBUG_TOPS  yLOG_char    ("zRPN_oper" , zRPN_debug.oper);
+   DEBUG_YRPN  yLOG_char    ("zRPN_tops" , zRPN_debug.tops);
+   DEBUG_YRPN  yLOG_char    ("zRPN_oper" , zRPN_debug.oper);
    /*---(complete)-----------------------*/
    return 0;
 }
@@ -250,7 +250,7 @@ yRPN_convert       (char *a_source)
     *   all presedence should match ansi-c to keep it clear and clean for me
     *
     */
-   DEBUG_TOPS  yLOG_enter   (__FUNCTION__);
+   DEBUG_YRPN  yLOG_enter   (__FUNCTION__);
    zRPN_DEBUG  printf("RPN_convert     :: beg ------------------------------\n");
    /*---(locals)-------------------------*/
    int       x_pos     = 1;
@@ -260,7 +260,7 @@ yRPN_convert       (char *a_source)
    int       x_pass    = 0;
    /*---(defenses)-----------------------*/
    if (a_source     == NULL)  {
-      DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
+      DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
       return 0;    /* no source to convert         */
    }
    yRPN__load (a_source);
@@ -268,9 +268,9 @@ yRPN_convert       (char *a_source)
    zRPN_DEBUG  printf("   ---process-------------\n");
    x_pos = 0;
    rpn.pproc = S_PPROC_NO;
-   DEBUG_TOPS  yLOG_note    ("convert loop enter--------------------");
+   DEBUG_YRPN  yLOG_note    ("convert loop enter--------------------");
    while (x_pos < rpn.l_working) {
-      DEBUG_TOPS  yLOG_value   ("PASS"      , x_pass++);
+      DEBUG_YRPN  yLOG_value   ("PASS"      , x_pass++);
       /*---(prepare)---------------------*/
       x_ch    = rpn.working [x_pos];
       rc      = x_pos;
@@ -303,7 +303,7 @@ yRPN_convert       (char *a_source)
       /*---(next)------------------------*/
       x_pos = rc;
    }
-   DEBUG_TOPS  yLOG_note    ("convert loop exit---------------------");
+   DEBUG_YRPN  yLOG_note    ("convert loop exit---------------------");
    /*---(handle errors)------------------*/
    if (rc < 0) {
       zRPN_DEBUG  printf ("FATAL %4d : %s\n", rc, zRPN_ERRORS [ -rc - 100]);
@@ -311,7 +311,7 @@ yRPN_convert       (char *a_source)
       strlcpy (rpn.shuntd, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
       rpn.l_shuntd  = 0;
       rpn.n_shuntd  = 0;
-      DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
+      DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
       return NULL;
    }
    /*---(clear stack)--------------------*/
@@ -325,7 +325,7 @@ yRPN_convert       (char *a_source)
          strlcpy (rpn.shuntd, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
          rpn.l_shuntd  = 0;
          rpn.n_shuntd  = 0;
-         DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
+         DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
          return NULL;
       }
       yRPN_stack_pops ();
@@ -336,13 +336,13 @@ yRPN_convert       (char *a_source)
    zRPN_DEBUG  printf("   detail  = <<%s>>\n", rpn.detail);
    zRPN_DEBUG  printf("   normal  = <<%s>>\n", rpn.normal);
    zRPN_DEBUG  printf("   tokens  = <<%s>>\n", rpn.tokens);
-   DEBUG_TOPS  yLOG_info    ("shunted"   , rpn.shuntd);
-   DEBUG_TOPS  yLOG_info    ("detail"    , rpn.detail);
-   DEBUG_TOPS  yLOG_info    ("normal"    , rpn.normal);
-   DEBUG_TOPS  yLOG_info    ("tokens"    , rpn.tokens);
+   DEBUG_YRPN  yLOG_info    ("shunted"   , rpn.shuntd);
+   DEBUG_YRPN  yLOG_info    ("detail"    , rpn.detail);
+   DEBUG_YRPN  yLOG_info    ("normal"    , rpn.normal);
+   DEBUG_YRPN  yLOG_info    ("tokens"    , rpn.tokens);
    /*---(complete)-----------------------*/
    zRPN_DEBUG  printf("RPN_convert     :: end ------------------------------\n");
-   DEBUG_TOPS  yLOG_exit    (__FUNCTION__);
+   DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
    /*> return  strndup (rpn.shuntd, S_LEN_OUTPUT);                                    <*/
    return  rpn.shuntd;
 }

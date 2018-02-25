@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.8h"
-#define   zRPN_VER_TXT       "updated for default tab numbers in spreadsheets"
+#define   zRPN_VER_NUM       "0.8i"
+#define   zRPN_VER_TXT       "moved yRPN_convert from debug_tops which was bad"
 
 
 
