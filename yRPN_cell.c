@@ -18,6 +18,13 @@ static int  s_abs       = 0;
 static int  s_max       = 0;
 
 
+extern char    (*g_validator )   (char *a_label, char **a_new, int z);
+extern char    (*g_adjuster  )   (char *a_label, char **a_new, char a_scope, int x, int y, int z);        /* pass deproot->owner, get back label of thing    */
+
+char
+yRPN_addr_config        (char *a_chars, void *a_validator, void *a_adjuster)
+{
+}
 
 /*====================------------------------------------====================*/
 /*===----                        helper functions                      ----===*/
@@ -317,12 +324,12 @@ yRPN__addresses      (int  a_pos, short a_ctab)
    }
    /*---(accumulate characters)------------*/
    DEBUG_YRPN    yLOG_note    ("accumulate characters");
-   rpn.t_type   = S_TTYPE_ADDR;
+   myRPN.t_type   = S_TTYPE_ADDR;
    x_pos        = a_pos;  /* starting point */
    while (yRPN__token_add (&x_pos) == 0);
    /*---(validate the address)-------------*/
-   /*> printf ("%s\n", rpn.t_name);                                                   <*/
-   strlcpy (x_addr, rpn.t_name, S_LEN_LABEL);
+   /*> printf ("%s\n", myRPN.t_name);                                                   <*/
+   strlcpy (x_addr, myRPN.t_name, S_LEN_LABEL);
    rc = yRPN_cell (x_addr, a_ctab);
    /*---(handle misses)------------------*/
    --rce;  if (rc < 0) {
@@ -332,12 +339,12 @@ yRPN__addresses      (int  a_pos, short a_ctab)
       return rce;
    }
    /*---(handle)-------------------------*/
-   strlcpy (rpn.t_name, x_addr, S_LEN_LABEL);
-   rpn.t_len = strlen (rpn.t_name);
+   strlcpy (myRPN.t_name, x_addr, S_LEN_LABEL);
+   myRPN.t_len = strlen (myRPN.t_name);
    yRPN_stack_tokens ();
    yRPN_stack_shuntd ();
    yRPN_stack_normal (a_pos);
-   rpn.left_oper  = S_OPER_CLEAR;
+   myRPN.left_oper  = S_OPER_CLEAR;
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return x_pos;

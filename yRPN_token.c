@@ -8,10 +8,10 @@
 char         /*--> set token to error --------------------[--------[--------]-*/
 yRPN__token_error    (void)
 {
-   strncpy (rpn.t_name, YRPN_TOKEN_NULL, S_LEN_TOKEN);
-   rpn.t_len    = 0;
-   rpn.t_type   = S_TTYPE_ERROR;
-   rpn.t_prec   = S_PREC_NONE;
+   strncpy (myRPN.t_name, YRPN_TOKEN_NULL, S_LEN_TOKEN);
+   myRPN.t_len    = 0;
+   myRPN.t_type   = S_TTYPE_ERROR;
+   myRPN.t_prec   = S_PREC_NONE;
    return 0;
 }
 
@@ -28,22 +28,22 @@ yRPN__token_add      (int *a_pos)
    char       *x_psuf      = "\">";
    /*---(header)------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
-   DEBUG_YRPN_M  yLOG_schar   (rpn.t_type);
+   DEBUG_YRPN_M  yLOG_schar   (myRPN.t_type);
    DEBUG_YRPN_M  yLOG_sint    (*a_pos);
-   DEBUG_YRPN_M  yLOG_sint    (rpn.l_working);
+   DEBUG_YRPN_M  yLOG_sint    (myRPN.l_working);
    /*---(defense)-----------------------*/
-   --rce;  if (*a_pos >= rpn.l_working) {
+   --rce;  if (*a_pos >= myRPN.l_working) {
       DEBUG_YRPN_M  yLOG_snote   ("past max");
       DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
       return rce;
    }
    /*---(get character)-----------------*/
-   x_ch    = rpn.working [*a_pos];
+   x_ch    = myRPN.working [*a_pos];
    DEBUG_YRPN_M  yLOG_schar   (x_ch);
-   if (rpn.t_len > 0 && rpn.t_name [rpn.t_len - 1] == '\\')  x_esc = 'y';
+   if (myRPN.t_len > 0 && myRPN.t_name [myRPN.t_len - 1] == '\\')  x_esc = 'y';
    DEBUG_YRPN_M  yLOG_schar   (x_esc);
    /*---(check character)---------------*/
-   --rce;  switch (rpn.t_type) {
+   --rce;  switch (myRPN.t_type) {
    case S_TTYPE_KEYW   : case S_TTYPE_TYPE   :
       DEBUG_YRPN_M  yLOG_snote   ("v_lower");
       if (strchr (v_lower , x_ch) == 0)                         x_bad = 'y';
@@ -51,7 +51,7 @@ yRPN__token_add      (int *a_pos)
       /*---(done)------------------------*/
    case S_TTYPE_CONST  :
       DEBUG_YRPN_M  yLOG_snote   ("v_upnum");
-      if (rpn.t_len == 0 && (x_ch < 'A' || x_ch > 'Z'))         x_bad = 'y';
+      if (myRPN.t_len == 0 && (x_ch < 'A' || x_ch > 'Z'))         x_bad = 'y';
       if (strchr (v_upnum , x_ch) == 0)                         x_bad = 'y';
       break;
       /*---(done)------------------------*/
@@ -67,25 +67,25 @@ yRPN__token_add      (int *a_pos)
       /*---(done)------------------------*/
    case S_TTYPE_BIN    :
       DEBUG_YRPN_M  yLOG_snote   ("v_binary");
-      if (rpn.t_len != 1 && strchr (v_binary, x_ch) == 0)       x_bad = 'y';
-      if (rpn.t_len == 1 && (x_ch != 'b' && x_ch != 'B'))       x_bad = 'y';
+      if (myRPN.t_len != 1 && strchr (v_binary, x_ch) == 0)       x_bad = 'y';
+      if (myRPN.t_len == 1 && (x_ch != 'b' && x_ch != 'B'))       x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_OCT    :
       DEBUG_YRPN_M  yLOG_snote   ("v_octal");
-      if (rpn.t_len != 1 && strchr (v_octal + 1, x_ch) == 0)    x_bad = 'y';
-      if (rpn.t_len == 1 && strchr (v_octal    , x_ch) == 0)    x_bad = 'y';
+      if (myRPN.t_len != 1 && strchr (v_octal + 1, x_ch) == 0)    x_bad = 'y';
+      if (myRPN.t_len == 1 && strchr (v_octal    , x_ch) == 0)    x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_HEX    :
       DEBUG_YRPN_M  yLOG_snote   ("v_hex");
-      if (rpn.t_len != 1 && strchr (v_hex   , x_ch) == 0)       x_bad = 'y';
-      if (rpn.t_len == 1 && (x_ch != 'x' && x_ch != 'X'))       x_bad = 'y';
+      if (myRPN.t_len != 1 && strchr (v_hex   , x_ch) == 0)       x_bad = 'y';
+      if (myRPN.t_len == 1 && (x_ch != 'x' && x_ch != 'X'))       x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_VARS   : case S_TTYPE_FUNC   :
       DEBUG_YRPN_M  yLOG_snote   ("v_alphanum");
-      if (rpn.t_len == 0 && strchr (v_alpha, x_ch) == 0)        x_bad = 'y';
+      if (myRPN.t_len == 0 && strchr (v_alpha, x_ch) == 0)        x_bad = 'y';
       if (strchr (v_alphanum, x_ch) == 0)                       x_bad = 'y';
       break;
       /*---(done)------------------------*/
@@ -96,9 +96,9 @@ yRPN__token_add      (int *a_pos)
       /*---(done)------------------------*/
    case S_TTYPE_STR    :
       /*---(check pre-processor)---------*/
-      if (rpn.pproc == S_PPROC_INCL) {
+      if (myRPN.pproc == S_PPROC_INCL) {
          DEBUG_YRPN_M  yLOG_snote   ("include str");
-         if (rpn.t_len == 0) {
+         if (myRPN.t_len == 0) {
             if (strchr (x_ppre, x_ch) == 0)                     x_bad = 'y';
          } else {
             if (x_esc != 'y' && strchr (x_psuf, x_ch) != 0)     x_bad = '#';
@@ -107,7 +107,7 @@ yRPN__token_add      (int *a_pos)
       /*---(check normal)----------------*/
       else {
          DEBUG_YRPN_M  yLOG_snote   ("normal str");
-         if (rpn.t_len == 0) {
+         if (myRPN.t_len == 0) {
             if (strchr (x_norm, x_ch) == 0)                     x_bad = 'y';
          } else {
             if (x_esc != 'y' && strchr (x_norm, x_ch) != 0)     x_bad = '#';
@@ -116,14 +116,14 @@ yRPN__token_add      (int *a_pos)
       /*---(done)------------------------*/
       break;
    case S_TTYPE_CHAR   :
-      if (rpn.t_len == 0 && x_ch != '\'')                       x_bad = 'y';
-      if (x_esc != 'y' && rpn.t_len == 2 && x_ch == '\'')       x_bad = '#';
-      if (x_esc == 'y' && rpn.t_len == 3 && x_ch == '\'')       x_bad = '#';
-      if (rpn.t_len >= 3)                                       x_bad = 'y';
+      if (myRPN.t_len == 0 && x_ch != '\'')                       x_bad = 'y';
+      if (x_esc != 'y' && myRPN.t_len == 2 && x_ch == '\'')       x_bad = '#';
+      if (x_esc == 'y' && myRPN.t_len == 3 && x_ch == '\'')       x_bad = '#';
+      if (myRPN.t_len >= 3)                                       x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_OPER   :
-      if (rpn.t_len >= 2)                                       x_bad = 'y';
+      if (myRPN.t_len >= 2)                                       x_bad = 'y';
       if (strchr (v_operator , x_ch) == 0)                      x_bad = 'y';
       break;
       /*---(done)------------------------*/
@@ -140,10 +140,10 @@ yRPN__token_add      (int *a_pos)
       return rce;
    }
    /*---(add to token name)-------------*/
-   rpn.t_name [rpn.t_len]    = x_ch;
-   rpn.t_name [++rpn.t_len]  = '\0';
-   DEBUG_YRPN_M  yLOG_snote   (rpn.t_name);
-   DEBUG_YRPN_M  yLOG_sint    (rpn.t_len);
+   myRPN.t_name [myRPN.t_len]    = x_ch;
+   myRPN.t_name [++myRPN.t_len]  = '\0';
+   DEBUG_YRPN_M  yLOG_snote   (myRPN.t_name);
+   DEBUG_YRPN_M  yLOG_sint    (myRPN.t_len);
    ++(*a_pos);
    DEBUG_YRPN_M  yLOG_sint    (*a_pos);
    /*---(stop if string ended)----------*/
@@ -166,8 +166,8 @@ yRPN__token_paren    (int a_pos)
    char        x_type      =  S_TTYPE_VARS;
    /*---(skip whitespace)----------------*/
    x_pos = a_pos;
-   while (x_pos <  rpn.l_working) {
-      x_ch = rpn.working [x_pos];
+   while (x_pos <  myRPN.l_working) {
+      x_ch = myRPN.working [x_pos];
       if (x_ch != ' ')  break;
       ++x_pos;
    }
@@ -190,15 +190,15 @@ yRPN__token_nums     (int a_pos)
    DEBUG_YRPN_M  yLOG_sint    (a_pos);
    /*---(check for non-number)-----------*/
    x_pos = a_pos;
-   while (x_pos <  rpn.l_working) {
-      x_ch = rpn.working [x_pos];
+   while (x_pos <  myRPN.l_working) {
+      x_ch = myRPN.working [x_pos];
       DEBUG_YRPN_M  yLOG_schar   (x_ch);
       if (strchr (v_number, x_ch) == 0) break;
       ++x_pos;
    }
    DEBUG_YRPN_M  yLOG_sint    (x_pos);
    /*---(classify)-----------------------*/
-   if (rpn.working [a_pos] == '0' && x_pos == a_pos + 1) {
+   if (myRPN.working [a_pos] == '0' && x_pos == a_pos + 1) {
       DEBUG_YRPN_M  yLOG_snote   ("special");
       switch (x_ch) {
       case 'x' : case 'X' :
@@ -222,7 +222,7 @@ yRPN__token_nums     (int a_pos)
          x_type = S_TTYPE_INT;
          break;
       }
-   } else if (rpn.working [a_pos] == '0' && x_pos > a_pos + 1) {
+   } else if (myRPN.working [a_pos] == '0' && x_pos > a_pos + 1) {
       DEBUG_YRPN_M  yLOG_snote   ("oct2");
       x_type = S_TTYPE_OCT;
    } else if (x_ch == '.') {

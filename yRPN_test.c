@@ -20,27 +20,27 @@ yRPN_accessor      (char *a_question, int a_item)
    char        x_temp      [S_LEN_LABEL];
    /*---(input)--------------------------*/
    if        (strcmp (a_question, "source"    )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "source string    :%s"  , rpn.source);
+      snprintf (unit_answer, S_LEN_OUTPUT, "source string    :%s"  , myRPN.source);
    }
    /*---(processing)---------------------*/
    else if     (strcmp (a_question, "token"     )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "current token    :%s"  , rpn.t_name);
+      snprintf (unit_answer, S_LEN_OUTPUT, "current token    :%s"  , myRPN.t_name);
    } else if (strcmp (a_question, "precedence")     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "precedence       : %c"    , rpn.t_prec);
+      snprintf (unit_answer, S_LEN_OUTPUT, "precedence       : %c"    , myRPN.t_prec);
    } else if (strcmp (a_question, "type"      )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "current type     : %c"    , rpn.t_type);
+      snprintf (unit_answer, S_LEN_OUTPUT, "current type     : %c"    , myRPN.t_type);
    }
    /*---(output)-------------------------*/
    else if    (strcmp (a_question, "n_tokens"     )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "infix count      : %d"    , rpn.n_tokens);
+      snprintf (unit_answer, S_LEN_OUTPUT, "infix count      : %d"    , myRPN.n_tokens);
    } else if (strcmp (a_question, "tokens"    )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "infix output     :%s"  , rpn.tokens);
+      snprintf (unit_answer, S_LEN_OUTPUT, "infix output     :%s"  , myRPN.tokens);
    } else if (strcmp (a_question, "n_detail"     )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "postfix count    : %d"    , rpn.n_shuntd);
+      snprintf (unit_answer, S_LEN_OUTPUT, "postfix count    : %d"    , myRPN.n_shuntd);
    } else if (strcmp (a_question, "output"    )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "postfix output   :%s"  , rpn.shuntd);
+      snprintf (unit_answer, S_LEN_OUTPUT, "postfix output   :%s"  , myRPN.shuntd);
    } else if (strcmp (a_question, "detail"    )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "postfix detail   :%s"  , rpn.detail);
+      snprintf (unit_answer, S_LEN_OUTPUT, "postfix detail   :%s"  , myRPN.detail);
    }
    /*---(stack)--------------------------*/
    /*> else if   (strcmp (a_question, "depth"     )     == 0) {                                          <* 

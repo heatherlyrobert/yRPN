@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.9a"
-#define   zRPN_VER_TXT       "added a very, very simple command line rpn front-end"
+#define   zRPN_VER_NUM       "0.9b"
+#define   zRPN_VER_TXT       "renamed local structure to myRPN to avoid symbol collisions"
 
 
 
@@ -185,7 +185,7 @@ struct  cRPN {
    /*---(MAYBE GONE)---------------------*/
    char        about       [500];
 };
-extern  tRPN      rpn;
+extern  tRPN      myRPN;
 
 #define   zRPN_END       '~'
 
