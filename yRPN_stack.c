@@ -209,14 +209,14 @@ yRPN_stack_pops     (void)
    }
    /*---(shuntd output)------------------*/
    if (myRPN.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
-   else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
+   else                        strlcpy (x_div, s_divider , S_LEN_LABEL);
    strlcat (myRPN.shuntd, x_div           , S_LEN_OUTPUT);
    strlcat (myRPN.shuntd, s_stack [s_nstack].name, S_LEN_OUTPUT);
    DEBUG_YRPN_M  yLOG_snote   (s_stack [s_nstack].name);
    /*> printf ("%s\n", myRPN.shuntd);                                                   <*/
    /*---(normal stack)-------------------*/
    if (myRPN.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
-   else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
+   else                        strlcpy (x_div, s_divtech , S_LEN_LABEL);
    strlcat (myRPN.detail, x_div           , S_LEN_OUTPUT);
    sprintf (x_token, "%c,%s", s_stack [s_nstack].type, s_stack [s_nstack].name);
    strlcat (myRPN.detail, x_token         , S_LEN_OUTPUT);

@@ -152,26 +152,26 @@
 char*        /*--> return library version information ----[--------[--------]-*/
 yRPN_version       (void);
 
-char         /*--> process urgents/debugging -------------[--------[--------]-*/
-yRPN_debug         (char *a_urgent);
+char         /*--> convert spreadsheet infix to rpn ------[--------[--------]-*/
+yRPN_spreadsheet   (char *a_src, char **a_rpn, int *a_nrpn, int a_max, short a_tab);
 
-char*        /*--> convert complier infix to rpn ---------[--------[--------]-*/
-yRPN_convert       (char *a_source);
+char
+yRPN_detail        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
 
-char*        /*--> convert spreadsheet infix to rpn ------[--------[--------]-*/
-yRPN_spreadsheet   (char *a_source, int *a_ntoken, short a_tab);
+char
+yRPN_normal        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
 
-char*        /*--> retrieve tokenized format -------------[--------[--------]-*/
-yRPN_stokens       (char *a_source);
+char
+yRPN_tokens        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
 
-char*        /*--> retrieve normal format ----------------[--------[--------]-*/
-yRPN_normal        (char *a_source, char *a_normal, int *a_ntoken);
+char
+yRPN_techtoken     (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
 
-char*        /*--> retrieve detailed format --------------[--------[--------]-*/
-yRPN_detail        (char *a_source, char *a_detail, int *a_ntoken);
 
-char*        /*--> retrieve tokenized format -------------[--------[--------]-*/
-yRPN_tokens        (char *a_source);
+
+
+int          /*--> convert spreadsheet infix to rpn ------[ ------ [ ------ ]-*/
+yRPN_errorpos      (void);
 
 char         /*--> identify symbol arity -----------------[--------[--------]-*/
 yRPN_arity         (char *a_op);

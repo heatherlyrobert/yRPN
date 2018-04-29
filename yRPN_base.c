@@ -30,6 +30,7 @@ char    zRPN_ERRORS [100][50] = {
 
 tRPN      myRPN;
 short     s_ctab     = 0;
+char      s_note     [20] = "";
 
 
 
@@ -51,26 +52,6 @@ yRPN_version       (void)
 #endif
    snprintf (myRPN.about, 100, "%s   %s : %s", t, zRPN_VER_NUM, zRPN_VER_TXT);
    return myRPN.about;
-}
-
-char         /*--> process urgents/debugging -------------[--------[--------]-*/
-yRPN_debug         (char *a_urgent)
-{
-   /*---(defense)------------------------*/
-   if (a_urgent == NULL)  return -1;
-   /*---(prepare)------------------------*/
-   zRPN_debug.tops    = 'n';
-   zRPN_debug.stack   = 'n';
-   zRPN_debug.cell    = 'n';
-   zRPN_debug.oper    = 'n';
-   zRPN_debug.keys    = 'n';
-   /*---(parse)--------------------------*/
-   if (strcmp ("@@yRPN"       , a_urgent) == 0)  zRPN_debug.tops  = 'y';
-   if (strcmp ("@@yRPN_oper"  , a_urgent) == 0)  zRPN_debug.tops  = zRPN_debug.oper  = 'y';
-   DEBUG_YRPN  yLOG_char    ("zRPN_tops" , zRPN_debug.tops);
-   DEBUG_YRPN  yLOG_char    ("zRPN_oper" , zRPN_debug.oper);
-   /*---(complete)-----------------------*/
-   return 0;
 }
 
 
@@ -96,6 +77,7 @@ yRPN__load         (char *a_source)   /* source infix string                    
       myRPN.l_source  = myRPN.l_working = strlen (myRPN.source);
    }
    DEBUG_YRPN    yLOG_sint    (myRPN.l_source);
+   myRPN.pos        = 0;
    /*---(set the token vars)-------------*/
    DEBUG_YRPN    yLOG_note    ("token vars");
    strncpy (myRPN.t_name  , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
@@ -116,128 +98,216 @@ yRPN__load         (char *a_source)   /* source infix string                    
    return  myRPN.l_source;
 }
 
-char       /* ---- : set c human readable ------------------------------------*/
-yRPN__chuman       (void)
-{
-   zRPN_lang    = S_LANG_C;
-   strcpy (s_divider, " ");
-   return 0;
-}
-
-char       /* ---- : set spreadsheet human readable --------------------------*/
-yRPN__shuman       (int *a_ntoken)
-{
-   zRPN_lang    = S_LANG_GYGES;
-   strcpy (s_divider, " ");
-   return 0;
-}
-
 char       /* ---- : set c internal ------------------------------------------*/
-yRPN_compiler      (void)
+yRPN_complier      (char *a_src, short a_tab, char **a_rpn, int a_nrpn, int a_max)
 {
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
+   char        rc          =    0;
+   char       *x_rpn       = NULL;          /* return string of rpn notation  */
    zRPN_lang    = S_LANG_C;
    strcpy (s_divider, ", ");
    strcpy (s_divtech, "\x1F");
    return 0;
 }
 
-char*        /*--> convert spreadsheet infix to rpn ------[ ------ [ ------ ]-*/
-yRPN_spreadsheet   (
-      /*----------+-----------+-----------------------------------------------*/
-      char       *a_source,   /* source infix string                          */
-      int        *a_ntoken,   /* number of rpn tokens in result (return)      */
-      short       a_tab)
+char         /*--> convert spreadsheet infix to rpn ------[ ------ [ ------ ]-*/
+yRPN_spreadsheet   (char *a_src, char **a_rpn, int *a_nrpn, int a_max, short a_tab)
 {
-   /*---(locals)-----------+-----------+-*/
-   char       *x_rpn       = NULL;          /* return string of rpn notation  */
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
+   /*---(header)-------------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
    /*---(prepare flags)------------------*/
+   DEBUG_YRPN   yLOG_note    ("set spreadsheet configuration");
    zRPN_lang    = S_LANG_GYGES;
    strcpy (s_divider, ",");
-   /*---(convert)------------------------*/
    s_ctab = a_tab;
-   x_rpn = yRPN_convert (a_source);
-   zRPN_DEBUG  printf("   ready   = <<%s>>\n", x_rpn);
-   /*---(interprete results)-------------*/
-   if (x_rpn == NULL)  {
-      if (a_ntoken != NULL) *a_ntoken = 0;
-      return NULL;
+   /*---(convert)------------------------*/
+   rc = yRPN__driver (a_src + 1, 's', a_rpn, a_nrpn, a_max);
+   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
+   ++myRPN.pos;
+   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   if (rc < 0) {
+      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      return rc;
    }
-   *a_ntoken = myRPN.n_shuntd - 1;
    /*---(complete)-----------------------*/
-   return x_rpn;
+   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
+   return 0;
 }
 
-char*      /* ---- : retrieve the tokenized format ---------------------------*/
-yRPN_stokens       (char *a_source)
+char       /* ---- : retrieve the tokenized format ---------------------------*/
+yRPN_normal        (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
 {
-   char     *x_rpn = NULL;
-   zRPN_lang    = S_LANG_GYGES;
-   strcpy (s_divider, " ");
-   x_rpn = yRPN_convert (a_source);
-   if (x_rpn == NULL)   return NULL;
-   return myRPN.tokens;
-}
-
-char*      /* ---- : retrieve the normal format ------------------------------*/
-yRPN_normal        (char *a_source, char *a_normal, int *a_ntoken)
-{
-   char     *x_rpn = NULL;
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
+   /*---(header)-------------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   /*---(prepare flags)------------------*/
+   DEBUG_YRPN   yLOG_note    ("set configuration");
    zRPN_lang    = S_LANG_C;
    strcpy (s_divider, ", ");
    strcpy (s_divtech, "\x1F");
-   x_rpn = yRPN_convert (a_source);
-   if (x_rpn == NULL)  {
-      if (a_normal != NULL) strcpy (a_normal, "");
-      if (a_ntoken != NULL) *a_ntoken = 0;
-      return NULL;
+   /*---(convert)------------------------*/
+   rc = yRPN__driver (a_src, 'n', a_rpn, NULL, a_max);
+   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
+   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   if (rc < 0) {
+      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      return rc;
    }
-   if (a_normal != NULL) strcpy (a_normal, myRPN.normal);
-   if (a_ntoken != NULL) *a_ntoken = myRPN.l_normal;
-   return myRPN.shuntd;
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   return 0;
 }
 
-char*      /* ---- : retrieve the detailed format ----------------------------*/
-yRPN_detail        (char *a_source, char *a_detail, int *a_ntoken)
+char       /* ---- : retrieve the tokenized format ---------------------------*/
+yRPN_detail        (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
 {
-   char     *x_rpn = NULL;
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
+   /*---(header)-------------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   /*---(prepare flags)------------------*/
+   DEBUG_YRPN   yLOG_note    ("set configuration");
    zRPN_lang    = S_LANG_C;
    strcpy (s_divider, ", ");
    strcpy (s_divtech, "\x1F");
-   x_rpn = yRPN_convert (a_source);
-   if (x_rpn == NULL)  {
-      if (a_detail != NULL) strcpy (a_detail, "");
-      if (a_ntoken != NULL) *a_ntoken = 0;
-      return NULL;
+   /*---(convert)------------------------*/
+   rc = yRPN__driver (a_src, 'd', a_rpn, NULL, a_max);
+   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
+   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   if (rc < 0) {
+      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      return rc;
    }
-   if (a_detail != NULL) strcpy (a_detail, myRPN.detail);
-   if (a_ntoken != NULL) *a_ntoken = myRPN.n_shuntd;
-   return myRPN.shuntd;
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   return 0;
 }
 
-char*      /* ---- : retrieve the tokenized format ---------------------------*/
-yRPN_techtoken     (char *a_source)
+char       /* ---- : retrieve the tokenized format ---------------------------*/
+yRPN_techtoken     (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
 {
-   char     *x_rpn = NULL;
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
+   /*---(header)-------------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   /*---(prepare flags)------------------*/
+   DEBUG_YRPN   yLOG_note    ("set configuration");
    zRPN_lang    = S_LANG_C;
    strcpy (s_divider, "\x1F");
-   x_rpn = yRPN_convert (a_source);
-   if (x_rpn == NULL)   return NULL;
-   return myRPN.tokens;
+   /*---(convert)------------------------*/
+   rc = yRPN__driver (a_src, 't', a_rpn, NULL, a_max);
+   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
+   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   if (rc < 0) {
+      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      return rc;
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   return 0;
 }
 
-char*      /* ---- : retrieve the tokenized format ---------------------------*/
-yRPN_tokens        (char *a_source)
+char       /* ---- : retrieve the tokenized format ---------------------------*/
+yRPN_tokens        (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
 {
-   char     *x_rpn = NULL;
+   /*---(locals)-----------+-----+-----+-*/
+   char        rc          =    0;
+   /*---(header)-------------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   /*---(prepare flags)------------------*/
+   DEBUG_YRPN   yLOG_note    ("set configuration");
    zRPN_lang    = S_LANG_C;
    strcpy (s_divider, " ");
-   x_rpn = yRPN_convert (a_source);
-   if (x_rpn == NULL)   return NULL;
-   return myRPN.tokens;
+   /*---(convert)------------------------*/
+   rc = yRPN__driver (a_src, 't', a_rpn, NULL, a_max);
+   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
+   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   if (rc < 0) {
+      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      return rc;
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   return 0;
 }
 
-char*      /* ---- : convert normal infix notation to postfix/rpn ------------*/
-yRPN_convert       (char *a_source)
+int          /*--> convert spreadsheet infix to rpn ------[ ------ [ ------ ]-*/
+yRPN_errorpos      (void)
+{
+   return myRPN.pos;
+}
+
+char         /*--> convert spreadsheet infix to rpn ------[ ------ [ ------ ]-*/
+yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_max)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   char        rce         =  -10;
+   char        rc          =    0;
+   char       *x_rpn       = NULL;          /* return string of rpn notation  */
+   int         x_len       =    0;
+   /*---(header)-------------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   /*---(defense)------------------------*/
+   DEBUG_YRPN   yLOG_point   ("a_src"     , a_src);
+   --rce;  if (a_src == NULL) {
+      DEBUG_YRPN   yLOG_note    ("no input variable, no point");
+      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   DEBUG_YRPN   yLOG_point   ("a_rpn"     , a_rpn);
+   if (a_rpn != NULL) strlcpy (*a_rpn, "", a_max);
+   /*---(convert)------------------------*/
+   if (a_type == 's')  rc = yRPN__convert (a_src + 1);
+   else                rc = yRPN__convert (a_src);
+   DEBUG_YRPN   yLOG_value   ("convert"   , rc);
+   --rce;  if (rc < 0) {
+      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(interpret results)--------------*/
+   DEBUG_YRPN   yLOG_value   ("max"       , a_max);
+   switch (a_type) {
+   case 't' :
+      if (a_rpn  != NULL)  strlcpy (*a_rpn, myRPN.tokens  , a_max);
+      if (a_nrpn != NULL)  *a_nrpn = myRPN.n_tokens;
+      x_len = strlen (myRPN.tokens);
+      break;
+   case 'd' :
+      if (a_rpn  != NULL)  strlcpy (*a_rpn, myRPN.detail  , a_max);
+      if (a_nrpn != NULL)  *a_nrpn = myRPN.n_shuntd;
+      x_len = strlen (myRPN.detail);
+      break;
+   case 'n' :
+      if (a_rpn  != NULL)  strlcpy (*a_rpn, myRPN.normal  , a_max);
+      if (a_nrpn != NULL)  *a_nrpn = myRPN.n_tokens;
+      x_len = strlen (myRPN.normal);
+      break;
+   case 's' :
+      if (a_rpn  != NULL)  strlcpy (*a_rpn, myRPN.shuntd  , a_max);
+      if (a_nrpn != NULL)  *a_nrpn = myRPN.n_shuntd;
+      x_len = strlen (myRPN.shuntd);
+      break;
+
+   }
+   /*---(check for truncation)-----------*/
+   DEBUG_YRPN   yLOG_value   ("length"    , x_len);
+   --rce;  if (x_len >= a_max) {
+      DEBUG_YRPN   yLOG_note    ("output too long for output provided");
+      if (a_rpn != NULL) strlcpy (*a_rpn, "", a_max);
+      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   return 0;
+}
+
+char      /* ---- : convert normal infix notation to postfix/rpn ------------*/
+yRPN__convert       (char *a_source)
 {
    /*---(design notes)-------------------*/
    /*
@@ -253,70 +323,70 @@ yRPN_convert       (char *a_source)
    DEBUG_YRPN  yLOG_enter   (__FUNCTION__);
    zRPN_DEBUG  printf("RPN_convert     :: beg ------------------------------\n");
    /*---(locals)-------------------------*/
-   int       x_pos     = 1;
-   int       len       = 0;
-   int       rc        = 0;
-   char      x_ch      = 0;
-   int       x_pass    = 0;
+   char      rce       =  -10;
+   int       len       =    0;
+   int       rc        =    0;
+   char      x_ch      =    0;
+   int       x_pass    =    0;
    /*---(defenses)-----------------------*/
-   if (a_source     == NULL)  {
-      DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
-      return 0;    /* no source to convert         */
+   --rce;  if (a_source     == NULL)  {
+      DEBUG_YRPN  yLOG_exitr   (__FUNCTION__, rce);
+      return rce;    /* no source to convert         */
    }
    yRPN__load (a_source);
    /*---(main loop)----------------------*/
    zRPN_DEBUG  printf("   ---process-------------\n");
-   x_pos = 0;
    myRPN.pproc = S_PPROC_NO;
    DEBUG_YRPN  yLOG_note    ("convert loop enter--------------------");
-   while (x_pos < myRPN.l_working) {
+   while (myRPN.pos < myRPN.l_working) {
       DEBUG_YRPN  yLOG_value   ("PASS"      , x_pass++);
       /*---(prepare)---------------------*/
-      x_ch    = myRPN.working [x_pos];
-      rc      = x_pos;
+      x_ch    = myRPN.working [myRPN.pos];
+      rc      = myRPN.pos;
       /*---(pick handler)----------------*/
-      if (rc <= x_pos && (x_ch == '\"' || x_ch == '<'))   rc = yRPN__strings    (x_pos);
-      if (rc <= x_pos && x_ch == '\'')                    rc = yRPN__chars      (x_pos);
-      if (rc <= x_pos && strchr (v_address , x_ch) != 0)  rc = yRPN__addresses  (x_pos, s_ctab);
-      if (rc <= x_pos && strchr (v_lower   , x_ch) != 0)  rc = yRPN__keywords   (x_pos);
-      if (rc <= x_pos && strchr (v_lower   , x_ch) != 0)  rc = yRPN__types      (x_pos);
-      if (rc <= x_pos && strchr (v_alpha   , x_ch) != 0)  rc = yRPN__constants  (x_pos);
-      if (rc <= x_pos && strchr (v_alpha   , x_ch) != 0)  rc = yRPN__funcvar    (x_pos);
-      if (rc <= x_pos && strchr (v_number  , x_ch) != 0)  rc = yRPN__numbers    (x_pos);
-      if (rc <= x_pos && strchr (v_sequence, x_ch) != 0)  rc = yRPN__sequencer  (x_pos);
-      if (rc <= x_pos && strchr (v_operator, x_ch) != 0)  rc = yRPN__operators  (x_pos);
-      if (rc <= x_pos && strchr (v_enders  , x_ch) != 0)  rc = yRPN__enders     (x_pos);
-      /*> if (rc <= x_pos &&                myRPN.pproc == S_PPROC_OTHER) rc = yRPN__text       (x_pos);   <*/
+      if (rc <= myRPN.pos && (x_ch == '\"' || x_ch == '<'))   rc = yRPN__strings    (myRPN.pos);
+      if (rc <= myRPN.pos && x_ch == '\'')                    rc = yRPN__chars      (myRPN.pos);
+      if (rc <= myRPN.pos && strchr (v_address , x_ch) != 0)  rc = yRPN__addresses  (myRPN.pos, s_ctab);
+      if (rc <= myRPN.pos && strchr (v_lower   , x_ch) != 0)  rc = yRPN__keywords   (myRPN.pos);
+      if (rc <= myRPN.pos && strchr (v_lower   , x_ch) != 0)  rc = yRPN__types      (myRPN.pos);
+      if (rc <= myRPN.pos && strchr (v_alpha   , x_ch) != 0)  rc = yRPN__constants  (myRPN.pos);
+      if (rc <= myRPN.pos && strchr (v_alpha   , x_ch) != 0)  rc = yRPN__funcvar    (myRPN.pos);
+      if (rc <= myRPN.pos && strchr (v_number  , x_ch) != 0)  rc = yRPN__numbers    (myRPN.pos);
+      if (rc <= myRPN.pos && strchr (v_sequence, x_ch) != 0)  rc = yRPN__sequencer  (myRPN.pos);
+      if (rc <= myRPN.pos && strchr (v_operator, x_ch) != 0)  rc = yRPN__operators  (myRPN.pos);
+      if (rc <= myRPN.pos && strchr (v_enders  , x_ch) != 0)  rc = yRPN__enders     (myRPN.pos);
+      /*> if (rc <= myRPN.pos &&                myRPN.pproc == S_PPROC_OTHER) rc = yRPN__text       (myRPN.pos);   <*/
       /*---(unrecognized)----------------*/
-      if (rc <= x_pos) {
-         if (x_ch == ' ')  zRPN_DEBUG  printf ("   whitespace\n");
-         ++x_pos;
-         continue;
+      if (rc <= myRPN.pos) {
+         if (x_ch == ' ') {
+            zRPN_DEBUG  printf ("   whitespace\n");
+            ++myRPN.pos;
+            continue;
+         }
+         break;
       }
       /*---(output)----------------------*/
       zRPN_DEBUG  printf("   shuntd  = <<%s>>\n", myRPN.shuntd);
       zRPN_DEBUG  printf("   detail  = <<%s>>\n", myRPN.detail);
       zRPN_DEBUG  printf("   normal  = <<%s>>\n", myRPN.normal);
       zRPN_DEBUG  printf("   tokens  = <<%s>>\n", myRPN.tokens);
-      /*---(error handling)--------------*/
-      if (rc < 0)  break;
       /*---(next)------------------------*/
-      x_pos = rc;
+      myRPN.pos = rc;
    }
    DEBUG_YRPN  yLOG_note    ("convert loop exit---------------------");
    /*---(handle errors)------------------*/
-   if (rc < 0) {
+   --rce;  if (rc < 0) {
       zRPN_DEBUG  printf ("FATAL %4d : %s\n", rc, zRPN_ERRORS [ -rc - 100]);
       strlcpy (myRPN.detail, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
       strlcpy (myRPN.shuntd, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
       myRPN.l_shuntd  = 0;
       myRPN.n_shuntd  = 0;
       DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
-      return NULL;
+      return rce;
    }
    /*---(clear stack)--------------------*/
    zRPN_DEBUG  printf("   ---clear stack---------\n");
-   while (1) {
+   --rce;  while (1) {
       rc = yRPN_stack_peek();
       if (rc < 0)  break;
       if (strcmp(myRPN.p_name, "(") == 0) {
@@ -326,7 +396,7 @@ yRPN_convert       (char *a_source)
          myRPN.l_shuntd  = 0;
          myRPN.n_shuntd  = 0;
          DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
-         return NULL;
+         return rce;
       }
       yRPN_stack_pops ();
    }
@@ -343,8 +413,7 @@ yRPN_convert       (char *a_source)
    /*---(complete)-----------------------*/
    zRPN_DEBUG  printf("RPN_convert     :: end ------------------------------\n");
    DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
-   /*> return  strndup (myRPN.shuntd, S_LEN_OUTPUT);                                    <*/
-   return  myRPN.shuntd;
+   return 0;
 }
 
 

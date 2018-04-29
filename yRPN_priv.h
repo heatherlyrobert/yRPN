@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "0.9b"
-#define   zRPN_VER_TXT       "renamed local structure to myRPN to avoid symbol collisions"
+#define   zRPN_VER_NUM       "1.0a"
+#define   zRPN_VER_TXT       "converted to cleaner return codes and standards.  all units passed"
 
 
 
@@ -145,6 +145,7 @@ struct  cRPN {
    /*---(working areas)------------------*/
    char        working     [S_LEN_OUTPUT];  /* copy of source for parsing     */
    int         l_working;                   /* position in working string     */
+   int         pos;
    /*---(overall working)----------------*/
    char        line_type;                   /* source line type               */
    char        line_sect;                   /* source section pre or post =   */
@@ -223,6 +224,8 @@ extern  char      zRPN_lang;
 
 extern  char      zRPN_divider [5];
 
+char         /*--> convert spreadsheet infix to rpn ------[ ------ [ ------ ]-*/
+yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_max);
 
 char       /* ---- : identify the symbol precedence --------------------------*/
 yRPN__prec   (void);
@@ -230,6 +233,8 @@ yRPN__prec   (void);
 int        /* ---- : prepare variables for postfix conversion ----------------*/
 yRPN__load         (char *a_source);
 
+char         /*--> convert complier infix to rpn ---------[--------[--------]-*/
+yRPN__convert      (char *a_source);
 
 int        /* ---- : save off character literals -----------------------------*/
 yRPN__chars        (int   a_pos);
@@ -263,9 +268,6 @@ yRPN__types        (int  a_pos);
 
 int          /*--> check for statement enders ------------[--------[--------]-*/
 yRPN__enders         (int  a_pos);
-
-char       /* ---- : set spreadsheet human readable --------------------------*/
-yRPN__shuman       (int *a_ntoken);
 
 char       /* ---- : convert normal infix notation to postfix/rpn ------------*/
 yRPN__output_done    (void);

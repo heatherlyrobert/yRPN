@@ -88,9 +88,9 @@ tOPER     s_opers [MAX_OPER] = {
    { "#="  , 'g', 'r',  7, 'k',  S_LEFT , 2, "relational string equality"           },
    { "#!"  , 'g', 'r',  7, 'k',  S_LEFT , 2, "relational string inequality"         },
    /*---(bitwise)----------------*/
-   { "&"   , 'B', 'r',  8, 'l',  S_LEFT , 2, "bitwise AND"                          },
-   { "^"   , 'B', 'r',  9, 'm',  S_LEFT , 2, "bitwise XOR"                          },
-   { "|"   , 'B', 'r', 10, 'n',  S_LEFT , 2, "bitwise OR"                           },
+   { "&"   , 'c', 'r',  8, 'l',  S_LEFT , 2, "bitwise AND"                          },
+   { "^"   , 'c', 'r',  9, 'm',  S_LEFT , 2, "bitwise XOR"                          },
+   { "|"   , 'c', 'r', 10, 'n',  S_LEFT , 2, "bitwise OR"                           },
    /*---(logical)----------------*/
    { "&&"  , 'B', 'r', 11, 'o',  S_LEFT , 2, "logical AND"                          },
    { "||"  , 'B', 'r', 12, 'p',  S_LEFT , 2, "logical OR"                           },
@@ -1039,6 +1039,11 @@ yRPN__sequencer      (int  a_pos)
    }
    --rce;  if (strchr (v_sequence, myRPN.working [a_pos]) == 0) {
       DEBUG_YRPN    yLOG_note    ("not a valid grouping symbol");
+      DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   --rce;  if (zRPN_lang != 'c' && strchr ("[]", myRPN.working [a_pos]) != 0) {
+      DEBUG_YRPN    yLOG_note    ("braces not allowed in spreadsheet mode");
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }

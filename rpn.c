@@ -10,14 +10,15 @@
 char
 main               (int argv, char **argc)
 {
+   char        rc          =    0;
    char       *x_rpn       = NULL;
-   char       *x_tokens    = NULL;
+   int         x_nrpn      = NULL;
    if (argv < 1) {
       printf ("must pass a infix formula string\n");
       return -1;
    }
-   x_rpn = yRPN_spreadsheet (argc [1], &x_tokens, 0);
-   if (x_rpn == NULL) {
+   rc = yRPN_spreadsheet (argc [1], &x_rpn, &x_nrpn, LEN_RECD, 0);
+   if (rc < 0) {
       printf ("could not convert\n");
       return -1;
    }
