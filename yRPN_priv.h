@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.0b"
-#define   zRPN_VER_TXT       "added special coding for nand, nor, and xor"
+#define   zRPN_VER_NUM       "1.0c"
+#define   zRPN_VER_TXT       "reporting for position of parsing errors in source"
 
 
 

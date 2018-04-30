@@ -256,8 +256,10 @@ yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_m
       DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
+   DEBUG_YRPN   yLOG_info    ("a_src"     , a_src);
    DEBUG_YRPN   yLOG_point   ("a_rpn"     , a_rpn);
-   if (a_rpn != NULL) strlcpy (*a_rpn, "", a_max);
+   DEBUG_YRPN   yLOG_point   ("*a_rpn"    , *a_rpn);
+   if (a_rpn != NULL) strlcpy (a_rpn, "", a_max);
    /*---(convert)------------------------*/
    if (a_type == 's') {
       rc = yRPN__convert (a_src + 1);
@@ -276,22 +278,22 @@ yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_m
    DEBUG_YRPN   yLOG_value   ("max"       , a_max);
    switch (a_type) {
    case 't' :
-      if (a_rpn  != NULL)  strlcpy (*a_rpn, myRPN.tokens  , a_max);
+      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.tokens  , a_max);
       if (a_nrpn != NULL)  *a_nrpn = myRPN.n_tokens;
       x_len = strlen (myRPN.tokens);
       break;
    case 'd' :
-      if (a_rpn  != NULL)  strlcpy (*a_rpn, myRPN.detail  , a_max);
+      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.detail  , a_max);
       if (a_nrpn != NULL)  *a_nrpn = myRPN.n_shuntd;
       x_len = strlen (myRPN.detail);
       break;
    case 'n' :
-      if (a_rpn  != NULL)  strlcpy (*a_rpn, myRPN.normal  , a_max);
+      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.normal  , a_max);
       if (a_nrpn != NULL)  *a_nrpn = myRPN.n_tokens;
       x_len = strlen (myRPN.normal);
       break;
    case 's' :
-      if (a_rpn  != NULL)  strlcpy (*a_rpn, myRPN.shuntd  , a_max);
+      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.shuntd  , a_max);
       if (a_nrpn != NULL)  *a_nrpn = myRPN.n_shuntd;
       x_len = strlen (myRPN.shuntd);
       break;
@@ -303,7 +305,7 @@ yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_m
    DEBUG_YRPN   yLOG_value   ("length"    , x_len);
    --rce;  if (x_len >= a_max) {
       DEBUG_YRPN   yLOG_note    ("output too long for output provided");
-      if (a_rpn != NULL) strlcpy (*a_rpn, "", a_max);
+      if (a_rpn != NULL) strlcpy (a_rpn, "", a_max);
       DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
