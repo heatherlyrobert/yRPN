@@ -17,7 +17,7 @@ main               (int argv, char **argc)
       printf ("must pass a infix formula string\n");
       return -1;
    }
-   rc = yRPN_spreadsheet (argc [1], &x_rpn, &x_nrpn, LEN_RECD, 0);
+   rc = yRPN_interpret (argc [1], &x_rpn, &x_nrpn, LEN_RECD, 0);
    if (rc < 0) {
       printf ("could not convert\n");
       return -1;

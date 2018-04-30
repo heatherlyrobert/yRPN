@@ -153,7 +153,7 @@ char*        /*--> return library version information ----[--------[--------]-*/
 yRPN_version       (void);
 
 char         /*--> convert spreadsheet infix to rpn ------[--------[--------]-*/
-yRPN_spreadsheet   (char *a_src, char **a_rpn, int *a_nrpn, int a_max, short a_tab);
+yRPN_interpret     (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_z);
 
 char
 yRPN_detail        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);

@@ -19,8 +19,11 @@ yRPN_accessor      (char *a_question, int a_item)
    int         i           = 0;
    char        x_temp      [S_LEN_LABEL];
    /*---(input)--------------------------*/
-   if        (strcmp (a_question, "source"    )     == 0) {
+   if          (strcmp (a_question, "source"    )     == 0) {
       snprintf (unit_answer, S_LEN_OUTPUT, "source string    :%s"  , myRPN.source);
+   }
+   else if     (strcmp (a_question, "position"  )     == 0) {
+      snprintf (unit_answer, S_LEN_OUTPUT, "source position  : %3d of %3d" , myRPN.pos, myRPN.l_working);
    }
    /*---(processing)---------------------*/
    else if     (strcmp (a_question, "token"     )     == 0) {

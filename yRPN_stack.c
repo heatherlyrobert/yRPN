@@ -484,7 +484,7 @@ yRPN_stack_tokens        (void)
       if (strcmp ("extern", myRPN.t_name) == 0)   myRPN.line_type = S_LINE_EXTERN;
       else                                      myRPN.line_type = S_LINE_DEF;
    }
-   if (myRPN.n_tokens == 0 && myRPN.t_type == S_TTYPE_OPER && zRPN_lang == S_LANG_C) {
+   if (myRPN.n_tokens == 0 && myRPN.t_type == S_TTYPE_OPER && zRPN_lang == S_LANG_CBANG) {
       if (strcmp ("#"     , myRPN.t_name) == 0) {
          myRPN.line_type = S_LINE_PREPROC;
          myRPN.pproc     = S_PPROC_YES;

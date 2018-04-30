@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.0a"
-#define   zRPN_VER_TXT       "converted to cleaner return codes and standards.  all units passed"
+#define   zRPN_VER_NUM       "1.0b"
+#define   zRPN_VER_TXT       "added special coding for nand, nor, and xor"
 
 
 
@@ -85,7 +85,7 @@ extern char      zRPN_olddebug;
 #define      S_PREC_FAIL        '?'
 #define      S_PREC_FUNC        'a'
 /*---(language support)---------------*/
-#define      S_LANG_C           'c'
+#define      S_LANG_CBANG       'c'
 #define      S_LANG_GYGES       'g'
 #define      S_LANG_BOTH        'B'
 /*---(evalulation direction)----------*/
@@ -219,7 +219,7 @@ extern  tRPN      myRPN;
 
 extern  char      zRPN_lang;
 #define   MODE_GYGES    if (zRPN_lang == S_LANG_GYGES)
-#define   MODE_C        if (zRPN_lang == S_LANG_C    )
+#define   MODE_C        if (zRPN_lang == S_LANG_CBANG)
 
 
 extern  char      zRPN_divider [5];

@@ -17,11 +17,11 @@ char     *v_octal     = "o01234567";
 char     *v_binary    = "01";
 char     *v_sequence  = "(),[]";   
 char     *v_enders    = ";{";
-char     *v_operator  = "|&=!<>*/%+-.?:^~#";
+char     *v_operator  = "|&=!<>*/%+-.?:^~#ÑÐÒ¶¯ÔÓÖÕ";
 /*> char     *v_preproc   = "#";                                                      <*/
 char     *v_preproc   = "";
 char     *v_address   = "@$abcdefghijklmnopqrstuvwxyz0123456789";
-
+char     *v_greek     = "èéêëìíîïðñòóôõö÷øùúûüýþÿ";
 
 
 
@@ -53,6 +53,7 @@ tOPER     s_opers [MAX_OPER] = {
    { "]"   , 'c', 'r',  1, 'e',  S_LEFT , 1, "array subscripting"                   },
    { "."   , 'c', 'r',  1, 'e',  S_LEFT , 2, "element selection by reference"       },
    { "->"  , 'c', 'r',  1, 'e',  S_LEFT , 2, "element selection thru pointer"       },
+   { "Õ"   , 'c', 'r',  1, 'e',  S_LEFT , 2, "element selection thru pointer (alt)" },
    /*---(unary/prefix)-----------*/
    { "++"  , 'B', 'r',  2, 'f',  S_RIGHT, 1, "prefix increment"                     },
    { "--"  , 'B', 'r',  2, 'f',  S_RIGHT, 1, "prefix decrement"                     },
@@ -93,7 +94,15 @@ tOPER     s_opers [MAX_OPER] = {
    { "|"   , 'c', 'r', 10, 'n',  S_LEFT , 2, "bitwise OR"                           },
    /*---(logical)----------------*/
    { "&&"  , 'B', 'r', 11, 'o',  S_LEFT , 2, "logical AND"                          },
+   { "Ð"   , 'B', 'r', 11, 'o',  S_LEFT , 2, "logical AND (alt)"                    },
+   { "&Ô"  , 'B', 'r', 11, 'o',  S_LEFT , 2, "NAND (at least one is false)"         },
+   { "¶"   , 'B', 'r', 11, 'o',  S_LEFT , 2, "NAND (at least one is false)"         },
    { "||"  , 'B', 'r', 12, 'p',  S_LEFT , 2, "logical OR"                           },
+   { "Ñ"   , 'B', 'r', 12, 'p',  S_LEFT , 2, "logical OR (alt)"                     },
+   { "|Ô"  , 'B', 'r', 12, 'p',  S_LEFT , 2, "NOR (neither/nor)"                    },
+   { "¯"   , 'B', 'r', 12, 'p',  S_LEFT , 2, "NOR (neither/nor)"                    },
+   { "|Ó"  , 'B', 'r', 12, 'p',  S_LEFT , 2, "XOR (one and only one)"               },
+   { "Ò"   , 'B', 'r', 12, 'p',  S_LEFT , 2, "XOR (one and only one)"               },
    /*---(conditional)------------*/
    { "?"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, "trinary conditional"                  },
    { ":"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, "trinary conditional"                  },
@@ -126,6 +135,7 @@ tOPER     s_opers [MAX_OPER] = {
    /*---(end)--------------------*/
    { ""    , '-', '-',  0, '-',  '-'    , 0, ""                                     },
 };
+
 
 
 

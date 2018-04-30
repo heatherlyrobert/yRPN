@@ -20,7 +20,7 @@ SCRP          v21  string literal interpretation                              
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
      code     v21  set the pre-processor mode           - - - - - - - - - -   myRPN.pproc    = S_PPROC_NO;                                                                                                                                                                   
 
    GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
@@ -479,7 +479,7 @@ SCRP          v21  string literal interpretation                              
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.030))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -489,7 +489,7 @@ SCRP          v21  character literal interpretation                           
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((02.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
      code     v21  set the pre-processor mode           - - - - - - - - - -   myRPN.pproc    = S_PPROC_NO;                                                                                                                                                                   
 
    GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
@@ -904,7 +904,7 @@ SCRP          v21  character literal interpretation                           
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((02.027))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -914,7 +914,7 @@ SCRP          v21  constant name interpretation                               
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((03.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -1168,7 +1168,7 @@ SCRP          v21  constant name interpretation                               
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((03.017))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -1178,7 +1178,7 @@ SCRP          v21  variable and function name interpretation                  
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((04.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -1608,7 +1608,7 @@ SCRP          v21  variable and function name interpretation                  
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((04.028))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -1618,7 +1618,7 @@ SCRP          v21  c data type interpretation                                 
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((05.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -1837,7 +1837,7 @@ SCRP          v21  c data type interpretation                                 
 
    COND       v21  do a valid one again                                         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((05.015))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  load the string                      yRPN__load            "void"                                                                  i_equal     4                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
      exec     v21  check the type                       yRPN__types           0                                                                       i_equal     4                                                                                                    
      get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    :void                                                                               
      get      v21  token extracted                      yRPN_accessor         "token"      ,   0                                                      s_equal     current token    :void                                                                               
@@ -1986,7 +1986,7 @@ SCRP          v21  c data type interpretation                                 
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((05.024))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -1996,7 +1996,7 @@ SCRP          v21  c keyword interpretation                                   
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((06.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    GROUP      v21  verify non-function keywords                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -2249,7 +2249,7 @@ SCRP          v21  c keyword interpretation                                   
 
    COND       v21  repeat same in c language mode                               - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((06.017))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  load the string                      yRPN__load            "continue"                                                              i_equal     8                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
      exec     v21  check the type                       yRPN__keywords        0                                                                       i_equal     8                                                                                                    
      get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    :continue                                                                           
      get      v21  token extracted                      yRPN_accessor         "token"      ,   0                                                      s_equal     current token    :continue                                                                           
@@ -2390,7 +2390,7 @@ SCRP          v21  c keyword interpretation                                   
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((06.026))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -2400,7 +2400,7 @@ SCRP          v21  integer and float interpretation                           
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((07.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -2846,7 +2846,7 @@ SCRP          v21  integer and float interpretation                           
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((07.029))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -2856,7 +2856,7 @@ SCRP          v21  special number base interpretation                         
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((08.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -3188,7 +3188,7 @@ SCRP          v21  special number base interpretation                         
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((08.022))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -3198,7 +3198,7 @@ SCRP          v21  operator intrepratation                                    
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((09.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    GROUP      v21  verify correct examples                                      - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -3690,7 +3690,7 @@ SCRP          v21  operator intrepratation                                    
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((09.030))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -3700,7 +3700,7 @@ SCRP          v21  mathmatical expression interpretation                      
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((10.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    GROUP      v21  single variable and single operator                          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
@@ -3880,11 +3880,45 @@ SCRP          v21  mathmatical expression interpretation                      
      get      v21  output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                                      s_equal     postfix count    : 15                                                                                
      get      v21  output -- postfix summary            yRPN_accessor         "output"   ,     0                                                      s_equal     postfix output   :x y z - a * a b c * + 3.14159 / - =                                                
 
+   GROUP      v21  logical operators                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       v21  simple AND and OR                                            - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((10.021))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     get      v21  check the operator                   yRPN__convert         "a || b && c"                                                           i_equal     0                                                                                                    
+     get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    :a || b && c                                                                        
+     get      v21  output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                                      s_equal     infix count      : 5                                                                                 
+     get      v21  output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                                      s_equal     infix output     :a || b && c                                                                        
+     get      v21  output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                                      s_equal     postfix count    : 5                                                                                 
+     get      v21  output -- postfix summary            yRPN_accessor         "output"   ,     0                                                      s_equal     postfix output   :a b c && ||                                                                        
+
+   COND       v21  same with special symbols                                    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((10.021))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     get      v21  check the operator                   yRPN__convert         "a Ñ b Ð c"                                                             i_equal     0                                                                                                    
+     get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    :a Ñ b Ð c                                                                          
+     get      v21  output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                                      s_equal     infix count      : 5                                                                                 
+     get      v21  output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                                      s_equal     infix output     :a Ñ b Ð c                                                                          
+     get      v21  output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                                      s_equal     postfix count    : 5                                                                                 
+     get      v21  output -- postfix summary            yRPN_accessor         "output"   ,     0                                                      s_equal     postfix output   :a b c Ð Ñ                                                                          
+
+   COND       v21  switch to NAND and NOR                                       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((10.021))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     get      v21  check the operator                   yRPN__convert         "a ¯ b ¶ c Ò d"                                                         i_equal     0                                                                                                    
+     get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    :a ¯ b ¶ c Ò d                                                                      
+     get      v21  output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                                      s_equal     infix count      : 7                                                                                 
+     get      v21  output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                                      s_equal     infix output     :a ¯ b ¶ c Ò d                                                                      
+     get      v21  output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                                      s_equal     postfix count    : 7                                                                                 
+     get      v21  output -- postfix summary            yRPN_accessor         "output"   ,     0                                                      s_equal     postfix output   :a b c ¶ ¯ d Ò                                                                      
+
+   COND       v21  same with c-bang symbols                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((10.021))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     get      v21  check the operator                   yRPN__convert         "a |Ô b &Ô c |Ó d"                                                      i_equal     0                                                                                                    
+     get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    :a |Ô b &Ô c |Ó d                                                                   
+     get      v21  output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                                      s_equal     infix count      : 7                                                                                 
+     get      v21  output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                                      s_equal     infix output     :a |Ô b &Ô c |Ó d                                                                   
+     get      v21  output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                                      s_equal     postfix count    : 7                                                                                 
+     get      v21  output -- postfix summary            yRPN_accessor         "output"   ,     0                                                      s_equal     postfix output   :a b c &Ô |Ô d |Ó                                                                   
+
    GROUP      v21  complete                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((10.022))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -4441,7 +4475,7 @@ SCRP          v21  cell address analysis by parts                             
 
    COND       v21  verify program wrap-up                                       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((11.078))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -4567,7 +4601,7 @@ SCRP          v21  simple cell addresses (spreadsheet)                        
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((12.017))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -4577,7 +4611,7 @@ SCRP          v21  interpreting unary operators                               
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((13.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    COND       v21  internal plus                                                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((13.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  check the operator                   yRPN__convert         "a + + b"                                                               i_equal     0                                                                                                    
@@ -4651,7 +4685,7 @@ SCRP          v21  interpreting unary operators                               
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((13.012))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -4661,7 +4695,7 @@ SCRP          v21  identifying line types                                     
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    COND       v21  open statement                                               - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  feed in the expression               yRPN__convert         "a + b"                                                                 i_equal     0                                                                                                    
@@ -4773,7 +4807,7 @@ SCRP          v21  identifying line types                                     
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((14.014))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -4783,7 +4817,7 @@ SCRP          v21  pointer operations (compilier)                             
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((15.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    COND       v21  variable address-of                                          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((15.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  feed in the expression               yRPN__convert         "&a"                                                                    i_equal     0                                                                                                    
@@ -5118,7 +5152,7 @@ SCRP          v21  pointer operations (compilier)                             
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((15.039))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -5128,7 +5162,7 @@ SCRP          v21  bitwise operations (compilier)                             
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((16.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    COND       v21  simple bitwise AND                                           - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((16.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  feed in the expression               yRPN__convert         "a & 1"                                                                 i_equal     0                                                                                                    
@@ -5180,7 +5214,7 @@ SCRP          v21  bitwise operations (compilier)                             
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((16.008))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -5278,7 +5312,7 @@ SCRP          v21  simple functions (spreadsheet)                             
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((17.013))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -5288,7 +5322,7 @@ SCRP          v21  variable declarations (compilier)                          
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((18.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
      code     v21  set the pre-processor mode           - - - - - - - - - -   myRPN.pproc    = S_PPROC_NO;                                                                                                                                                                   
 
    COND       v21  try a variable declaration                                   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((18.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
@@ -5357,7 +5391,7 @@ SCRP          v21  variable declarations (compilier)                          
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((18.014))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -5417,7 +5451,7 @@ SCRP          v21  expressions with addresses                                 
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((19.008))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -5446,7 +5480,7 @@ SCRP          v21  expressions with constants                                 
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((20.005))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
@@ -5456,7 +5490,7 @@ SCRP          v21  preprocessor content                                       
 
    COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((21.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
-     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
    COND       v21  try includes                                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((21.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  local header                         yRPN_tokens           "#include \"local.h\""                            , NULL, NULL, 2000    i_equal     0                                                                                                    
@@ -5480,7 +5514,61 @@ SCRP          v21  preprocessor content                                       
 
    COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((21.004))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
      exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
-     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_C;                                                                                                                                                                     
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
+
+
+
+#23456789-12  123  123456789-123456789-123456789-12345  123456789-123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  -  123456789-123456789- 
+#==(verb)===  ver  ===========(description)===========  =====(function)=====  ========================(arguments)===================================  ==(test)==  ==========================(results)=================================================================  t  ========(var)======= 
+SCRP          v21  verify error reporting                                       yRPN_spreadsheet                                                        ((21.---))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       v21  setup some testing variables                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((21.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
+     code     v21  set the compiler mode                - - - - - - - - - -   zRPN_lang    = S_LANG_GYGES;                                                                                                                                                                 
+
+   COND       v21  quick, successful rpn                                        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((20.004))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  check the operator                   yRPN_interpret        "= 10 - 3 + 2"                         , NULL, NULL, 2000, 0            i_equal     0                                                                                                    
+     get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    : 10 - 3 + 2                                                                         
+     get      v21  output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                                      s_equal     infix count      : 5                                                                                 
+     get      v21  output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                                      s_equal     infix output     :10,-,3,+,2                                                                         
+     get      v21  output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                                      s_equal     postfix count    : 5                                                                                 
+     get      v21  output -- postfix summary            yRPN_accessor         "output"     ,   0                                                      s_equal     postfix output   :10,3,-,2,+                                                                         
+     get      v21  output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                                      s_equal     postfix detail   :I,10 I,3 o,- I,2 o,+                                                               
+     get      v21  position indicator                   yRPN_accessor         "position"   ,   0                                                      s_equal     source position  :  12 of  12                                                                        
+
+   COND       v21  will cause a stack failure  (HIDDEN)                         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((20.004))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  check the operator                   yRPN_interpret        "= 10 - 3 +"                           , NULL, NULL, 2000, 0            i_equal     0                                                                                                    
+     get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    : 10 - 3 +                                                                           
+     get      v21  output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                                      s_equal     infix count      : 4                                                                                 
+     get      v21  output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                                      s_equal     infix output     :10,-,3,+                                                                           
+     get      v21  output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                                      s_equal     postfix count    : 4                                                                                 
+     get      v21  output -- postfix summary            yRPN_accessor         "output"     ,   0                                                      s_equal     postfix output   :10,3,-,+                                                                           
+     get      v21  output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                                      s_equal     postfix detail   :I,10 I,3 o,- o,+                                                                   
+     get      v21  position indicator                   yRPN_accessor         "position"   ,   0                                                      s_equal     source position  :  10 of  10                                                                        
+
+   COND       v21  illegal spreadsheet operator                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((20.004))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  check the operator                   yRPN_interpret        "= 10 | 3 + 2"                         , NULL, NULL, 2000, 0            i_lesser    0                                                                                                    
+     get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    : 10 | 3 + 2                                                                         
+     get      v21  output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                                      s_equal     infix count      : 0                                                                                 
+     get      v21  output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                                      s_equal     infix output     :((null))                                                                           
+     get      v21  output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                                      s_equal     postfix count    : 0                                                                                 
+     get      v21  output -- postfix summary            yRPN_accessor         "output"     ,   0                                                      s_equal     postfix output   :((null))                                                                           
+     get      v21  output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                                      s_equal     postfix detail   :((null))                                                                           
+     get      v21  position indicator                   yRPN_accessor         "position"   ,   0                                                      s_equal     source position  :   5 of  12                                                                        
+
+   COND       v21  extended character                                           - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((20.004))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  check the operator                   yRPN_interpret        "= 10 - ù + 2"                         , NULL, NULL, 2000, 0            i_lesser    0                                                                                                    
+     get      v21  original input string                yRPN_accessor         "source"     ,   0                                                      s_equal     source string    : 10 - ù + 2                                                                         
+     get      v21  output -- infix count                yRPN_accessor         "n_tokens"   ,   0                                                      s_equal     infix count      : 0                                                                                 
+     get      v21  output -- infix tokenization         yRPN_accessor         "tokens"     ,   0                                                      s_equal     infix output     :((null))                                                                           
+     get      v21  output -- postfix count              yRPN_accessor         "n_detail"   ,   0                                                      s_equal     postfix count    : 0                                                                                 
+     get      v21  output -- postfix summary            yRPN_accessor         "output"     ,   0                                                      s_equal     postfix output   :((null))                                                                           
+     get      v21  output -- postfix detail (value)     yRPN_accessor         "detail"     ,   0                                                      s_equal     postfix detail   :((null))                                                                           
+     get      v21  position indicator                   yRPN_accessor         "position"   ,   0                                                      s_equal     source position  :   7 of  12                                                                        
+
+   COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((21.004))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
+     code     v21  set the mode to compiler             - - - - - - - - - -   zRPN_lang    = S_LANG_CBANG;                                                                                                                                                                     
 
 
 
