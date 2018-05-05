@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.0c"
-#define   zRPN_VER_TXT       "reporting for position of parsing errors in source"
+#define   zRPN_VER_NUM       "1.0d"
+#define   zRPN_VER_TXT       "moved all gyges cell addressing to ySTR.  unit tested ;)"
 
 
 
@@ -291,7 +291,6 @@ extern char unit_answer [ S_LEN_OUTPUT ];
 
 
 
-char*       yRPN_syms_unit       (char *a_question, int a_item);
 
 
 

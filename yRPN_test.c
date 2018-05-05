@@ -61,10 +61,6 @@ yRPN_accessor      (char *a_question, int a_item)
     *>       strlcat (unit_answer, x_temp       , S_LEN_OUTPUT);                                         <* 
     *>    }                                                                                              <* 
     *> }                                                                                                 <*/
-   /*---(spreadsheet)--------------------*/
-   /*> else if   (strcmp (a_question, "address"   )     == 0) {                                                                        <* 
-    *>    snprintf (unit_answer, S_LEN_OUTPUT, "yRPN address     : tab=%4d, col=%4d, row=%4d, abs=%1d", v_tab, v_col, v_row, v_abs);   <* 
-    *> }                                                                                                                               <*/
    /*---(UNKNOWN)------------------------*/
    else {
       snprintf(unit_answer, S_LEN_OUTPUT, "UNKNOWN          : question is not understood");

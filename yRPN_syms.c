@@ -108,16 +108,16 @@ tOPER     s_opers [MAX_OPER] = {
    { ":"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, "trinary conditional"                  },
    /*---(assignment)-------------*/
    { "="   , 'B', 'r', 14, 'r',  S_RIGHT, 2, "direct assignment"                    },
-   { "+="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
-   { "-="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
-   { "*="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
-   { "/="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
-   { "%="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
-   { "<<=" , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
-   { ">>=" , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
-   { "&="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
-   { "^="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
-   { "|="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment"                  },
+   { "+="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (addition)"       },
+   { "-="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (subtract)"       },
+   { "*="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (multiply)"       },
+   { "/="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (divide)"         },
+   { "%="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (modulus)"        },
+   { "<<=" , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise left)"   },
+   { ">>=" , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise right)"  },
+   { "&="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise AND)"    },
+   { "^="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise XOR)"    },
+   { "|="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise OR)"     },
    /*---(comma)------------------*/
    { ",;"  , 'c', 'r', 15, 'u',  S_LEFT , 1, "sequence mega-separator"              },
    { ","   , 'B', 'r', 15, 's',  S_LEFT , 2, "sequence separator"                   },
@@ -152,6 +152,7 @@ tCONST    s_consts [MAX_CONST] = {
    { "FALSE"                  , 0.0                },
    { "NULL"                   , 0.0                },
    { "PI"                     , 3.1415927          },
+   { "÷"                      , 3.1415927          },
    { "DEG2RAD"                , 0.0                },
    { "RAD2DEG"                , 0.0                },
    { ""                       , 0.0                },
@@ -246,10 +247,6 @@ tKEYWORDS  s_keywords [MAX_KEYWORDS] = {
 };
 
 
-int         v_tab       = 0;
-int         v_col       = 0;
-int         v_row       = 0;
-int         v_abs       = 0;
 
 
 
@@ -1230,27 +1227,6 @@ yRPN__enders         (int  a_pos)
    return x_pos;
 }
 
-
-
-/*====================------------------------------------====================*/
-/*===----                         unit testing                         ----===*/
-/*====================------------------------------------====================*/
-static void      o___UNITTEST________________o (void) {;};
-
-char*      /* ---- : answer unit testing gray-box questions ------------------*/
-yRPN_syms_unit       (char *a_question, int a_item)
-{
-   /*---(spreadsheet)--------------------*/
-   if   (strcmp (a_question, "address"   )     == 0) {
-      snprintf (unit_answer, S_LEN_OUTPUT, "yRPN address     : tab=%4d, col=%4d, row=%4d, abs=%1d", v_tab, v_col, v_row, v_abs);
-   }
-   /*---(UNKNOWN)------------------------*/
-   else {
-      snprintf(unit_answer, S_LEN_OUTPUT, "UNKNOWN          : question is not understood");
-   }
-   /*---(complete)-----------------------*/
-   return unit_answer;
-}
 
 
 
