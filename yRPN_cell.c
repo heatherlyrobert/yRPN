@@ -52,7 +52,8 @@ yRPN__addresses      (int  a_pos, short a_ctab)
       return rce;
    }
    /*---(handle)-------------------------*/
-   strlcpy (myRPN.t_name, x_final, S_LEN_LABEL);
+   strlcpy (myRPN.t_token, x_final, S_LEN_LABEL);
+   strlcpy (myRPN.t_name , x_final, S_LEN_LABEL);
    myRPN.t_len = strlen (myRPN.t_name);
    yRPN_stack_tokens ();
    yRPN_stack_shuntd ();

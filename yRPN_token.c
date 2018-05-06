@@ -51,8 +51,8 @@ yRPN__token_add      (int *a_pos)
       /*---(done)------------------------*/
    case S_TTYPE_CONST  :
       DEBUG_YRPN_M  yLOG_snote   ("v_upnum");
-      if (myRPN.t_len == 0 && (x_ch < 'A' || x_ch > 'Z'))         x_bad = 'y';
-      if (strchr (v_upnum , x_ch) == 0)                         x_bad = 'y';
+      if (myRPN.t_len == 0 && strchr (v_upper , x_ch) == 0)     x_bad = 'y';
+      if (myRPN.t_len >  0 && strchr (v_upnum , x_ch) == 0)     x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_INT    :

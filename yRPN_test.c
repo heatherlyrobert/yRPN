@@ -38,6 +38,8 @@ yRPN_accessor      (char *a_question, int a_item)
       snprintf (unit_answer, S_LEN_OUTPUT, "infix count      : %d"    , myRPN.n_tokens);
    } else if (strcmp (a_question, "tokens"    )     == 0) {
       snprintf (unit_answer, S_LEN_OUTPUT, "infix output     :%s"  , myRPN.tokens);
+   } else if (strcmp (a_question, "pretty"    )     == 0) {
+      snprintf (unit_answer, S_LEN_OUTPUT, "pretty output    :%s"  , myRPN.pretty);
    } else if (strcmp (a_question, "n_detail"     )     == 0) {
       snprintf (unit_answer, S_LEN_OUTPUT, "postfix count    : %d"    , myRPN.n_shuntd);
    } else if (strcmp (a_question, "output"    )     == 0) {

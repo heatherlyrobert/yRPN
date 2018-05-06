@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.0d"
-#define   zRPN_VER_TXT       "moved all gyges cell addressing to ySTR.  unit tested ;)"
+#define   zRPN_VER_NUM       "1.0e"
+#define   zRPN_VER_TXT       "added pretty results version and greek letters to vars/const"
 
 
 
@@ -183,6 +183,8 @@ struct  cRPN {
    char        detail      [S_LEN_OUTPUT];
    int         l_shuntd;
    int         n_shuntd;
+   /*---(pretty output)------------------*/
+   char        pretty      [S_LEN_OUTPUT];
    /*---(MAYBE GONE)---------------------*/
    char        about       [500];
 };
@@ -330,6 +332,7 @@ char        yRPN_cell            (char *a_label, short a_ctab);
 char        yRPN__cells          (char *a_label, int *a_tab, int *a_col, int *a_row, char *a_sign);
 
 
+char        yRPN_space           (char  *a_token, char *a_pre, char *a_suf, char *a_new);
 
 
 #endif

@@ -80,6 +80,7 @@ yRPN__load         (char *a_source)   /* source infix string                    
    myRPN.pos        = 0;
    /*---(set the token vars)-------------*/
    DEBUG_YRPN    yLOG_note    ("token vars");
+   strncpy (myRPN.t_token , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
    strncpy (myRPN.t_name  , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
    myRPN.t_type     = S_TTYPE_ERROR;
    myRPN.t_len      = 0;
@@ -379,6 +380,7 @@ yRPN__convert       (char *a_source)
       zRPN_DEBUG  printf("   detail  = <<%s>>\n", myRPN.detail);
       zRPN_DEBUG  printf("   normal  = <<%s>>\n", myRPN.normal);
       zRPN_DEBUG  printf("   tokens  = <<%s>>\n", myRPN.tokens);
+      zRPN_DEBUG  printf("   pretty  = <<%s>>\n", myRPN.pretty);
       /*---(next)------------------------*/
       myRPN.pos = rc;
    }
@@ -390,6 +392,7 @@ yRPN__convert       (char *a_source)
       strlcpy (myRPN.shuntd, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
       strlcpy (myRPN.tokens, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
       strlcpy (myRPN.normal, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
+      strlcpy (myRPN.pretty, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
       myRPN.l_shuntd  = 0;
       myRPN.n_shuntd  = 0;
       myRPN.n_tokens  = 0;
@@ -418,10 +421,12 @@ yRPN__convert       (char *a_source)
    zRPN_DEBUG  printf("   detail  = <<%s>>\n", myRPN.detail);
    zRPN_DEBUG  printf("   normal  = <<%s>>\n", myRPN.normal);
    zRPN_DEBUG  printf("   tokens  = <<%s>>\n", myRPN.tokens);
+   zRPN_DEBUG  printf("   pretty  = <<%s>>\n", myRPN.pretty);
    DEBUG_YRPN  yLOG_info    ("shunted"   , myRPN.shuntd);
    DEBUG_YRPN  yLOG_info    ("detail"    , myRPN.detail);
    DEBUG_YRPN  yLOG_info    ("normal"    , myRPN.normal);
    DEBUG_YRPN  yLOG_info    ("tokens"    , myRPN.tokens);
+   DEBUG_YRPN  yLOG_info    ("pretty"    , myRPN.pretty);
    /*---(complete)-----------------------*/
    zRPN_DEBUG  printf("RPN_convert     :: end ------------------------------\n");
    DEBUG_YRPN  yLOG_exit    (__FUNCTION__);

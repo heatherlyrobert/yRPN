@@ -5,10 +5,10 @@
 
 
 
-char     *v_alphanum  = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_";
-char     *v_alpha     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_";
-char     *v_upper     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-char     *v_upnum     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+char     *v_alphanum  = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_èéêëìíîïðñòóôõö÷øùúûüýþÿ";
+char     *v_alpha     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_èéêëìíîïðñòóôõö÷øùúûüýþÿ";
+char     *v_upper     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_èéêëìíîïðñòóôõö÷øùúûüýþÿ";
+char     *v_upnum     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_èéêëìíîïðñòóôõö÷øùúûüýþÿ";
 char     *v_lower     = "abcdefghijklmnopqrstuvwxyz";
 char     *v_number    = "0123456789";
 char     *v_float     = "0123456789.";
@@ -23,6 +23,8 @@ char     *v_preproc   = "";
 char     *v_address   = "@$abcdefghijklmnopqrstuvwxyz0123456789";
 char     *v_greek     = "èéêëìíîïðñòóôõö÷øùúûüýþÿ";
 
+#define         S_YES      'y'
+#define         S_NO       '-'
 
 
 /*===[[ OPERATORS ]]==========================================================*/
@@ -35,105 +37,108 @@ struct    cOPER {
    char        prec;                   /* percedence                          */
    char        dir;                    /* direction of evaluation             */
    char        arity;                  /* how many arguments it takes         */
+   char        pre;                    /* prefix in pretty mode               */
+   char        suf;                    /* suffix in pretty mode               */
+   char        pretty      [5];        /* replacement in pretty mode          */
    char        desc        [LEN_DESC]; /* helpful description vs comment      */
 };
 #define   MAX_OPER    200
 tOPER     s_opers [MAX_OPER] = {
    /*-sym----who--real---prec-----dir---arity---comment-----------------------------*/
    /*---(spreadsheet)------------*/
-   { ".."  , 'g', 'r',  0, 'd',  S_LEFT , 2, "cell range"                           },
+   { ".."  , 'g', 'r',  0, 'd',  S_LEFT , 2, S_NO , S_NO , ""  , "cell range"                           },
    /*---(preprocessor)-----------*/
-   { "#"   , 'c', 'r',  0, 'd',  S_LEFT , 2, "prefix"                               },
-   { "##"  , 'c', '-',  0, 'd',  S_LEFT , 2, "stringification"                      },
+   { "#"   , 'c', 'r',  0, 'd',  S_LEFT , 2, S_NO , S_NO , ""  , "prefix"                               },
+   { "##"  , 'c', '-',  0, 'd',  S_LEFT , 2, S_NO , S_NO , ""  , "stringification"                      },
    /*---(unary/suffix)-----------*/
-   { ":+"  , 'B', 'I',  1, 'e',  S_LEFT , 1, "suffix increment"                     },
-   { ":-"  , 'B', 'I',  1, 'e',  S_LEFT , 1, "suffix decrement"                     },
+   { ":+"  , 'B', 'I',  1, 'e',  S_LEFT , 1, S_NO , S_YES, ""  , "suffix increment"                     },
+   { ":-"  , 'B', 'I',  1, 'e',  S_LEFT , 1, S_NO , S_YES, ""  , "suffix decrement"                     },
    /*---(element of)-------------*/
-   { "["   , 'c', 'r',  1, 'e',  S_LEFT , 1, "array subscripting"                   },
-   { "]"   , 'c', 'r',  1, 'e',  S_LEFT , 1, "array subscripting"                   },
-   { "."   , 'c', 'r',  1, 'e',  S_LEFT , 2, "element selection by reference"       },
-   { "->"  , 'c', 'r',  1, 'e',  S_LEFT , 2, "element selection thru pointer"       },
-   { "Õ"   , 'c', 'r',  1, 'e',  S_LEFT , 2, "element selection thru pointer (alt)" },
+   { "["   , 'c', 'r',  1, 'e',  S_LEFT , 1, S_YES, S_NO , ""  , "array subscripting"                   },
+   { "]"   , 'c', 'r',  1, 'e',  S_LEFT , 1, S_NO , S_YES, ""  , "array subscripting"                   },
+   { "."   , 'c', 'r',  1, 'e',  S_LEFT , 2, S_NO , S_NO , ""  , "element selection by reference"       },
+   { "->"  , 'c', 'r',  1, 'e',  S_LEFT , 2, S_NO , S_NO , "Õ" , "element selection thru pointer"       },
+   { "Õ"   , 'c', 'r',  1, 'e',  S_LEFT , 2, S_NO , S_NO , ""  , "element selection thru pointer (alt)" },
    /*---(unary/prefix)-----------*/
-   { "++"  , 'B', 'r',  2, 'f',  S_RIGHT, 1, "prefix increment"                     },
-   { "--"  , 'B', 'r',  2, 'f',  S_RIGHT, 1, "prefix decrement"                     },
-   { "+:"  , 'B', 'I',  2, 'f',  S_RIGHT, 1, "unary plus"                           },
-   { "-:"  , 'B', 'I',  2, 'f',  S_RIGHT, 1, "unary minus"                          },
-   { "!"   , 'B', 'r',  2, 'f',  S_RIGHT, 1, "logical NOT"                          },
-   { "~"   , 'B', 'r',  2, 'f',  S_RIGHT, 1, "bitwise NOT"                          },
-   { "*:"  , 'B', 'I',  2, 'f',  S_RIGHT, 1, "indirection/dereference"              },
-   { "&:"  , 'B', 'I',  2, 'f',  S_RIGHT, 1, "address-of"                           },
-   { "(*)" , 'c', 'I',  2, 'f',  S_RIGHT, 1, "casting modifier"                     },
+   { "++"  , 'B', 'r',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "prefix increment"                     },
+   { "--"  , 'B', 'r',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "prefix decrement"                     },
+   { "+:"  , 'B', 'I',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "unary plus"                           },
+   { "-:"  , 'B', 'I',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "unary minus"                          },
+   { "!"   , 'B', 'r',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "logical NOT"                          },
+   { "~"   , 'B', 'r',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "bitwise NOT"                          },
+   { "*:"  , 'B', 'I',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "indirection/dereference"              },
+   { "&:"  , 'B', 'I',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "address-of"                           },
+   { "(*)" , 'c', 'I',  2, 'f',  S_RIGHT, 1, S_YES, S_YES, ""  , "casting modifier"                     },
    /*---(multiplicative)---------*/
-   { "*"   , 'B', 'r',  3, 'g',  S_LEFT , 2, "multiplication"                       },
-   { "/"   , 'B', 'r',  3, 'g',  S_LEFT , 2, "division"                             },
-   { "%"   , 'B', 'r',  3, 'g',  S_LEFT , 2, "modulus"                              },
+   { "*"   , 'B', 'r',  3, 'g',  S_LEFT , 2, S_YES, S_YES, ""  , "multiplication"                       },
+   { "/"   , 'B', 'r',  3, 'g',  S_LEFT , 2, S_YES, S_YES, ""  , "division"                             },
+   { "%"   , 'B', 'r',  3, 'g',  S_LEFT , 2, S_YES, S_YES, ""  , "modulus"                              },
    /*---(additive)---------------*/
-   { "+"   , 'B', 'r',  4, 'h',  S_LEFT , 2, "addition"                             },
-   { "-"   , 'B', 'r',  4, 'h',  S_LEFT , 2, "substraction"                         },
-   { "#"   , 'g', 'r',  4, 'h',  S_LEFT , 2, "string concatination"                 },
-   { "##"  , 'g', 'r',  4, 'h',  S_LEFT , 2, "string concatination"                 },
+   { "+"   , 'B', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_YES, ""  , "addition"                             },
+   { "-"   , 'B', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_YES, ""  , "substraction"                         },
+   { "#"   , 'g', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_YES, ""  , "string concatination"                 },
+   { "##"  , 'g', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_YES, ""  , "string concatination"                 },
    /*---(shift)------------------*/
-   { "<<"  , 'B', 'r',  5, 'i',  S_LEFT , 2, "bitwise shift left"                   },
-   { ">>"  , 'B', 'r',  5, 'i',  S_LEFT , 2, "bitwise shift right"                  },
+   { "<<"  , 'B', 'r',  5, 'i',  S_LEFT , 2, S_YES, S_YES, ""  , "bitwise shift left"                   },
+   { ">>"  , 'B', 'r',  5, 'i',  S_LEFT , 2, S_YES, S_YES, ""  , "bitwise shift right"                  },
    /*---(relational)-------------*/
-   { "<"   , 'B', 'r',  6, 'j',  S_LEFT , 2, "relational lesser"                    },
-   { "<="  , 'B', 'r',  6, 'j',  S_LEFT , 2, "relational less or equal"             },
-   { ">"   , 'B', 'r',  6, 'j',  S_LEFT , 2, "relational greater"                   },
-   { ">="  , 'B', 'r',  6, 'j',  S_LEFT , 2, "relational more or equal"             },
-   { "#<"  , 'g', 'r',  6, 'j',  S_LEFT , 2, "relational string lesser"             },
-   { "#>"  , 'g', 'r',  6, 'j',  S_LEFT , 2, "relational string greater"            },
+   { "<"   , 'B', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_YES, ""  , "relational lesser"                    },
+   { "<="  , 'B', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_YES, ""  , "relational less or equal"             },
+   { ">"   , 'B', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_YES, ""  , "relational greater"                   },
+   { ">="  , 'B', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_YES, ""  , "relational more or equal"             },
+   { "#<"  , 'g', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_YES, ""  , "relational string lesser"             },
+   { "#>"  , 'g', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_YES, ""  , "relational string greater"            },
    /*---(equality)---------------*/
-   { "=="  , 'B', 'r',  7, 'k',  S_LEFT , 2, "relational equality"                  },
-   { "!="  , 'B', 'r',  7, 'k',  S_LEFT , 2, "relational inequality"                },
-   { "#="  , 'g', 'r',  7, 'k',  S_LEFT , 2, "relational string equality"           },
-   { "#!"  , 'g', 'r',  7, 'k',  S_LEFT , 2, "relational string inequality"         },
+   { "=="  , 'B', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_YES, ""  , "relational equality"                  },
+   { "!="  , 'B', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_YES, ""  , "relational inequality"                },
+   { "#="  , 'g', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_YES, ""  , "relational string equality"           },
+   { "#!"  , 'g', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_YES, ""  , "relational string inequality"         },
    /*---(bitwise)----------------*/
-   { "&"   , 'c', 'r',  8, 'l',  S_LEFT , 2, "bitwise AND"                          },
-   { "^"   , 'c', 'r',  9, 'm',  S_LEFT , 2, "bitwise XOR"                          },
-   { "|"   , 'c', 'r', 10, 'n',  S_LEFT , 2, "bitwise OR"                           },
+   { "&"   , 'c', 'r',  8, 'l',  S_LEFT , 2, S_YES, S_YES, ""  , "bitwise AND"                          },
+   { "^"   , 'c', 'r',  9, 'm',  S_LEFT , 2, S_YES, S_YES, ""  , "bitwise XOR"                          },
+   { "|"   , 'c', 'r', 10, 'n',  S_LEFT , 2, S_YES, S_YES, ""  , "bitwise OR"                           },
    /*---(logical)----------------*/
-   { "&&"  , 'B', 'r', 11, 'o',  S_LEFT , 2, "logical AND"                          },
-   { "Ð"   , 'B', 'r', 11, 'o',  S_LEFT , 2, "logical AND (alt)"                    },
-   { "&Ô"  , 'B', 'r', 11, 'o',  S_LEFT , 2, "NAND (at least one is false)"         },
-   { "¶"   , 'B', 'r', 11, 'o',  S_LEFT , 2, "NAND (at least one is false)"         },
-   { "||"  , 'B', 'r', 12, 'p',  S_LEFT , 2, "logical OR"                           },
-   { "Ñ"   , 'B', 'r', 12, 'p',  S_LEFT , 2, "logical OR (alt)"                     },
-   { "|Ô"  , 'B', 'r', 12, 'p',  S_LEFT , 2, "NOR (neither/nor)"                    },
-   { "¯"   , 'B', 'r', 12, 'p',  S_LEFT , 2, "NOR (neither/nor)"                    },
-   { "|Ó"  , 'B', 'r', 12, 'p',  S_LEFT , 2, "XOR (one and only one)"               },
-   { "Ò"   , 'B', 'r', 12, 'p',  S_LEFT , 2, "XOR (one and only one)"               },
+   { "&&"  , 'B', 'r', 11, 'o',  S_LEFT , 2, S_YES, S_YES, "Ð" , "logical AND"                          },
+   { "Ð"   , 'B', 'r', 11, 'o',  S_LEFT , 2, S_YES, S_YES, ""  , "logical AND (alt)"                    },
+   { "&Ô"  , 'B', 'r', 11, 'o',  S_LEFT , 2, S_YES, S_YES, "¶" , "NAND (at least one is false)"         },
+   { "¶"   , 'B', 'r', 11, 'o',  S_LEFT , 2, S_YES, S_YES, ""  , "NAND (at least one is false)"         },
+   { "||"  , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, "Ñ" , "logical OR"                           },
+   { "Ñ"   , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, ""  , "logical OR (alt)"                     },
+   { "|Ô"  , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, "¯" , "NOR (neither/nor)"                    },
+   { "¯"   , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, ""  , "NOR (neither/nor)"                    },
+   { "|Ó"  , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, "Ò" , "XOR (one and only one)"               },
+   { "Ò"   , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, ""  , "XOR (one and only one)"               },
    /*---(conditional)------------*/
-   { "?"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, "trinary conditional"                  },
-   { ":"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, "trinary conditional"                  },
+   { "?"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, S_YES, S_YES, ""  , "trinary conditional"                  },
+   { ":"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, S_YES, S_YES, ""  , "trinary conditional"                  },
    /*---(assignment)-------------*/
-   { "="   , 'B', 'r', 14, 'r',  S_RIGHT, 2, "direct assignment"                    },
-   { "+="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (addition)"       },
-   { "-="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (subtract)"       },
-   { "*="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (multiply)"       },
-   { "/="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (divide)"         },
-   { "%="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (modulus)"        },
-   { "<<=" , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise left)"   },
-   { ">>=" , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise right)"  },
-   { "&="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise AND)"    },
-   { "^="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise XOR)"    },
-   { "|="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, "compound assignment (bitwise OR)"     },
+   { "="   , 'B', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "direct assignment"                    },
+   { "+="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (addition)"       },
+   { "-="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (subtract)"       },
+   { "*="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (multiply)"       },
+   { "/="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (divide)"         },
+   { "%="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (modulus)"        },
+   { "<<=" , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (bitwise left)"   },
+   { ">>=" , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (bitwise right)"  },
+   { "&="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (bitwise AND)"    },
+   { "^="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (bitwise XOR)"    },
+   { "|="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_YES, ""  , "compound assignment (bitwise OR)"     },
    /*---(comma)------------------*/
-   { ",;"  , 'c', 'r', 15, 'u',  S_LEFT , 1, "sequence mega-separator"              },
-   { ","   , 'B', 'r', 15, 's',  S_LEFT , 2, "sequence separator"                   },
+   { ",;"  , 'c', 'r', 15, 'u',  S_LEFT , 1, S_NO , S_YES, ""  , "sequence mega-separator"              },
+   { ","   , 'B', 'r', 15, 's',  S_LEFT , 2, S_NO , S_YES, ""  , "sequence separator"                   },
    /*---(parenthesis)------------*/
-   { "("   , 'B', 'r', 16, 't',  S_LEFT , 1, "sequence openning"                    },
-   { ")"   , 'B', 'r', 16, 't',  S_LEFT , 1, "sequence closing"                     },
-   { "(>"  , 'c', 'I', 16, 't',  S_LEFT , 1, "function opening"                     },
-   { "(:"  , 'c', 'I', 16, 't',  S_LEFT , 1, "casting opening"                      },
-   { "):"  , 'c', 'I', 16, 't',  S_LEFT , 1, "casting closing"                      },
+   { "("   , 'B', 'r', 16, 't',  S_LEFT , 1, S_YES, S_NO , ""  , "sequence openning"                    },
+   { ")"   , 'B', 'r', 16, 't',  S_LEFT , 1, S_NO , S_YES, ""  , "sequence closing"                     },
+   { "(>"  , 'c', 'I', 16, 't',  S_LEFT , 1, S_YES, S_NO , ""  , "function opening"                     },
+   { "(:"  , 'c', 'I', 16, 't',  S_LEFT , 1, S_YES, S_NO , ""  , "casting opening"                      },
+   { "):"  , 'c', 'I', 16, 't',  S_LEFT , 1, S_NO , S_YES, ""  , "casting closing"                      },
    /*---(semicolon)--------------*/
-   { ";"   , 'c', 'r', 17, 'u',  S_LEFT , 1, "statement separator"                  },
+   { ";"   , 'c', 'r', 17, 'u',  S_LEFT , 1, S_NO , S_YES, ""  , "statement separator"                  },
    /*-------------(braces)-------*/
-   { "{"   , 'c', 'r', 18, 'v',  S_LEFT , 1, "function openning"                    },
-   { "}"   , 'c', 'r', 18, 'v',  S_LEFT , 1, "function closing"                     },
+   { "{"   , 'c', 'r', 18, 'v',  S_LEFT , 1, S_YES, S_YES, ""  , "function openning"                    },
+   { "}"   , 'c', 'r', 18, 'v',  S_LEFT , 1, S_YES, S_YES, ""  , "function closing"                     },
    /*---(end)--------------------*/
-   { ""    , '-', '-',  0, '-',  '-'    , 0, ""                                     },
+   { ""    , '-', '-',  0, '-',  '-'    , 0, S_NO , S_NO , ""  , ""                                     },
 };
 
 
@@ -252,6 +257,25 @@ tKEYWORDS  s_keywords [MAX_KEYWORDS] = {
 
 
 
+char       /* ---- : identify the symbol spacing -----------------------------*/
+yRPN_space   (char  *a_token, char *a_pre, char *a_suf, char *a_new)
+{
+   int       i         = 0;
+   for (i = 0; i < MAX_OPER; ++i) {
+      if  (strcmp (s_opers[i].name, "end"  ) == 0)  break;
+      if  (strcmp (s_opers[i].name, a_token) != 0)  continue;
+      if (a_pre != NULL)  *a_pre = s_opers [i].pre;
+      if (a_suf != NULL)  *a_suf = s_opers [i].suf;
+      if (a_new != NULL)  strlcpy (a_new, s_opers [i].pretty, S_LEN_LABEL);
+      return  0;
+   }
+   /*---(complete)----------------*/
+   if (a_pre != NULL)  *a_pre = S_YES;
+   if (a_suf != NULL)  *a_suf = S_YES;
+   if (a_new != NULL)  strlcpy (a_new, "", S_LEN_LABEL);
+   return -1;
+}
+
 char       /* ---- : identify the symbol precedence --------------------------*/
 yRPN__prec   (void)
 {
@@ -359,9 +383,10 @@ yRPN__keywords       (int  a_pos)
    DEBUG_YRPN    yLOG_note    ("check for preprocessor keywords");
    if (myRPN.pproc == S_PPROC_YES) {
       if (strcmp (myRPN.t_name, "include") == 0)  myRPN.pproc = S_PPROC_INCL;
-      else                                      myRPN.pproc = S_PPROC_OTHER;
+      else                                        myRPN.pproc = S_PPROC_OTHER;
    }
    /*---(save)-----------------------------*/
+   strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
    DEBUG_YRPN    yLOG_note    ("keyword is a function");
    yRPN_stack_tokens  ();         /* strait to tokens list                          */
    if (x_use == 'f')  yRPN__token_push    (a_pos);
@@ -422,6 +447,7 @@ yRPN__types          (int  a_pos)
       return rce;
    }
    /*---(definition vs casting)----------*/
+   strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
    yRPN_stack_tokens  ();         /* strait to tokens list                          */
    if (myRPN.line_type == S_LINE_NORMAL) {
       DEBUG_YRPN    yLOG_note    ("treating as a casting onto stack");
@@ -536,6 +562,7 @@ yRPN__strings        (int  a_pos)
    }
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put string literal directly to output");
+   strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
    yRPN_stack_tokens  ();         /* strait to tokens list                          */
    yRPN__token_save    (a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;
@@ -600,6 +627,7 @@ yRPN__chars          (int  a_pos)
    }
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put char literal directly to output");
+   strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
    yRPN_stack_tokens  ();         /* strait to tokens list                          */
    yRPN__token_save    (a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;
@@ -677,6 +705,7 @@ yRPN__numbers        (int  a_pos)
    }
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put har literal directly to output");
+   strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
    yRPN_stack_tokens  ();         /* strait to tokens list                          */
    yRPN__token_save    (a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;
@@ -737,6 +766,7 @@ yRPN__constants      (int  a_pos)
    }
    /*---(save)-----------------------------*/
    DEBUG_YRPN    yLOG_note    ("put constant directly to output");
+   strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
    yRPN_stack_tokens  ();         /* strait to tokens list                          */
    yRPN__token_save    (a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;
@@ -787,6 +817,7 @@ yRPN__funcvar      (int   a_pos)
    if (myRPN.t_type == S_TTYPE_FUNC) {
       DEBUG_YRPN    yLOG_note    ("put function on stack");
       myRPN.t_prec = S_PREC_FUNC;
+      strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
       yRPN_stack_tokens  ();         /* strait to tokens list                          */
       yRPN__token_push    (a_pos);
    }
@@ -797,6 +828,7 @@ yRPN__funcvar      (int   a_pos)
          if (strcmp (myRPN.l_name, "." ) == 0)  myRPN.t_type = S_TTYPE_MEMB;
          if (strcmp (myRPN.l_name, "->") == 0)  myRPN.t_type = S_TTYPE_MEMB;
       }
+      strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
       yRPN_stack_tokens  ();         /* strait to tokens list                          */
       yRPN__token_save    (a_pos);
    }
@@ -840,39 +872,39 @@ yRPN__oper_splat     (int  a_pos)
       DEBUG_YRPN    yLOG_char    ("t_type"    , myRPN.t_type);
       yRPN_stack_push       (a_pos);
       myRPN.left_oper  = S_OPER_CLEAR;
-   /*> } else if (rc >= 0 && myRPN.p_type == S_TTYPE_FUNC) {                            <*/
-   } else if (rc >= 0 && (myRPN.line_type == S_LINE_DEF_FPTR || myRPN.line_type == S_LINE_DEF_FUN || myRPN.line_type == S_LINE_DEF_PRO)) {
-      DEBUG_YRPN    yLOG_note    ("working in * type modifier mode");
-      strlcpy (myRPN.t_name, "(*)", S_LEN_LABEL);
-      myRPN.t_type = S_TTYPE_PTYPE;
-      DEBUG_YRPN    yLOG_info    ("t_name"    , myRPN.t_name);
-      DEBUG_YRPN    yLOG_char    ("t_type"    , myRPN.t_type);
-      yRPN__token_save    (a_pos);
-      myRPN.left_oper  = S_OPER_CLEAR;
-   } else if (myRPN.line_type == S_LINE_DEF_FPTR) {
-      DEBUG_YRPN    yLOG_note    ("working in function pointer mode");
-      strlcpy (myRPN.t_name, "(>", S_LEN_LABEL);
-      myRPN.t_type = S_TTYPE_FPTR;
-      DEBUG_YRPN    yLOG_info    ("t_name"    , myRPN.t_name);
-      DEBUG_YRPN    yLOG_char    ("t_type"    , myRPN.t_type);
-      yRPN__token_save    (a_pos);
-      myRPN.left_oper  = S_OPER_CLEAR;
-   } else if ((myRPN.line_type == S_LINE_DEF || myRPN.line_type == S_LINE_DEF_VAR) && myRPN.line_sect != '=') {
-      DEBUG_YRPN    yLOG_note    ("working in * type modifier mode");
-      strlcpy (myRPN.t_name, "(*)", S_LEN_LABEL);
-      myRPN.t_type = S_TTYPE_TYPE;
-      DEBUG_YRPN    yLOG_info    ("t_name"    , myRPN.t_name);
-      DEBUG_YRPN    yLOG_char    ("t_type"    , myRPN.t_type);
-      yRPN__token_save    (a_pos);
-      myRPN.left_oper  = S_OPER_LEFT;
-   } else {
-      DEBUG_YRPN    yLOG_note    ("working in * dereference mode");
-      DEBUG_YRPN    yLOG_info    ("t_name"    , myRPN.t_name);
-      DEBUG_YRPN    yLOG_char    ("t_type"    , myRPN.t_type);
-      yRPN_stack_oper       (a_pos);
-      myRPN.left_oper  = S_OPER_LEFT;  /* an oper after an oper must be right-only */
-   }
-   return 0;
+      /*> } else if (rc >= 0 && myRPN.p_type == S_TTYPE_FUNC) {                            <*/
+} else if (rc >= 0 && (myRPN.line_type == S_LINE_DEF_FPTR || myRPN.line_type == S_LINE_DEF_FUN || myRPN.line_type == S_LINE_DEF_PRO)) {
+   DEBUG_YRPN    yLOG_note    ("working in * type modifier mode");
+   strlcpy (myRPN.t_name, "(*)", S_LEN_LABEL);
+   myRPN.t_type = S_TTYPE_PTYPE;
+   DEBUG_YRPN    yLOG_info    ("t_name"    , myRPN.t_name);
+   DEBUG_YRPN    yLOG_char    ("t_type"    , myRPN.t_type);
+   yRPN__token_save    (a_pos);
+   myRPN.left_oper  = S_OPER_CLEAR;
+} else if (myRPN.line_type == S_LINE_DEF_FPTR) {
+   DEBUG_YRPN    yLOG_note    ("working in function pointer mode");
+   strlcpy (myRPN.t_name, "(>", S_LEN_LABEL);
+   myRPN.t_type = S_TTYPE_FPTR;
+   DEBUG_YRPN    yLOG_info    ("t_name"    , myRPN.t_name);
+   DEBUG_YRPN    yLOG_char    ("t_type"    , myRPN.t_type);
+   yRPN__token_save    (a_pos);
+   myRPN.left_oper  = S_OPER_CLEAR;
+} else if ((myRPN.line_type == S_LINE_DEF || myRPN.line_type == S_LINE_DEF_VAR) && myRPN.line_sect != '=') {
+   DEBUG_YRPN    yLOG_note    ("working in * type modifier mode");
+   strlcpy (myRPN.t_name, "(*)", S_LEN_LABEL);
+   myRPN.t_type = S_TTYPE_TYPE;
+   DEBUG_YRPN    yLOG_info    ("t_name"    , myRPN.t_name);
+   DEBUG_YRPN    yLOG_char    ("t_type"    , myRPN.t_type);
+   yRPN__token_save    (a_pos);
+   myRPN.left_oper  = S_OPER_LEFT;
+} else {
+   DEBUG_YRPN    yLOG_note    ("working in * dereference mode");
+   DEBUG_YRPN    yLOG_info    ("t_name"    , myRPN.t_name);
+   DEBUG_YRPN    yLOG_char    ("t_type"    , myRPN.t_type);
+   yRPN_stack_oper       (a_pos);
+   myRPN.left_oper  = S_OPER_LEFT;  /* an oper after an oper must be right-only */
+}
+return 0;
 }
 
 int          /*--> check for operators -------------------[--------[--------]-*/
@@ -936,6 +968,8 @@ yRPN__operators      (int  a_pos)
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
+   /*---(save original)--------------------*/
+   strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
    /*---(check for unary)------------------*/
    if (myRPN.left_oper  == S_OPER_LEFT) {
       DEBUG_YRPN    yLOG_note    ("check for left operators in right only mode");
@@ -1060,6 +1094,7 @@ yRPN__sequencer      (int  a_pos)
    myRPN.t_name [1] = '\0';
    myRPN.t_len      = 1;
    myRPN.t_type     = S_TTYPE_GROUP;
+   strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
    x_pos          = a_pos + 1;
    DEBUG_YRPN    yLOG_info    ("myRPN.t_name", myRPN.t_name);
    DEBUG_YRPN    yLOG_value   ("myRPN.t_len" , myRPN.t_len);
@@ -1207,6 +1242,7 @@ yRPN__enders         (int  a_pos)
    myRPN.t_name [1] = '\0';
    myRPN.t_len      = 1;
    myRPN.t_type     = S_TTYPE_GROUP;
+   strlcpy (myRPN.t_token, myRPN.t_name, S_LEN_TOKEN);
    x_pos          = a_pos + 1;
    DEBUG_YRPN    yLOG_info    ("myRPN.t_name", myRPN.t_name);
    DEBUG_YRPN    yLOG_value   ("myRPN.t_len" , myRPN.t_len);

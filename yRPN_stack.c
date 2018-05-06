@@ -49,6 +49,7 @@ yRPN_stack_init      (void)
    strlcpy (myRPN.detail  ,"" , S_LEN_OUTPUT);
    strlcpy (myRPN.normal  ,"" , S_LEN_OUTPUT);
    strlcpy (myRPN.tokens  ,"" , S_LEN_OUTPUT);
+   strlcpy (myRPN.pretty  ,"" , S_LEN_OUTPUT);
    myRPN.l_shuntd   = 0;
    myRPN.l_normal   = 0;
    myRPN.n_shuntd   = 0;
@@ -451,16 +452,11 @@ yRPN_stack_normal       (int a_pos)
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    /*---(shuntd output)------------------*/
-   if (myRPN.n_shuntd == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
+   if (myRPN.n_shuntd == 0)  strlcpy (x_div, ""        , S_LEN_LABEL);
    else                      strlcpy (x_div, s_divtech , S_LEN_LABEL);
    /*---(add token)----------------------*/
    DEBUG_YRPN_M  yLOG_snote   ("write normal");
    strlcat (myRPN.normal, x_div      , S_LEN_OUTPUT);
-   /*> if (myRPN.t_type == S_TTYPE_GROUP)  return 0;                                                <*/
-   /*> if (myRPN.t_type == S_TTYPE_OPER && strcmp(myRPN.t_name, ",") == 0)  return 0;                 <*/
-   /*> printf ("found a comma, skipping  %c, %c, %s\n", zRPN_lang, myRPN.t_type, myRPN.t_name);    <* 
-    *> if (zRPN_lang == S_LANG_GYGES && myRPN.t_type == S_TTYPE_OPER && strcmp(myRPN.t_name, ",") == 0)  return 0;   <* 
-    *> printf ("just didn't skip\n");                                                       <*/
    sprintf (x_token, "%c,%04d,%s", myRPN.t_type, a_pos, myRPN.t_name);
    strlcat (myRPN.normal, x_token    , S_LEN_OUTPUT);
    myRPN.l_normal = strlen (myRPN.normal);
@@ -474,6 +470,9 @@ yRPN_stack_tokens        (void)
 {
    /*---(locals)-----------+-----------+-*/
    char        x_div       [S_LEN_LABEL];
+   char        x_pre       =  ' ';
+   char        x_suf       =  ' ';
+   char        x_new       [S_LEN_LABEL] = "";
    /*---(header)-------------------------*/
    DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(check line done)----------------*/
@@ -509,11 +508,22 @@ yRPN_stack_tokens        (void)
    DEBUG_YRPN    yLOG_char    ("line_sect" , myRPN.line_sect);
    /*---(adapt divider)------------------*/
    if (myRPN.n_tokens == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
-   else                      strlcpy (x_div, s_divider , S_LEN_LABEL);
+   else                        strlcpy (x_div, s_divider , S_LEN_LABEL);
    /*> printf ("myRPN.tokens before %2d:%s\n", myRPN.n_tokens, myRPN.tokens);               <*/
    /*---(add token)----------------------*/
-   strlcat (myRPN.tokens, x_div      , S_LEN_OUTPUT);
+   strlcat (myRPN.tokens, x_div        , S_LEN_OUTPUT);
    strlcat (myRPN.tokens, myRPN.t_name , S_LEN_OUTPUT);
+   /*---(pretty mode)--------------------*/
+   if (strcmp (myRPN.t_name, "?") != 0) {
+      if (strchr ("o(", myRPN.l_type) != NULL)  yRPN_space (myRPN.l_name, NULL  , &x_suf, NULL );
+      if (strchr ("o(", myRPN.t_type) != NULL)  yRPN_space (myRPN.t_name, &x_pre, NULL  , x_new);
+      /*> printf ("last %-10s %c %c, curr %-10s %c %c, new %-10s\n", myRPN.l_name, myRPN.l_type, x_suf, myRPN.t_name, myRPN.t_type, x_pre, x_new);   <*/
+      if      (x_suf == '-') ;
+      else if (x_pre == '-') ;
+      else if (myRPN.n_tokens > 0)  strlcat (myRPN.pretty, " ", S_LEN_OUTPUT);
+      if (x_new [0] == 0)  strlcat (myRPN.pretty, myRPN.t_token, S_LEN_OUTPUT);
+      else                 strlcat (myRPN.pretty, x_new        , S_LEN_OUTPUT);
+   }
    /*---(save this token)----------------*/
    strlcpy (myRPN.l_name, myRPN.t_name, S_LEN_LABEL);
    myRPN.l_type  = myRPN.t_type;
