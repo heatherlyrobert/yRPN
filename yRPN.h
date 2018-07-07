@@ -147,10 +147,40 @@
 
 
 
+/*---(overall)------------------------*/
+#define     YRPN_IGNORE         '-'    /* nothing to do                      */
+/*---(requires)-----------------------*/
+#define     YRPN_RNONE          'n'    /* no cell adjustments                */
+#define     YRPN_RREL           'r'    /* adjust all relative references     */
+#define     YRPN_RINNER         'i'    /* adjust all (rel/abs) inner refs    */
+#define     YRPN_RBOTH          'b'    /* adjust both inner and relative     */
+#define     YRPN_REVERY         'e'    /* adjust all inner, rel, and abs     */
+#define     YRPN_REQS           "nribe"
+#define     YRPN_RINSIDE        "ibe"
+/*---(provides)-----------------------*/
+#define     YRPN_PNONE          'N'    /* no provider adjustments            */
+#define     YRPN_PREL           'R'    /* adjust rel provider refs in source */
+#define     YRPN_PALL           'A'    /* adjust all provider refs in source */
+#define     YRPN_PSPLIT         'S'    /* adjust all provider refs in source */
+#define     YRPN_PROS           "NRAS"
+/*---(compound)-----------------------*/
+#define     YRPN_ALL            "nribeNRAS"
+
+
+/*---(language support)---------------*/
+#define      S_LANG_CBANG       'c'
+#define      S_LANG_GYGES       'g'
+#define      S_LANG_BOTH        'B'
+
+
+
 /*===[[ PUBLIC FUNCTIONS ]]===============================*/
 
 char*        /*--> return library version information ----[--------[--------]-*/
 yRPN_version       (void);
+
+char
+yRPN_mode          (char a_mode);
 
 char         /*--> convert spreadsheet infix to rpn ------[--------[--------]-*/
 yRPN_interpret     (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_z);
@@ -169,6 +199,17 @@ yRPN_tokens        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
 
 char
 yRPN_techtoken     (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+
+
+
+char
+yRPN_adjust_norm   (char **a_rpn, int x, int y, int z, int a_max);
+
+char
+yRPN_adjust_scoped (char **a_rpn, char a_scope, int x, int y, int z, int a_max);
+
+char
+yRPN_adjust_ref    (char **a_rpn, char a_scope, int x, int y, int z, char *a_target, int a_max);
 
 
 

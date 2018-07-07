@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.0e"
-#define   zRPN_VER_TXT       "added pretty results version and greek letters to vars/const"
+#define   zRPN_VER_NUM       "1.0f"
+#define   zRPN_VER_TXT       "many fixes to adjustment logic, no unit testing yet"
 
 
 
@@ -23,6 +23,7 @@
 #include    <yLOG.h>         /* CUSTOM  heatherly program logging             */
 #include    <ySTR.h>         /* CUSTOM  heatherly string handling             */
 #include    <yVAR.h>         /* CUSTOM  heatherly variable testing            */
+#include    <yVIKEYS.h>      /* CUSTOM  heatherly vikeys library              */
 
 
 extern char s_divider [5];
@@ -84,10 +85,6 @@ extern char      zRPN_olddebug;
 #define      S_PREC_NONE        '-'
 #define      S_PREC_FAIL        '?'
 #define      S_PREC_FUNC        'a'
-/*---(language support)---------------*/
-#define      S_LANG_CBANG       'c'
-#define      S_LANG_GYGES       'g'
-#define      S_LANG_BOTH        'B'
 /*---(evalulation direction)----------*/
 #define      S_LEFT             'l'
 #define      S_RIGHT            'r'

@@ -1,5 +1,4 @@
 /*============================----beg-of-source---============================*/
-
 #include  "yRPN.h"
 #include  "yRPN_priv.h"
 
@@ -54,6 +53,15 @@ yRPN_version       (void)
    return myRPN.about;
 }
 
+char
+yRPN_mode          (char a_mode)
+{
+   switch (a_mode) {
+   case S_LANG_CBANG : zRPN_lang = a_mode;         break;
+   case S_LANG_GYGES : zRPN_lang = a_mode;         break;
+   default           : zRPN_lang = S_LANG_CBANG;   break;
+   }
+}
 
 
 /*====================------------------------------------====================*/
@@ -219,7 +227,7 @@ yRPN_tokens        (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
    DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
    /*---(prepare flags)------------------*/
    DEBUG_YRPN   yLOG_note    ("set configuration");
-   zRPN_lang    = S_LANG_CBANG;
+   /*> zRPN_lang    = S_LANG_CBANG;                                                   <*/
    strcpy (s_divider, " ");
    /*---(convert)------------------------*/
    rc = yRPN__driver (a_src, 't', a_rpn, NULL, a_max);
@@ -311,7 +319,7 @@ yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_m
       return rce;
    }
    /*---(complete)-----------------------*/
-   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
