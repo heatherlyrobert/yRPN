@@ -148,30 +148,33 @@
 
 
 /*---(overall)------------------------*/
-#define     YRPN_IGNORE         '-'    /* nothing to do                      */
+#define     YRPN_IGNORE        '-'    /* nothing to do                      */
 /*---(requires)-----------------------*/
-#define     YRPN_RNONE          'n'    /* no cell adjustments                */
-#define     YRPN_RREL           'r'    /* adjust all relative references     */
-#define     YRPN_RINNER         'i'    /* adjust all (rel/abs) inner refs    */
-#define     YRPN_RBOTH          'b'    /* adjust both inner and relative     */
-#define     YRPN_REVERY         'e'    /* adjust all inner, rel, and abs     */
-#define     YRPN_REQS           "nribe"
-#define     YRPN_RINSIDE        "ibe"
+#define     YRPN_RNONE         'n'    /* no cell adjustments                */
+#define     YRPN_RREL          'r'    /* adjust all relative references     */
+#define     YRPN_RINNER        'i'    /* adjust all (rel/abs) inner refs    */
+#define     YRPN_RBOTH         'b'    /* adjust both inner and relative     */
+#define     YRPN_REVERY        'e'    /* adjust all inner, rel, and abs     */
+#define     YRPN_REQS          "nribe"
+#define     YRPN_RINSIDE       "ibe"
 /*---(provides)-----------------------*/
-#define     YRPN_PNONE          'N'    /* no provider adjustments            */
-#define     YRPN_PREL           'R'    /* adjust rel provider refs in source */
-#define     YRPN_PALL           'A'    /* adjust all provider refs in source */
-#define     YRPN_PSPLIT         'S'    /* adjust all provider refs in source */
-#define     YRPN_PROS           "NRAS"
+#define     YRPN_PNONE         'N'    /* no provider adjustments            */
+#define     YRPN_PREL          'R'    /* adjust rel provider refs in source */
+#define     YRPN_PALL          'A'    /* adjust all provider refs in source */
+#define     YRPN_PSPLIT        'S'    /* adjust all provider refs in source */
+#define     YRPN_PROS          "NRAS"
 /*---(compound)-----------------------*/
-#define     YRPN_ALL            "nribeNRAS"
+#define     YRPN_ALL           "nribeNRAS"
 
 
 /*---(language support)---------------*/
-#define      S_LANG_CBANG       'c'
-#define      S_LANG_GYGES       'g'
-#define      S_LANG_BOTH        'B'
+#define      YRPN_CBANG        'c'
+#define      YRPN_GYGES        'g'
+#define      YRPN_BOTH         'B'
 
+
+typedef     const char   cchar;
+typedef     const int    cint;
 
 
 /*===[[ PUBLIC FUNCTIONS ]]===============================*/
@@ -180,19 +183,22 @@ char*        /*--> return library version information ----[--------[--------]-*/
 yRPN_version       (void);
 
 char
-yRPN_mode          (char a_mode);
+yRPN_mode          (cchar a_mode);
 
 char         /*--> convert spreadsheet infix to rpn ------[--------[--------]-*/
 yRPN_interpret     (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_z);
 
 char
-yRPN_pretty        (char **a_infix);
-
-char
 yRPN_detail        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
 
 char
+yRPN_pretty        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+
+char
 yRPN_normal        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+
+char
+yRPN_parsed        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
 
 char
 yRPN_tokens        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
@@ -202,14 +208,22 @@ yRPN_techtoken     (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
 
 
 
-char
-yRPN_adjust_norm   (char **a_rpn, int x, int y, int z, int a_max);
+/*===[ YRPN_ADJ.C ]]==========================================================*/
 
 char
-yRPN_adjust_scoped (char **a_rpn, char a_scope, int x, int y, int z, int a_max);
+yRPN_adjust_norm        (cchar *a_src, cint x, cint y, cint z, cint a_max, char *a_out);
 
 char
-yRPN_adjust_ref    (char **a_rpn, char a_scope, int x, int y, int z, char *a_target, int a_max);
+yRPN_adjust_scoped      (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cint a_max, char *a_out);
+
+char
+yRPN_adjust_reqs        (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cint a_max, char *a_out);
+
+char
+yRPN_adjust_pros        (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cchar *a_target, cint a_max, char *a_out);
+
+char*      /* ---- : answer unit testing gray-box questions ------------------*/
+yRPN__adj_unit          (char *a_question, int a_item);
 
 
 

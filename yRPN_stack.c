@@ -48,6 +48,7 @@ yRPN_stack_init      (void)
    strlcpy (myRPN.shuntd  ,"" , S_LEN_OUTPUT);
    strlcpy (myRPN.detail  ,"" , S_LEN_OUTPUT);
    strlcpy (myRPN.normal  ,"" , S_LEN_OUTPUT);
+   strlcpy (myRPN.parsed  ,"" , S_LEN_OUTPUT);
    strlcpy (myRPN.tokens  ,"" , S_LEN_OUTPUT);
    strlcpy (myRPN.pretty  ,"" , S_LEN_OUTPUT);
    myRPN.l_shuntd   = 0;
@@ -483,7 +484,7 @@ yRPN_stack_tokens        (void)
       if (strcmp ("extern", myRPN.t_name) == 0)   myRPN.line_type = S_LINE_EXTERN;
       else                                      myRPN.line_type = S_LINE_DEF;
    }
-   if (myRPN.n_tokens == 0 && myRPN.t_type == S_TTYPE_OPER && zRPN_lang == S_LANG_CBANG) {
+   if (myRPN.n_tokens == 0 && myRPN.t_type == S_TTYPE_OPER && zRPN_lang == YRPN_CBANG) {
       if (strcmp ("#"     , myRPN.t_name) == 0) {
          myRPN.line_type = S_LINE_PREPROC;
          myRPN.pproc     = S_PPROC_YES;
@@ -513,6 +514,9 @@ yRPN_stack_tokens        (void)
    /*---(add token)----------------------*/
    strlcat (myRPN.tokens, x_div        , S_LEN_OUTPUT);
    strlcat (myRPN.tokens, myRPN.t_name , S_LEN_OUTPUT);
+   /*---(add token)----------------------*/
+   strlcat (myRPN.parsed, x_div        , S_LEN_OUTPUT);
+   strlcat (myRPN.parsed, myRPN.t_token, S_LEN_OUTPUT);
    /*---(pretty mode)--------------------*/
    if (strcmp (myRPN.t_name, "?") != 0) {
       if (strchr ("o(", myRPN.l_type) != NULL)  yRPN_space (myRPN.l_name, NULL  , &x_suf, NULL );

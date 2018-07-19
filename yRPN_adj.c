@@ -33,7 +33,7 @@ static int    s_azpos  = 0;    /* adjust tab                                  */
 void  o___MODIFY__________o () { return; }
 
 char         /*-> shared argument validiation --------[ ------ [fe.G67.55#.92]*/ /*-[01.0000.018.!]-*/ /*-[--.---.---.--]-*/
-yRPN__adj_check       (char **a_source, char a_scope, char *a_target)
+yRPN__adj_check       (char *a_src, char a_scope, char *a_target)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;                /* return code for errors    */
@@ -41,19 +41,13 @@ yRPN__adj_check       (char **a_source, char a_scope, char *a_target)
    /*---(begin)--------------------------*/
    DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(rpn)----------------------------*/
-   DEBUG_RPN    yLOG_point   ("a_source"  , a_source);
-   --rce;  if (a_source  == NULL)  {
-      DEBUG_RPN    yLOG_note    ("aborted, a_source is NULL, no point");
+   DEBUG_RPN    yLOG_point   ("a_src"   , a_src);
+   --rce;  if (a_src  == NULL)  {
+      DEBUG_RPN    yLOG_note    ("aborted, a_src is NULL, no point");
       DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   DEBUG_RPN    yLOG_point   ("*a_source" , *a_source);
-   --rce;  if (*a_source == NULL)  {
-      DEBUG_RPN    yLOG_note    ("aborted, *a_source is NULL, no content");
-      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
-      return rce;
-   }
-   DEBUG_RPN    yLOG_info    ("*a_source" , *a_source);
+   DEBUG_RPN    yLOG_info    ("a_src"   , a_src);
    /*---(scope)--------------------------*/
    DEBUG_RPN    yLOG_char    ("a_scope"   , a_scope);
    DEBUG_RPN    yLOG_info    ("valid"     , YRPN_ALL);
@@ -77,8 +71,8 @@ yRPN__adj_check       (char **a_source, char a_scope, char *a_target)
    }
    DEBUG_RPN    yLOG_complex ("target"    , "x=%4d, y=%4d, z=%4d", s_txpos, s_typos, s_tzpos);
    /*---(save)---------------------------*/
-   strlcpy (s_work , *a_source, S_LEN_OUTPUT);
-   strlcpy (s_final, "n/a"    , S_LEN_OUTPUT);
+   strlcpy (s_work , a_src , S_LEN_OUTPUT);
+   strlcpy (s_final, "n/a"   , S_LEN_OUTPUT);
    /*---(complete)-----------------------*/
    DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
@@ -166,7 +160,7 @@ yRPN__adj_one      (char *a_old, char a_scope, char *a_new)
 }
 
 char         /*-> change a specific reference --------[ ------ [fe.J75.197.84]*/ /*-[02.0000.037.!]-*/ /*-[--.---.---.--]-*/
-yRPN__adj_main     (char **a_source, char a_scope, int x, int y, int z, char *a_target)
+yRPN__adj_main     (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cchar *a_target, char *a_out)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;               /* return code for errors    */
@@ -181,7 +175,7 @@ yRPN__adj_main     (char **a_source, char a_scope, int x, int y, int z, char *a_
    /*---(begin)--------------------------*/
    DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(defense)------------------------*/
-   rc = yRPN__adj_check (a_source, a_scope, a_target);
+   rc = yRPN__adj_check (a_src, a_scope, a_target);
    DEBUG_RPN    yLOG_value   ("check"     , rc);
    --rce;  if (rc < 0)  {
       DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
@@ -193,7 +187,7 @@ yRPN__adj_main     (char **a_source, char a_scope, int x, int y, int z, char *a_
    s_aypos = y;
    s_azpos = z;
    /*---(prepare tokens)-----------------*/
-   rc = yRPN_tokens (s_work, &x_tokens, NULL, 2000);
+   rc = yRPN_parsed (s_work, &x_tokens, NULL, 2000);
    DEBUG_RPN    yLOG_value   ("tokenize"  , rc);
    --rce;  if (rc < 0)  {
       DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
@@ -221,8 +215,9 @@ yRPN__adj_main     (char **a_source, char a_scope, int x, int y, int z, char *a_
    x_final [strlen (x_final) - 1] = '\0';
    /*---(wrap-up)------------------------*/
    DEBUG_RPN    yLOG_info    ("final"     , x_final);
-   strcpy (s_final, x_final);
-   if (*a_source != NULL)  strcpy (*a_source, x_final);
+   rc = yRPN_pretty (x_final, &s_final, NULL, 2000);
+   if (a_out != NULL)  strcpy (a_out, s_final);
+   DEBUG_RPN    yLOG_info    ("a_out"     , a_out);
    /*---(check for ref troubles)---------*/
    DEBUG_RPN    yLOG_value   ("x_bad"     , x_bad);
    --rce;  if (x_bad > 0) {
@@ -235,29 +230,49 @@ yRPN__adj_main     (char **a_source, char a_scope, int x, int y, int z, char *a_
 }
 
 char
-yRPN_adjust_norm   (char **a_source, int x, int y, int z, int a_max)
+yRPN_adjust_norm   (cchar *a_src, cint x, cint y, cint z, cint a_max, char *a_out)
 {
-   return yRPN__adj_main (a_source, YRPN_RREL , x, y, z, NULL);
+   return yRPN__adj_main (a_src, YRPN_RREL , x, y, z, NULL, a_out);
 }
 
 char
-yRPN_adjust_scoped (char **a_source, char a_scope, int x, int y, int z, int a_max)
+yRPN_adjust_scoped (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cint a_max, char *a_out)
 {
-   return yRPN__adj_main (a_source, a_scope , x, y, z, NULL);
+   return yRPN__adj_main (a_src, a_scope , x, y, z, NULL, a_out);
 }
 
 char
-yRPN_adjust_reqs   (char **a_source, char a_scope, int x, int y, int z, int a_max)
+yRPN_adjust_reqs   (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cint a_max, char *a_out)
 {
    strcpy (s_final, "n/a");
    if (strchr (YRPN_REQS  , a_scope) == NULL)  return -1;
-   return yRPN__adj_main (a_source, a_scope , x, y, z, NULL);
+   return yRPN__adj_main (a_src, a_scope , x, y, z, NULL, a_out);
 }
 
 char
-yRPN_adjust_pros   (char **a_source, char a_scope, int x, int y, int z, char *a_target, int a_max)
+yRPN_adjust_pros   (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cchar *a_target, cint a_max, char *a_out)
 {
    strcpy (s_final, "n/a");
    if (strchr (YRPN_PROS, a_scope) == NULL)  return -1;
-   return yRPN__adj_main (a_source, a_scope , x, y, z, a_target);
+   return yRPN__adj_main (a_src, a_scope , x, y, z, a_target, a_out);
+}
+
+
+
+/*====================------------------------------------====================*/
+/*===----                         unit testing                         ----===*/
+/*====================------------------------------------====================*/
+static void      o___UNIT_TEST_______________o (void) {;};
+
+char*      /* ---- : answer unit testing gray-box questions ------------------*/
+yRPN__adj_unit          (char *a_question, int a_item)
+{
+   /*---(initialize)---------------------*/
+   strlcpy (unit_answer, "yRPN_unit, unknown request", 100);
+   /*---(input)--------------------------*/
+   if          (strcmp (a_question, "adjusted"  )     == 0) {
+      snprintf (unit_answer, S_LEN_OUTPUT, "yRPN adjusted    : %2d:%s:" , strlen (s_final), s_final);
+   }
+   /*---(complete)-----------------------*/
+   return unit_answer;
 }

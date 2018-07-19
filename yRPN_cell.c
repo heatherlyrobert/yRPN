@@ -23,7 +23,7 @@ yRPN__addresses      (int  a_pos, short a_ctab)
    DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(defenses)-----------------------*/
    yRPN__token_error ();
-   --rce;  if (zRPN_lang == S_LANG_CBANG) {
+   --rce;  if (zRPN_lang == YRPN_CBANG) {
       DEBUG_YRPN    yLOG_note    ("skip in c lang mode");
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;

@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.0f"
-#define   zRPN_VER_TXT       "many fixes to adjustment logic, no unit testing yet"
+#define   zRPN_VER_NUM       "1.0g"
+#define   zRPN_VER_TXT       "unit tested adjustment logic"
 
 
 
@@ -52,6 +52,7 @@ extern char      zRPN_olddebug;
 #define      S_DEBUG_YES        'y'
 /*---(lengths)------------------------*/
 #define      S_LEN_OUTPUT     2000
+#define      LEN_RECD         2000
 #define      S_LEN_TOKEN       200
 #define      S_LEN_DESC        100
 #define      S_LEN_LABEL        20
@@ -171,6 +172,7 @@ struct  cRPN {
    char        s_type;                      /* last token shuntd              */
    char        s_prec;                      /* last token shuntd              */
    /*---(infix output)-------------------*/
+   char        parsed      [S_LEN_OUTPUT];
    char        tokens      [S_LEN_OUTPUT];
    char        normal      [S_LEN_OUTPUT];
    int         l_normal;
@@ -217,8 +219,8 @@ extern  tRPN      myRPN;
 
 
 extern  char      zRPN_lang;
-#define   MODE_GYGES    if (zRPN_lang == S_LANG_GYGES)
-#define   MODE_C        if (zRPN_lang == S_LANG_CBANG)
+#define   MODE_GYGES    if (zRPN_lang == YRPN_GYGES)
+#define   MODE_C        if (zRPN_lang == YRPN_CBANG)
 
 
 extern  char      zRPN_divider [5];

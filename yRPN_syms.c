@@ -342,7 +342,7 @@ yRPN__keywords       (int  a_pos)
    DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(defenses)-----------------------*/
    yRPN__token_error ();
-   --rce;  if (zRPN_lang == S_LANG_GYGES) {
+   --rce;  if (zRPN_lang == YRPN_GYGES) {
       DEBUG_YRPN    yLOG_note    ("skip in gyges mode");
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
@@ -411,7 +411,7 @@ yRPN__types          (int  a_pos)
    DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(defenses)-----------------------*/
    yRPN__token_error ();
-   --rce;  if (zRPN_lang == S_LANG_GYGES) {
+   --rce;  if (zRPN_lang == YRPN_GYGES) {
       DEBUG_YRPN    yLOG_note    ("skip in gyges mode");
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
@@ -1048,7 +1048,7 @@ yRPN__paren_comma    (int a_pos)
       /*> zRPN_DEBUG  printf ("      FATAL :: nothing more on stack\n");           <*/
       /*> return rc;                                                               <*/
    }
-   if (zRPN_lang != S_LANG_GYGES) {
+   if (zRPN_lang != YRPN_GYGES) {
       myRPN.t_type = S_TTYPE_OPER;
       yRPN_stack_shuntd ();
       yRPN_stack_normal (a_pos);
