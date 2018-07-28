@@ -1,0 +1,78 @@
+#!/usr/local/bin/koios
+#   koios-polos (north star) -- customized c unit testing meta-program and mini-language
+#   program under test  : yRPN
+#   auto-generated script file converted from a previous script version
+#   updated to the most recent version (v21)
+
+
+
+#23456789-12  123  123456789-123456789-123456789-12345  123456789-123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  -  123456789-123456789- 
+#==(verb)===  ver  ===========(description)===========  =====(function)=====  ========================(arguments)===================================  ==(test)==  ==========================(results)=================================================================  t  ========(var)======= 
+PREP          v21  include the prototype headers                                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+   incl       v21  include main header                  yRPN.h                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+   incl       v21  include private header               yRPN_priv.h           - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+
+
+#23456789-12  123  123456789-123456789-123456789-12345  123456789-123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-  123456789-  123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-123456789-  -  123456789-123456789- 
+#==(verb)===  ver  ===========(description)===========  =====(function)=====  ========================(arguments)===================================  ==(test)==  ==========================(results)=================================================================  t  ========(var)======= 
+SCRP          v21  normal adjustments to infix formulas                         yRPN_adjust_norm                                                        ((01.---))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       v21  setup testing environment                                    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.001))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  prepare for testing                  yRPN__testquiet                                                                               i_equal     0                                                                                                    
+     exec     v21  set to gyges mode                    yRPN_mode             YRPN_GYGES                                                              i_equal     0                                                                                                    
+     code     v21  create an output variable            - - - - - - - - - -   char x_out [LEN_RECD] = "";                                                                                                                                                                  
+
+   GROUP      v21  verify non-addresses do not adjust                           - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       v21  try a single string literal                                  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  load the string                      yRPN_adjust_norm      "¸testing¸"                              ,  1,  1,  0, LEN_RECD, x_out  i_equal     0                                                                                                    
+     get      v21  final adjusted string                yRPN__adj_unit        "adjusted"   ,   0                                                      s_equal     yRPN adjusted    :  9:¸testing¸:                                                                     
+
+   COND       v21  try a single numeric literal                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  load the string                      yRPN_adjust_norm      "+15"                                    ,  1,  1,  0, LEN_RECD, x_out  i_equal     0                                                                                                    
+     get      v21  final adjusted string                yRPN__adj_unit        "adjusted"   ,   0                                                      s_equal     yRPN adjusted    :  3:+15:                                                                           
+
+   COND       v21  try a numeric literal formula                                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  load the string                      yRPN_adjust_norm      "15-30/6"                                ,  1,  1,  0, LEN_RECD, x_out  i_equal     0                                                                                                    
+     get      v21  final adjusted string                yRPN__adj_unit        "adjusted"   ,   0                                                      s_equal     yRPN adjusted    : 11:15 - 30 / 6:                                                                 
+
+   COND       v21  try a function call                                          - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  load the string                      yRPN_adjust_norm      "rad(30.5)"                              ,  1,  1,  0, LEN_RECD, x_out  i_equal     0                                                                                                    
+     get      v21  final adjusted string                yRPN__adj_unit        "adjusted"   ,   0                                                      s_equal     yRPN adjusted    : 10:rad (30.5):                                                                  
+
+   GROUP      v21  now, include addresses                                       - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       v21  try a single address                                         - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  load the string                      yRPN_adjust_norm      "a5"                                     ,  1,  1,  0, LEN_RECD, x_out  i_equal     0                                                                                                    
+     get      v21  final adjusted string                yRPN__adj_unit        "adjusted"   ,   0                                                      s_equal     yRPN adjusted    :  3:0b6:                                                                           
+
+   COND       v21  try a longer address formula                                 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  load the string                      yRPN_adjust_norm      "a5-z30/j11"                             ,  1,  1,  0, LEN_RECD, x_out  i_equal     0                                                                                                    
+     get      v21  final adjusted string                yRPN__adj_unit        "adjusted"   ,   0                                                      s_equal     yRPN adjusted    : 18:0b6 - 0aa31 / 0k12:                                                          
+
+   COND       v21  adjust to smaller column                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  load the string                      yRPN_adjust_norm      "b5-z30/j11"                             , -1,  1,  0, LEN_RECD, x_out  i_equal     0                                                                                                    
+     get      v21  final adjusted string                yRPN__adj_unit        "adjusted"   ,   0                                                      s_equal     yRPN adjusted    : 17:0a6 - 0y31 / 0i12:                                                          
+
+   COND       v21  adjust to smaller row                                        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  load the string                      yRPN_adjust_norm      "b5-z30/j11"                             , -1, -1,  0, LEN_RECD, x_out  i_equal     0                                                                                                    
+     get      v21  final adjusted string                yRPN__adj_unit        "adjusted"   ,   0                                                      s_equal     yRPN adjusted    : 17:0a4 - 0y29 / 0i10:                                                          
+
+   COND       v21  adjust to greater tab                                        - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.002))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  load the string                      yRPN_adjust_norm      "b5-z30/j11"                             , -1, -1,  4, LEN_RECD, x_out  i_equal     0                                                                                                    
+     get      v21  final adjusted string                yRPN__adj_unit        "adjusted"   ,   0                                                      s_equal     yRPN adjusted    : 17:4a4 - 4y29 / 4i10:                                                          
+
+
+
+
+
+
+   GROUP      v21  complete                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   - - - - -   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+
+   COND       v21  clean-up                                                     - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -   ((01.030))  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+     exec     v21  wrap-up for testing                  yRPN__testend                                                                                 i_equal     0                                                                                                    
+
+
+
+

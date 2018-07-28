@@ -20,7 +20,7 @@ char     *v_enders    = ";{";
 char     *v_operator  = "|&=!<>*/%+-.?:^~#ÑÐÒ¶¯ÔÓÖÕ";
 /*> char     *v_preproc   = "#";                                                      <*/
 char     *v_preproc   = "";
-char     *v_address   = "@$abcdefghijklmnopqrstuvwxyz0123456789";
+char     *v_address   = "@$abcdefghijklmnopqrstuvwxyz0123456789­®";
 char     *v_greek     = "èéêëìíîïðñòóôõö÷øùúûüýþÿ";
 
 #define         S_YES      'y'

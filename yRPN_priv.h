@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.0g"
-#define   zRPN_VER_TXT       "unit tested adjustment logic"
+#define   zRPN_VER_NUM       "1.0h"
+#define   zRPN_VER_TXT       "added control tabs to address token list"
 
 
 
