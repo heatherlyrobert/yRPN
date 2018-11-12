@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.0h"
-#define   zRPN_VER_TXT       "added control tabs to address token list"
+#define   zRPN_VER_NUM       "1.1b"
+#define   zRPN_VER_TXT       "fixed little bug in yRPN_adj_check that fouled address updates"
 
 
 

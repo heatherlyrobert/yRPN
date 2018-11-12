@@ -61,7 +61,7 @@ yRPN__adj_check       (char *a_src, char a_scope, char *a_target)
    s_txpos = s_typos = s_tzpos = -1;
    --rce;  if (a_target  != NULL)  {
       DEBUG_RPN    yLOG_info    ("a_target"  , a_target);
-      rc = str2gyges (a_target, &s_txpos, &s_typos, &s_txpos, NULL, 0);
+      rc = str2gyges (a_target, &s_txpos, &s_typos, &s_tzpos, NULL, 0);
       DEBUG_SORT    yLOG_value   ("rc"        , rc);
       if (rc < 0)  {
          DEBUG_SORT    yLOG_note    ("could not parse, EXITING");

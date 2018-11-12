@@ -17,7 +17,7 @@ char     *v_octal     = "o01234567";
 char     *v_binary    = "01";
 char     *v_sequence  = "(),[]";   
 char     *v_enders    = ";{";
-char     *v_operator  = "|&=!<>*/%+-.?:^~#—–“∂Ø‘”÷’";
+char     *v_operator  = "|&=!<>*/%+-.?:^~#—–“‘”’";
 /*> char     *v_preproc   = "#";                                                      <*/
 char     *v_preproc   = "";
 char     *v_address   = "@$abcdefghijklmnopqrstuvwxyz0123456789≠Æ";
@@ -58,7 +58,6 @@ tOPER     s_opers [MAX_OPER] = {
    { "]"   , 'c', 'r',  1, 'e',  S_LEFT , 1, S_NO , S_YES, ""  , "array subscripting"                   },
    { "."   , 'c', 'r',  1, 'e',  S_LEFT , 2, S_NO , S_NO , ""  , "element selection by reference"       },
    { "->"  , 'c', 'r',  1, 'e',  S_LEFT , 2, S_NO , S_NO , "’" , "element selection thru pointer"       },
-   { "’"   , 'c', 'r',  1, 'e',  S_LEFT , 2, S_NO , S_NO , ""  , "element selection thru pointer (alt)" },
    /*---(unary/prefix)-----------*/
    { "++"  , 'B', 'r',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "prefix increment"                     },
    { "--"  , 'B', 'r',  2, 'f',  S_RIGHT, 1, S_YES, S_NO , ""  , "prefix decrement"                     },
@@ -79,8 +78,8 @@ tOPER     s_opers [MAX_OPER] = {
    { "#"   , 'g', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_YES, ""  , "string concatination"                 },
    { "##"  , 'g', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_YES, ""  , "string concatination"                 },
    /*---(shift)------------------*/
-   { "<<"  , 'B', 'r',  5, 'i',  S_LEFT , 2, S_YES, S_YES, ""  , "bitwise shift left"                   },
-   { ">>"  , 'B', 'r',  5, 'i',  S_LEFT , 2, S_YES, S_YES, ""  , "bitwise shift right"                  },
+   { "<<"  , 'B', 'r',  5, 'i',  S_LEFT , 2, S_YES, S_YES, "™" , "bitwise shift left"                   },
+   { ">>"  , 'B', 'r',  5, 'i',  S_LEFT , 2, S_YES, S_YES, "´" , "bitwise shift right"                  },
    /*---(relational)-------------*/
    { "<"   , 'B', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_YES, ""  , "relational lesser"                    },
    { "<="  , 'B', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_YES, ""  , "relational less or equal"             },
@@ -99,15 +98,10 @@ tOPER     s_opers [MAX_OPER] = {
    { "|"   , 'c', 'r', 10, 'n',  S_LEFT , 2, S_YES, S_YES, ""  , "bitwise OR"                           },
    /*---(logical)----------------*/
    { "&&"  , 'B', 'r', 11, 'o',  S_LEFT , 2, S_YES, S_YES, "–" , "logical AND"                          },
-   { "–"   , 'B', 'r', 11, 'o',  S_LEFT , 2, S_YES, S_YES, ""  , "logical AND (alt)"                    },
-   { "&‘"  , 'B', 'r', 11, 'o',  S_LEFT , 2, S_YES, S_YES, "∂" , "NAND (at least one is false)"         },
-   { "∂"   , 'B', 'r', 11, 'o',  S_LEFT , 2, S_YES, S_YES, ""  , "NAND (at least one is false)"         },
+   { "!&"  , 'B', 'r', 11, 'o',  S_LEFT , 2, S_YES, S_YES, "”" , "NAND (at least one is false)"         },
    { "||"  , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, "—" , "logical OR"                           },
-   { "—"   , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, ""  , "logical OR (alt)"                     },
-   { "|‘"  , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, "Ø" , "NOR (neither/nor)"                    },
-   { "Ø"   , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, ""  , "NOR (neither/nor)"                    },
-   { "|”"  , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, "“" , "XOR (one and only one)"               },
-   { "“"   , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, ""  , "XOR (one and only one)"               },
+   { "!|"  , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, "‘" , "NOR (neither/nor)"                    },
+   { "&|"  , 'B', 'r', 12, 'p',  S_LEFT , 2, S_YES, S_YES, "“" , "XOR (one and only one)"               },
    /*---(conditional)------------*/
    { "?"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, S_YES, S_YES, ""  , "trinary conditional"                  },
    { ":"   , 'c', 'r', 13, 'q',  S_RIGHT, 2, S_YES, S_YES, ""  , "trinary conditional"                  },
@@ -933,18 +927,34 @@ yRPN__operators      (int  a_pos)
    x_pos        = a_pos;  /* starting point */
    while (yRPN__token_add (&x_pos) == 0);
    DEBUG_YRPN    yLOG_info    ("myRPN.t_name", myRPN.t_name);
-   /*---(try to match operators)-----------*/
-   DEBUG_YRPN    yLOG_note    ("search operators");
+   /*---(try to match normal operators)----*/
+   DEBUG_YRPN    yLOG_note    ("search operators normal");
    for (i = 0; i < MAX_OPER; ++i) {
       if  (s_opers [i].name [0] == '\0')                            break;
       if  (s_opers [i].real     != 'r' )                            continue;
       if  (s_opers [i].who != zRPN_lang && s_opers [i].who != 'B')  continue;
-      if  (s_opers [i].name [0] != myRPN.t_name [0])                  continue;
-      if  (strcmp (s_opers [i].name, myRPN.t_name ) != 0)             continue;
+      if  (s_opers [i].name [0] != myRPN.t_name [0])                continue;
+      if  (strcmp (s_opers [i].name, myRPN.t_name ) != 0)           continue;
       x_found = i;
       DEBUG_YRPN    yLOG_value   ("x_found"   , x_found);
       break;
    }
+   /*---(try to match pretty operators)----*/
+   DEBUG_YRPN    yLOG_note    ("search operators pretty");
+   if (x_found < 0 && myRPN.t_len == 1) {
+      for (i = 0; i < MAX_OPER; ++i) {
+         if  (s_opers [i].name [0] == '\0')                            break;
+         if  (s_opers [i].real     != 'r' )                            continue;
+         if  (s_opers [i].who != zRPN_lang && s_opers [i].who != 'B')  continue;
+         if  (s_opers [i].pretty [0] != myRPN.t_name [0])              continue;
+         x_found = i;
+         strlcpy (myRPN.t_name, s_opers [i].name, LEN_LABEL);
+         myRPN.t_len = strlen (myRPN.t_name);
+         DEBUG_YRPN    yLOG_value   ("x_found"   , x_found);
+         break;
+      }
+   }
+   /*---(try singles (if double))----------*/
    if (x_found < 0 && myRPN.t_len == 2) {
       DEBUG_YRPN    yLOG_note    ("two character operator not found");
       DEBUG_YRPN    yLOG_note    ("switching to single character operator mode");
@@ -955,7 +965,6 @@ yRPN__operators      (int  a_pos)
          if  (s_opers [i].name [0] == '\0')                   break;
          if  (s_opers [i].real     != 'r' )                   continue;
          if  (s_opers [i].name [0] != myRPN.t_name [0])         continue;
-         if  (strcmp (s_opers [i].name, myRPN.t_name ) != 0)    continue;
          x_found = i;
          DEBUG_YRPN    yLOG_value   ("x_found"   , x_found);
          break;
