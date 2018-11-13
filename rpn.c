@@ -11,7 +11,7 @@ char
 main               (int argv, char **argc)
 {
    char        rc          =    0;
-   char       *x_rpn       = NULL;
+   char        x_rpn       [LEN_RECD];
    int         x_nrpn      = NULL;
    if (argv < 1) {
       printf ("must pass a infix formula string\n");

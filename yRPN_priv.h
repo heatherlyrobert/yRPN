@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.1b"
-#define   zRPN_VER_TXT       "fixed little bug in yRPN_adj_check that fouled address updates"
+#define   zRPN_VER_NUM       "1.1c"
+#define   zRPN_VER_TXT       "added power operators from shrike font for 2, 3, 4, and half)
 
 
 
@@ -117,7 +117,11 @@ extern char      zRPN_olddebug;
 #define      S_CHAR_GREED       '$'
 #define      S_CHAR_ZERO        '0'
 
+#define      S_YES              'y'
+#define      S_NO               '-'
 
+
+extern char      g_type_counts    [LEN_LABEL];
 
 typedef  struct cRPN_DEBUG   tRPN_DEBUG;
 struct cRPN_DEBUG {
@@ -157,7 +161,10 @@ struct  cRPN {
    char        t_prec;                      /* current token precidence       */
    char        t_dir;                       /* current token dir of eval      */
    char        t_arity;                     /* current token unary, binary,.. */
+   char        t_post;                      /* current token postfix-unary    */
+   char        t_comb;                      /* current token combining        */
    char        left_oper;                   /* if oper next, must be left type*/
+   char        combined;                    /* once hit a combining operator  */
    char        pproc;                       /* pre-processor modes            */
    /*---(stack)--------------------------*/
    char        p_name      [S_LEN_TOKEN];   /* peek token from stack          */
@@ -332,7 +339,7 @@ char        yRPN__cells          (char *a_label, int *a_tab, int *a_col, int *a_
 
 
 char        yRPN_space           (char  *a_token, char *a_pre, char *a_suf, char *a_new);
-
+char        yrpn_ready              (void);
 
 #endif
 /*===[[ END ]]================================================================*/

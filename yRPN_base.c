@@ -97,7 +97,10 @@ yRPN__load         (char *a_source)   /* source infix string                    
    myRPN.t_prec     = S_PREC_NONE;
    myRPN.t_dir      = S_LEFT;
    myRPN.t_arity    = 0;
+   myRPN.t_post     = S_NO;
+   myRPN.t_comb     = S_NO;
    myRPN.left_oper  = S_OPER_LEFT;
+   myRPN.combined   = S_YES;
    myRPN.pproc      = S_PPROC_NO;
    myRPN.p_type     = S_TTYPE_NONE;
    myRPN.p_prec     = S_PREC_NONE;
