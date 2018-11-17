@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.1c"
-#define   zRPN_VER_TXT       "added power operators from shrike font for 2, 3, 4, and half)
+#define   zRPN_VER_NUM       "1.1d"
+#define   zRPN_VER_TXT       "added subsript operators from shrike font for 0, 1, 2, 3, 4, N"
 
 
 
@@ -30,6 +30,7 @@ extern char s_divider [5];
 extern char s_divtech [5];
 
 extern char     *v_alphanum;
+extern char     *v_subs;
 extern char     *v_alpha;
 extern char     *v_upper;
 extern char     *v_upnum;

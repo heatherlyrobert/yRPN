@@ -5,7 +5,8 @@
 
 
 
-char     *v_alphanum  = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_טיךכלםמןנסעףפץצקרשתûü‎‏ÿ";
+char     *v_alphanum  = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_טיךכלםמןנסעףפץצקרשתûü‎‏ÿÀÁÂÃÄÅ";
+char     *v_subs      = "ÀÁÂÃÄÅ";
 char     *v_alpha     = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_טיךכלםמןנסעףפץצקרשתûü‎‏ÿ";
 char     *v_upper     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ_טיךכלםמןנסעףפץצקרשתûü‎‏ÿ";
 char     *v_upnum     = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_טיךכלםמןנסעףפץצקרשתûü‎‏ÿ";

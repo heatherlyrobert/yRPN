@@ -21,6 +21,7 @@ yRPN__token_add      (int *a_pos)
    /*---(locals)-----------+-----------+-*/
    char        rce         =  -10;     /* return code for errors              */
    char        x_ch        =    0;     /* current character                   */
+   char        x_prev      =    0;     /* last character                      */
    char        x_esc       =  '-';     /* is the previous char an escape      */
    char        x_bad       =  '-';
    char       *x_norm      = "\"";
@@ -67,26 +68,30 @@ yRPN__token_add      (int *a_pos)
       /*---(done)------------------------*/
    case S_TTYPE_BIN    :
       DEBUG_YRPN_M  yLOG_snote   ("v_binary");
-      if (myRPN.t_len != 1 && strchr (v_binary, x_ch) == 0)       x_bad = 'y';
-      if (myRPN.t_len == 1 && (x_ch != 'b' && x_ch != 'B'))       x_bad = 'y';
+      if (myRPN.t_len != 1 && strchr (v_binary, x_ch) == 0)     x_bad = 'y';
+      if (myRPN.t_len == 1 && (x_ch != 'b' && x_ch != 'B'))     x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_OCT    :
       DEBUG_YRPN_M  yLOG_snote   ("v_octal");
-      if (myRPN.t_len != 1 && strchr (v_octal + 1, x_ch) == 0)    x_bad = 'y';
-      if (myRPN.t_len == 1 && strchr (v_octal    , x_ch) == 0)    x_bad = 'y';
+      if (myRPN.t_len != 1 && strchr (v_octal + 1, x_ch) == 0)  x_bad = 'y';
+      if (myRPN.t_len == 1 && strchr (v_octal    , x_ch) == 0)  x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_HEX    :
       DEBUG_YRPN_M  yLOG_snote   ("v_hex");
-      if (myRPN.t_len != 1 && strchr (v_hex   , x_ch) == 0)       x_bad = 'y';
-      if (myRPN.t_len == 1 && (x_ch != 'x' && x_ch != 'X'))       x_bad = 'y';
+      if (myRPN.t_len != 1 && strchr (v_hex   , x_ch) == 0)     x_bad = 'y';
+      if (myRPN.t_len == 1 && (x_ch != 'x' && x_ch != 'X'))     x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_VARS   : case S_TTYPE_FUNC   :
       DEBUG_YRPN_M  yLOG_snote   ("v_alphanum");
-      if (myRPN.t_len == 0 && strchr (v_alpha, x_ch) == 0)        x_bad = 'y';
-      if (strchr (v_alphanum, x_ch) == 0)                       x_bad = 'y';
+      if (myRPN.t_len == 0 && strchr (v_alpha   , x_ch) == 0)   x_bad = 'y';
+      if (myRPN.t_len > 0) {
+         x_prev = myRPN.t_name [myRPN.t_len - 1];
+         if (strchr (v_subs, x_prev)   != 0)                    x_bad = 'y';
+         if (strchr (v_alphanum, x_ch) == 0)                    x_bad = 'y';
+      }
       break;
       /*---(done)------------------------*/
    case S_TTYPE_ADDR   :
@@ -116,14 +121,14 @@ yRPN__token_add      (int *a_pos)
       /*---(done)------------------------*/
       break;
    case S_TTYPE_CHAR   :
-      if (myRPN.t_len == 0 && x_ch != '\'')                       x_bad = 'y';
-      if (x_esc != 'y' && myRPN.t_len == 2 && x_ch == '\'')       x_bad = '#';
-      if (x_esc == 'y' && myRPN.t_len == 3 && x_ch == '\'')       x_bad = '#';
-      if (myRPN.t_len >= 3)                                       x_bad = 'y';
+      if (myRPN.t_len == 0 && x_ch != '\'')                     x_bad = 'y';
+      if (x_esc != 'y' && myRPN.t_len == 2 && x_ch == '\'')     x_bad = '#';
+      if (x_esc == 'y' && myRPN.t_len == 3 && x_ch == '\'')     x_bad = '#';
+      if (myRPN.t_len >= 3)                                     x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_OPER   :
-      if (myRPN.t_len >= 2)                                       x_bad = 'y';
+      if (myRPN.t_len >= 2)                                     x_bad = 'y';
       if (strchr (v_operator , x_ch) == 0)                      x_bad = 'y';
       break;
       /*---(done)------------------------*/
