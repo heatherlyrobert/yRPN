@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.1d"
-#define   zRPN_VER_TXT       "added subsript operators from shrike font for 0, 1, 2, 3, 4, N"
+#define   zRPN_VER_NUM       "1.1f"
+#define   zRPN_VER_TXT       "updated for yVIKEYS testing and to bxyz vs old xyz addressing"
 
 
 
@@ -263,6 +263,9 @@ yRPN__operators    (int  a_pos);
 int        /* ---- : process grouping ----------------------------------------*/
 yRPN__sequence     (int  a_pos);
 
+int          /*--> check for bad addresses ---------------[--------[--------]-*/
+yRPN__badaddr      (int  a_pos);
+
 int        /* ---- : save off cell addresses ---------------------------------*/
 yRPN__addresses    (int  a_pos, short a_ctab);
 
@@ -341,6 +344,12 @@ char        yRPN__cells          (char *a_label, int *a_tab, int *a_col, int *a_
 
 char        yRPN_space           (char  *a_token, char *a_pre, char *a_suf, char *a_new);
 char        yrpn_ready              (void);
+
+char        yrpn_addr__init         (void);
+char*       yrpn_addr__unit      (char *a_question, int a_item);
+
+char        yrpn_addr_insider_fake  (int b, int x, int y, int z);
+
 
 #endif
 /*===[[ END ]]================================================================*/

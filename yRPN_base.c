@@ -54,13 +54,14 @@ yRPN_version       (void)
 }
 
 char
-yRPN_mode          (cchar a_mode)
+yRPN_init          (cchar a_mode)
 {
    switch (a_mode) {
    case YRPN_CBANG : zRPN_lang = a_mode;       break;
    case YRPN_GYGES : zRPN_lang = a_mode;       break;
    default         : zRPN_lang = YRPN_CBANG;   break;
    }
+   yrpn_addr__init ();
    return 0;
 }
 
@@ -125,7 +126,7 @@ yRPN_complier      (char *a_src, short a_tab, char **a_rpn, int a_nrpn, int a_ma
 }
 
 char         /*--> convert spreadsheet infix to rpn ------[ ------ [ ------ ]-*/
-yRPN_interpret     (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_z)
+yRPN_interpret     (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_def)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
@@ -135,7 +136,7 @@ yRPN_interpret     (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_z)
    DEBUG_YRPN   yLOG_note    ("set spreadsheet configuration");
    zRPN_lang    = YRPN_GYGES;
    strcpy (s_divider, ",");
-   s_ctab = a_z;
+   s_ctab = a_def;
    /*---(convert)------------------------*/
    rc = yRPN__driver (a_src, 's', a_rpn, a_nrpn, a_max);
    DEBUG_YRPN   yLOG_value   ("driver"    , rc);
@@ -424,6 +425,7 @@ yRPN__convert       (char *a_source)
       /*---(pick handler)----------------*/
       if (rc <= myRPN.pos && (x_ch == '\"' || x_ch == '<'))   rc = yRPN__strings    (myRPN.pos);
       if (rc <= myRPN.pos && x_ch == '\'')                    rc = yRPN__chars      (myRPN.pos);
+      if (rc <= myRPN.pos && strchr ("#"       , x_ch) != 0)  rc = yRPN__badaddr    (myRPN.pos);
       if (rc <= myRPN.pos && strchr (v_address , x_ch) != 0)  rc = yRPN__addresses  (myRPN.pos, s_ctab);
       if (rc <= myRPN.pos && strchr (v_lower   , x_ch) != 0)  rc = yRPN__keywords   (myRPN.pos);
       if (rc <= myRPN.pos && strchr (v_lower   , x_ch) != 0)  rc = yRPN__types      (myRPN.pos);

@@ -179,63 +179,34 @@ typedef     const int    cint;
 
 /*===[[ PUBLIC FUNCTIONS ]]===============================*/
 
-char*        /*--> return library version information ----[--------[--------]-*/
-yRPN_version       (void);
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
+char*       yRPN_version            (void);
+char        yRPN_init               (cchar a_mode);
 
-char
-yRPN_mode          (cchar a_mode);
-
-char         /*--> convert spreadsheet infix to rpn ------[--------[--------]-*/
-yRPN_interpret     (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_z);
-
-char
-yRPN_detail        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-
-char
-yRPN_pretty        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-
-char
-yRPN_normal        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-
-char
-yRPN_parsed        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-
-char
-yRPN_tokens        (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-
-char
-yRPN_techtoken     (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+char        yRPN_interpret          (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_def);
+char        yRPN_detail             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+char        yRPN_pretty             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+char        yRPN_normal             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+char        yRPN_parsed             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+char        yRPN_tokens             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+char        yRPN_techtoken          (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
 
 
 
 /*===[ YRPN_ADJ.C ]]==========================================================*/
-
-char
-yRPN_adjust_norm        (cchar *a_src, cint x, cint y, cint z, cint a_max, char *a_out);
-
-char
-yRPN_adjust_scoped      (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cint a_max, char *a_out);
-
-char
-yRPN_adjust_reqs        (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cint a_max, char *a_out);
-
-char
-yRPN_adjust_pros        (cchar *a_src, cchar a_scope, cint x, cint y, cint z, cchar *a_target, cint a_max, char *a_out);
-
-char*      /* ---- : answer unit testing gray-box questions ------------------*/
-yRPN__adj_unit          (char *a_question, int a_item);
+char        yRPN_addr_config        (void *a_breaker, void *a_maker, void *a_prettier, void *a_adjuster, void *a_insider);
+char        yRPN_addr_normal        (cchar *a_src, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
+char        yRPN_addr_scoped        (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
+char        yRPN_addr_require       (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
+char        yRPN_addr_provide       (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
+char*       yRPN__adj_unit          (char *a_question, int a_item);
 
 
 
 
-int          /*--> convert spreadsheet infix to rpn ------[ ------ [ ------ ]-*/
-yRPN_errorpos      (void);
-
-char         /*--> identify symbol arity -----------------[--------[--------]-*/
-yRPN_arity         (char *a_op);
-
-char         /*--> set to compilier format ---------------[--------[--------]-*/
-yRPN_compiler      (void);
+int         yRPN_errorpos           (void);
+char        yRPN_arity              (char *a_op);
+char        yRPN_compiler           (void);
 
 
 
