@@ -160,11 +160,13 @@
 /*---(provides)-----------------------*/
 #define     YRPN_PNONE         'N'    /* no provider adjustments            */
 #define     YRPN_PREL          'R'    /* adjust rel provider refs in source */
+#define     YRPN_PPART         'P'    /* adjust rel parts of provider ref   */
 #define     YRPN_PALL          'A'    /* adjust all provider refs in source */
-#define     YRPN_PSPLIT        'S'    /* adjust all provider refs in source */
-#define     YRPN_PROS          "NRAS"
+#define     YRPN_PSPLIT        'S'    /* split provider refs in source      */
+#define     YRPN_PROS          "NRPAS"
 /*---(compound)-----------------------*/
-#define     YRPN_ALL           "nribeNRAS"
+#define     YRPN_ALL           "nribeNRPAS"
+#define     YRPN_NONES         "-nN"
 
 
 /*---(language support)---------------*/
@@ -196,7 +198,7 @@ char        yRPN_techtoken          (char *a_src, char **a_rpn, int *a_nrpn, int
 /*===[ YRPN_ADJ.C ]]==========================================================*/
 char        yRPN_addr_config        (void *a_breaker, void *a_maker, void *a_prettier, void *a_adjuster, void *a_insider);
 char        yRPN_addr_normal        (cchar *a_src, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
-char        yRPN_addr_scoped        (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
+/*> char        yRPN_addr_scoped        (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out);   <*/
 char        yRPN_addr_require       (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
 char        yRPN_addr_provide       (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
 char*       yRPN__adj_unit          (char *a_question, int a_item);

@@ -6,8 +6,8 @@
 
 /*===[[ VERSION ]]========================================*/
 /* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.1f"
-#define   zRPN_VER_TXT       "updated for yVIKEYS testing and to bxyz vs old xyz addressing"
+#define   zRPN_VER_NUM       "1.1g"
+#define   zRPN_VER_TXT       "completed updates to addr functions and full unit testing"
 
 
 

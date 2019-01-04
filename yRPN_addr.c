@@ -180,15 +180,15 @@ yRPN__adj_one      (char *a_old, char a_scope, char *a_new)
    DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    DEBUG_RPN    yLOG_info    ("a_old"     , a_old);
    DEBUG_RPN    yLOG_char    ("a_scope"   , a_scope);
-   /*---(prepare)---------------------*/
+   /*---(prepare)------------------------*/
    strcpy (a_new, a_old);
-   /*---(check for do-nothing)--------*/
-   --rce;  if (strchr (YRPN_ALL, a_scope) == NULL) {
+   /*---(shortcut for do-nothing)--------*/
+   --rce;  if (strchr (YRPN_NONES, a_scope) != NULL) {
       DEBUG_RPN    yLOG_note    ("scope indicates nothing to do");
       DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   /*---(parse for address)-----------*/
+   /*---(parse for address)--------------*/
    rc = s_breaker (a_old, &b, &x, &y, &z, &x_abs, 0, YSTR_LEGAL);
    DEBUG_RPN    yLOG_value   ("s_breaker" , rc);
    --rce;  if (rc <  0) {
@@ -196,7 +196,7 @@ yRPN__adj_one      (char *a_old, char a_scope, char *a_new)
       DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   /*---(check targeted refs)---------*/
+   /*---(check targeted refs)------------*/
    --rce;  if (strchr (YRPN_PROS, a_scope) != NULL) {
       if (s_targb != b || s_targx != x || s_targy != y || s_targz != z) {
          DEBUG_RPN    yLOG_note    ("tab, col, or row does not match target, just append");
@@ -204,18 +204,32 @@ yRPN__adj_one      (char *a_old, char a_scope, char *a_new)
          return rce;
       }
    }
-   /*---(adjust to scopes)------------*/
-   rc = s_insider (b, x, y, z);
-   --rce;  if (strchr (YRPN_RINSIDE, a_scope) != NULL) {
-      if (a_scope == YRPN_RINNER && rc <= 0) {
-         DEBUG_RPN    yLOG_note    ("cell label not inner register area");
-         DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
-         return rce;
-      }
+   /*---(adjust to scopes)---------------*/
+   DEBUG_RPN    yLOG_value   ("x_abs"     , x_abs);
+   --rce;  if (x_abs >  0 && a_scope == YRPN_PREL) {
+      DEBUG_RPN    yLOG_note    ("not an address, just append");
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   --rce;  if (strchr ("AS", a_scope) != 0) {
+      DEBUG_RPN    yLOG_note    ("force a full change");
       x_force = 'y';
    }
+   rc = s_insider (b, x, y, z);
+   DEBUG_RPN    yLOG_value   ("insider"   , rc);
+   --rce;  if (rc <= 0 && a_scope == YRPN_RINNER) {
+      DEBUG_RPN    yLOG_note    ("cell label not inner register area");
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
+      return rce;
+   }
+   DEBUG_RPN    yLOG_info    ("rinside"   , YRPN_RINSIDE);
+   --rce;  if (rc > 0  && strchr (YRPN_RINSIDE, a_scope) != NULL) {
+      DEBUG_RPN    yLOG_note    ("force a full change");
+      x_force = 'y';
+   }
+   if (a_scope == YRPN_REVERY)  x_force = 'y';
    if (a_scope == YRPN_PALL)    x_force = 'y';
-   /*---(handle addresses)------------*/
+   /*---(handle addresses)---------------*/
    rc = s_adjuster (a_old, s_adjb, s_adjx, s_adjy, s_adjz, x_force, x_addr, YSTR_LEGAL);
    DEBUG_RPN    yLOG_value   ("s_adjuster", rc);
    if (rc != 0) {
@@ -224,8 +238,10 @@ yRPN__adj_one      (char *a_old, char a_scope, char *a_new)
       DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
+   /*---(prepare return)-----------------*/
    DEBUG_RPN    yLOG_info    ("new label" , x_addr);
-   strcpy (a_new, x_addr);
+   if (a_scope == YRPN_PSPLIT)  sprintf (a_new, "(%s + %s)", a_old, x_addr);
+   else                         strcpy  (a_new, x_addr);
    /*---(complete)-----------------------*/
    DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
@@ -313,11 +329,11 @@ yRPN_addr_normal   (cchar *a_src, cint b, cint x, cint y, cint z, cint a_max, ch
    return yRPN__adj_main (a_src, YRPN_RREL, NULL, b, x, y, z, a_out);
 }
 
-char
-yRPN_addr_scoped   (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out)
-{
-   return yRPN__adj_main (a_src, a_scope, NULL, b, x, y, z, a_out);
-}
+/*> char                                                                                                        <* 
+ *> yRPN_addr_scoped   (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out)   <* 
+ *> {                                                                                                           <* 
+ *>    return yRPN__adj_main (a_src, a_scope, NULL, b, x, y, z, a_out);                                         <* 
+ *> }                                                                                                           <*/
 
 char
 yRPN_addr_require  (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out)
@@ -331,7 +347,7 @@ char
 yRPN_addr_provide  (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x, cint y, cint z, cint a_max, char *a_out)
 {
    strcpy (s_final, "n/a");
-   if (strchr (YRPN_PROS, a_scope) == NULL)  return -1;
+   if (strchr (YRPN_PROS , a_scope) == NULL)  return -1;
    return yRPN__adj_main (a_src, a_scope, a_target, b, x, y, z, a_out);
 }
 
@@ -466,7 +482,13 @@ static void      o___UNIT_TEST_______________o (void) {;};
 char
 yrpn_addr_insider_fake  (int b, int x, int y, int z)
 {
-   return 0;
+   /*   6i8..6m12   */
+   if (b != 6)  return 0;
+   if (x <  7)  return 0;
+   if (x > 11)  return 0;
+   if (y <  7)  return 0;
+   if (y > 11)  return 0;
+   return 1;
 }
 
 char*      /* ---- : answer unit testing gray-box questions ------------------*/
