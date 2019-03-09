@@ -1,23 +1,4 @@
 /*============================----beg-of-source---============================*/
-
-/*===[[ HEADER ]]=============================================================*
-
- *   focus         : (PS) programming support
- *   niche         : (rp) reverse-polish notation conversion
- *   application   : yRPN
- *   purpose       : simple, clean infix to reverse polish notation conversion
- *
- *   base_system   : gnu/linux   (powerful, ubiquitous, technical, and hackable)
- *   lang_name     : ansi-c      (wicked, limitless, universal, and everlasting)
- *   dependencies  : ((none))
- *   size goal     : tiny (approximately 500 slocL)
- *
- *   author        : the_heatherlys
- *   created       : 2011-08
- *   priorities    : direct, simple, brief, vigorous, and lucid (h.w. fowler)
- *   end goal      : loosely coupled, strict interface, maintainable, portable
- * 
- */
 /*===[[ SUMMARY ]]============================================================*
 
  *   yRPN is a simple, clean, reliable, and maintainable set of functions to

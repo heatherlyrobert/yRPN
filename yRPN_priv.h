@@ -3,11 +3,52 @@
 #define zRPN_PRIVATE         loaded
 
 
+/*===[[ HEADER ]]=============================================================*
 
-/*===[[ VERSION ]]========================================*/
-/* rapidly evolving version number to aid with visual change confirmation     */
-#define   zRPN_VER_NUM       "1.1g"
-#define   zRPN_VER_TXT       "completed updates to addr functions and full unit testing"
+ *   focus         : (PS) programming support
+ *   niche         : (rp) reverse-polish notation conversion
+ *   heritage      : edsger dijkstra (titan and pioneer of computer science)
+ *   purpose       : simple, clean infix to reverse polish notation conversion
+ *
+ *   base_system   : gnu/linux   (powerful, ubiquitous, technical, and hackable)
+ *   lang_name     : ansi-c      (wicked, limitless, universal, and everlasting)
+ *   dependencies  : ((none))
+ *   size goal     : tiny (approximately 500 slocL)
+ *
+ *   author        : the_heatherlys
+ *   created       : 2011-08
+ *   priorities    : direct, simple, brief, vigorous, and lucid (h.w. fowler)
+ *   end goal      : loosely coupled, strict interface, maintainable, portable
+ * 
+ */
+
+/*===[[ BEG_HEADER ]]=========================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-*/
+
+/*===[[ ONE_LINERS ]]=========================================================*/
+
+#define     P_FOCUS     "PS (programming support)"
+#define     P_NICHE     "rp (reverse-polish notation)"
+#define     P_PURPOSE   "simple, clean infix to reverse polish notation conversion"
+
+#define     P_NAMESAKE  "terpsikhore (delight in dance)
+#define     P_HERITAGE  "terpsikhore is the greek muse of choral song"
+#define     P_ALIGN     "choral song is about coordination as is rpn"
+#define     P_IMAGERY   "tbd"
+
+#define     P_SYSTEM    "gnu/linux   (powerful, ubiquitous, technical, and hackable)"
+#define     P_LANGUAGE  "ansi-c      (wicked, limitless, universal, and everlasting)"
+#define     P_CODESIZE  "large       (appoximately 10,000 slocl)"
+
+#define     P_AUTHOR    "heatherlyrobert"
+#define     P_CREATED   "2011-08"
+#define     P_DEPENDS   "none"
+
+#define     P_VERNUM    "1.1h"
+#define     P_VERTXT    "updates to unit testing to add address configuration"
+
+/*===[[ END_HEADER ]]=========================================================*/
+
 
 
 

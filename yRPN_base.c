@@ -49,7 +49,7 @@ yRPN_version       (void)
 #else
    strncpy (t, "[unknown    ]", 15);
 #endif
-   snprintf (myRPN.about, 100, "%s   %s : %s", t, zRPN_VER_NUM, zRPN_VER_TXT);
+   snprintf (myRPN.about, 100, "%s   %s : %s", t, P_VERNUM, P_VERTXT);
    return myRPN.about;
 }
 

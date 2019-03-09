@@ -71,12 +71,27 @@ yRPN_accessor      (char *a_question, int a_item)
    return unit_answer;
 }
 
+char
+yrpn__unit_insider     (int b, int x, int y, int z)
+{
+   return 0;
+}
+
+char
+yrpn__unit_quick       (void)
+{
+   str0gyges  (NULL);
+   yRPN_init (YRPN_GYGES);
+   yRPN_addr_config   (str2gyges, str4gyges, str6gyges, str8gyges, yrpn__unit_insider);
+}
+
 char       /*----: set up programgents/debugging -----------------------------*/
 yRPN__testquiet     (void)
 {
    char       *x_args [2]  = { "yRPN_debug","@@quiet" };
    yURG_logger (2, x_args);
    yURG_urgs   (2, x_args);
+   yrpn__unit_quick ();
    return 0;
 }
 
@@ -86,13 +101,14 @@ yRPN__testloud      (void)
    char       *x_args [3]  = { "yRPN_debug","@@kitchen","@@YRPN" };
    yURG_logger (3, x_args);
    yURG_urgs   (3, x_args);
+   yrpn__unit_quick ();
    return 0;
 }
 
 char       /*----: set up program urgents/debugging --------------------------*/
 yRPN__testend       (void)
 {
-   DEBUG_TOPS   yLOG_end     ();
+   DEBUG_TOPS   yLOGS_end     ();
    return 0;
 }
 
