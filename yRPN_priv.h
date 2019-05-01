@@ -44,8 +44,8 @@
 #define     P_CREATED   "2011-08"
 #define     P_DEPENDS   "none"
 
-#define     P_VERNUM    "1.1h"
-#define     P_VERTXT    "updates to unit testing to add address configuration"
+#define     P_VERNUM    "1.1i"
+#define     P_VERTXT    "small change to return #REF for out-of-bounds addresses"
 
 /*===[[ END_HEADER ]]=========================================================*/
 

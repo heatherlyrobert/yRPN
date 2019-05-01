@@ -49,8 +49,8 @@ tOPER     s_opers [MAX_OPER] = {
    /*---(spreadsheet)------------*/
    { ".."  , 'g', 'r',  0, 'd',  S_LEFT , 2, S_YES, S_NO , S_NO , S_NO , ""  , "cell range"                           },
    /*---(preprocessor)-----------*/
-   { "#"   , 'c', 'r',  0, 'd',  S_LEFT , 2, S_NO , S_NO , S_NO , S_NO , ""  , "prefix"                               },
-   { "##"  , 'c', '-',  0, 'd',  S_LEFT , 2, S_NO , S_NO , S_NO , S_NO , ""  , "stringification"                      },
+   /*> { "#"   , 'c', 'r',  0, 'd',  S_LEFT , 2, S_NO , S_NO , S_NO , S_NO , ""  , "prefix"                               },   <*/
+   /*> { "##"  , 'c', '-',  0, 'd',  S_LEFT , 2, S_NO , S_NO , S_NO , S_NO , ""  , "stringification"                      },   <*/
    /*---(unary/suffix)-----------*/
    { ":+"  , 'B', 'I',  1, 'e',  S_LEFT , 1, S_NO , S_YES, S_NO , S_YES, ""  , "suffix increment"                     },
    { ":-"  , 'B', 'I',  1, 'e',  S_LEFT , 1, S_NO , S_YES, S_NO , S_YES, ""  , "suffix decrement"                     },
