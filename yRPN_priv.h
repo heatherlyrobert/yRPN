@@ -44,8 +44,10 @@
 #define     P_CREATED   "2011-08"
 #define     P_DEPENDS   "none"
 
-#define     P_VERNUM    "1.1i"
-#define     P_VERTXT    "small change to return #REF for out-of-bounds addresses"
+#define     P_VERMAJOR  "1.--, production use, working out issues"
+#define     P_VERMINOR  "1.1-, first full production version"
+#define     P_VERNUM    "1.1j"
+#define     P_VERTXT    "fixed processing of gyges reference indicator (&)"
 
 /*===[[ END_HEADER ]]=========================================================*/
 

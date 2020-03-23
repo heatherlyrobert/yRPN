@@ -56,12 +56,14 @@ yRPN_version       (void)
 char
 yRPN_init          (cchar a_mode)
 {
+   DEBUG_RPN     yLOG_enter   (__FUNCTION__);
    switch (a_mode) {
    case YRPN_CBANG : zRPN_lang = a_mode;       break;
    case YRPN_GYGES : zRPN_lang = a_mode;       break;
    default         : zRPN_lang = YRPN_CBANG;   break;
    }
    yrpn_addr__init ();
+   DEBUG_RPN     yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -74,9 +76,9 @@ static void        o___DRIVER__________________o (void) {;}
 int          /*--> prepare variables for rpn conversion --[ ------ [ ------ ]-*/
 yRPN__load         (char *a_source)   /* source infix string                          */
 {
-   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN     yLOG_enter   (__FUNCTION__);
    /*---(set the source/working)---------*/
-   DEBUG_YRPN    yLOG_note    ("initialize source and working strings");
+   DEBUG_RPN     yLOG_note    ("initialize source and working strings");
    if (a_source == NULL || a_source [0] == '\0') {
       strncpy (myRPN.source  , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
       strncpy (myRPN.working , ""             , S_LEN_OUTPUT);
@@ -86,10 +88,11 @@ yRPN__load         (char *a_source)   /* source infix string                    
       strncpy (myRPN.working , a_source       , S_LEN_OUTPUT);
       myRPN.l_source  = myRPN.l_working = strlen (myRPN.source);
    }
-   DEBUG_YRPN    yLOG_sint    (myRPN.l_source);
+   DEBUG_RPN     yLOG_info    ("source"    , myRPN.source);
+   DEBUG_RPN     yLOG_value   ("len"       , myRPN.l_source);
    myRPN.pos        = 0;
    /*---(set the token vars)-------------*/
-   DEBUG_YRPN    yLOG_note    ("token vars");
+   DEBUG_RPN     yLOG_note    ("token vars");
    strncpy (myRPN.t_token , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
    strncpy (myRPN.t_name  , YRPN_TOKEN_NULL, S_LEN_OUTPUT);
    myRPN.t_type     = S_TTYPE_ERROR;
@@ -108,7 +111,7 @@ yRPN__load         (char *a_source)   /* source infix string                    
    /*---(set the stack vars)-------------*/
    yRPN_stack_init   ();
    /*---(complete)-----------------------*/
-   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN     yLOG_exit    (__FUNCTION__);
    return  myRPN.l_source;
 }
 
@@ -131,21 +134,21 @@ yRPN_interpret     (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_def
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
    /*---(header)-------------------------*/
-   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(prepare flags)------------------*/
-   DEBUG_YRPN   yLOG_note    ("set spreadsheet configuration");
+   DEBUG_RPN    yLOG_note    ("set spreadsheet configuration");
    zRPN_lang    = YRPN_GYGES;
    strcpy (s_divider, ",");
    s_ctab = a_def;
    /*---(convert)------------------------*/
    rc = yRPN__driver (a_src, 's', a_rpn, a_nrpn, a_max);
-   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
+   DEBUG_RPN    yLOG_value   ("driver"    , rc);
    if (rc < 0) {
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rc);
       return rc;
    }
    /*---(complete)-----------------------*/
-   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -155,22 +158,22 @@ yRPN_normal        (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
    /*---(header)-------------------------*/
-   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(prepare flags)------------------*/
-   DEBUG_YRPN   yLOG_note    ("set configuration");
+   DEBUG_RPN    yLOG_note    ("set configuration");
    zRPN_lang    = YRPN_CBANG;
    strcpy (s_divider, ", ");
    strcpy (s_divtech, "\x1F");
    /*---(convert)------------------------*/
    rc = yRPN__driver (a_src, 'n', a_rpn, NULL, a_max);
-   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
-   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   DEBUG_RPN    yLOG_value   ("driver"    , rc);
+   DEBUG_RPN    yLOG_value   ("pos"       , myRPN.pos);
    if (rc < 0) {
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rc);
       return rc;
    }
    /*---(complete)-----------------------*/
-   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -180,22 +183,22 @@ yRPN_detail        (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
    /*---(header)-------------------------*/
-   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(prepare flags)------------------*/
-   DEBUG_YRPN   yLOG_note    ("set configuration");
+   DEBUG_RPN    yLOG_note    ("set configuration");
    zRPN_lang    = YRPN_CBANG;
    strcpy (s_divider, ", ");
    strcpy (s_divtech, "\x1F");
    /*---(convert)------------------------*/
    rc = yRPN__driver (a_src, 'd', a_rpn, NULL, a_max);
-   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
-   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   DEBUG_RPN    yLOG_value   ("driver"    , rc);
+   DEBUG_RPN    yLOG_value   ("pos"       , myRPN.pos);
    if (rc < 0) {
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rc);
       return rc;
    }
    /*---(complete)-----------------------*/
-   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -205,21 +208,21 @@ yRPN_techtoken     (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
    /*---(header)-------------------------*/
-   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(prepare flags)------------------*/
-   DEBUG_YRPN   yLOG_note    ("set configuration");
+   DEBUG_RPN    yLOG_note    ("set configuration");
    zRPN_lang    = YRPN_CBANG;
    strcpy (s_divider, "\x1F");
    /*---(convert)------------------------*/
    rc = yRPN__driver (a_src, 't', a_rpn, NULL, a_max);
-   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
-   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   DEBUG_RPN    yLOG_value   ("driver"    , rc);
+   DEBUG_RPN    yLOG_value   ("pos"       , myRPN.pos);
    if (rc < 0) {
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rc);
       return rc;
    }
    /*---(complete)-----------------------*/
-   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -229,20 +232,20 @@ yRPN_parsed        (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
    /*---(header)-------------------------*/
-   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(prepare flags)------------------*/
-   DEBUG_YRPN   yLOG_note    ("set configuration");
+   DEBUG_RPN    yLOG_note    ("set configuration");
    strcpy (s_divider, " ");
    /*---(convert)------------------------*/
    rc = yRPN__driver (a_src, 'p', a_rpn, NULL, a_max);
-   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
-   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   DEBUG_RPN    yLOG_value   ("driver"    , rc);
+   DEBUG_RPN    yLOG_value   ("pos"       , myRPN.pos);
    if (rc < 0) {
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rc);
       return rc;
    }
    /*---(complete)-----------------------*/
-   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -252,21 +255,21 @@ yRPN_tokens        (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
    /*---(header)-------------------------*/
-   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(prepare flags)------------------*/
-   DEBUG_YRPN   yLOG_note    ("set configuration");
+   DEBUG_RPN    yLOG_note    ("set configuration");
    /*> zRPN_lang    = YRPN_CBANG;                                                   <*/
    strcpy (s_divider, " ");
    /*---(convert)------------------------*/
    rc = yRPN__driver (a_src, 't', a_rpn, NULL, a_max);
-   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
-   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   DEBUG_RPN    yLOG_value   ("driver"    , rc);
+   DEBUG_RPN    yLOG_value   ("pos"       , myRPN.pos);
    if (rc < 0) {
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rc);
       return rc;
    }
    /*---(complete)-----------------------*/
-   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -276,21 +279,21 @@ yRPN_pretty        (char *a_src, char **a_rpn, int *a_nrpn, int a_max)
    /*---(locals)-----------+-----+-----+-*/
    char        rc          =    0;
    /*---(header)-------------------------*/
-   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(prepare flags)------------------*/
-   DEBUG_YRPN   yLOG_note    ("set configuration");
+   DEBUG_RPN    yLOG_note    ("set configuration");
    /*> zRPN_lang    = YRPN_CBANG;                                                   <*/
    strcpy (s_divider, " ");
    /*---(convert)------------------------*/
    rc = yRPN__driver (a_src, 'P', a_rpn, NULL, a_max);
-   DEBUG_YRPN   yLOG_value   ("driver"    , rc);
-   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   DEBUG_RPN    yLOG_value   ("driver"    , rc);
+   DEBUG_RPN    yLOG_value   ("pos"       , myRPN.pos);
    if (rc < 0) {
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rc);
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rc);
       return rc;
    }
    /*---(complete)-----------------------*/
-   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -309,17 +312,17 @@ yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_m
    char       *x_rpn       = NULL;          /* return string of rpn notation  */
    int         x_len       =    0;
    /*---(header)-------------------------*/
-   DEBUG_YRPN   yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN    yLOG_enter   (__FUNCTION__);
    /*---(defense)------------------------*/
-   DEBUG_YRPN   yLOG_point   ("a_src"     , a_src);
+   DEBUG_RPN    yLOG_point   ("a_src"     , a_src);
    --rce;  if (a_src == NULL) {
-      DEBUG_YRPN   yLOG_note    ("no input variable, no point");
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_RPN    yLOG_note    ("no input variable, no point");
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   DEBUG_YRPN   yLOG_info    ("a_src"     , a_src);
-   DEBUG_YRPN   yLOG_point   ("a_rpn"     , a_rpn);
-   DEBUG_YRPN   yLOG_point   ("*a_rpn"    , *a_rpn);
+   DEBUG_RPN    yLOG_info    ("a_src"     , a_src);
+   DEBUG_RPN    yLOG_point   ("a_rpn"     , a_rpn);
+   DEBUG_RPN    yLOG_point   ("*a_rpn"    , *a_rpn);
    if (a_rpn != NULL) strlcpy (a_rpn, "", a_max);
    /*---(convert)------------------------*/
    if (a_type == 's') {
@@ -330,13 +333,14 @@ yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_m
    else {
       rc = yRPN__convert (a_src);
    }
-   DEBUG_YRPN   yLOG_value   ("convert"   , rc);
+   DEBUG_RPN    yLOG_value   ("convert"   , rc);
    --rce;  if (rc < 0) {
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(interpret results)--------------*/
-   DEBUG_YRPN   yLOG_value   ("max"       , a_max);
+   DEBUG_RPN    yLOG_value   ("max"       , a_max);
+   DEBUG_RPN    yLOG_value   ("n_tokens"  , myRPN.n_tokens);
    switch (a_type) {
    case 'p' :
       if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.parsed  , a_max);
@@ -344,8 +348,17 @@ yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_m
       x_len = strlen (myRPN.tokens);
       break;
    case 't' :
-      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.tokens  , a_max);
-      if (a_nrpn != NULL)  *a_nrpn = myRPN.n_tokens;
+         DEBUG_RPN    yLOG_point   ("a_rpn"     , a_rpn);
+      if (a_rpn  != NULL) {
+         strlcpy (a_rpn, myRPN.tokens  , a_max);
+         DEBUG_RPN    yLOG_info    ("a_rpn"     , a_rpn);
+      }
+         DEBUG_RPN    yLOG_point   ("a_nrpn"    , a_nrpn);
+      if (a_nrpn != NULL) {
+         DEBUG_RPN    yLOG_value   ("n_tokens"  , myRPN.n_tokens);
+         *a_nrpn = myRPN.n_tokens;
+         DEBUG_RPN    yLOG_value   ("*a_nrpn"   , *a_nrpn);
+      }
       x_len = strlen (myRPN.tokens);
       break;
    case 'P' :
@@ -369,19 +382,19 @@ yRPN__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, int a_m
       x_len = strlen (myRPN.shuntd);
       break;
    }
-   DEBUG_YRPN   yLOG_value   ("l_working" , myRPN.l_working);
-   DEBUG_YRPN   yLOG_value   ("x_len"     , x_len);
-   DEBUG_YRPN   yLOG_value   ("pos"       , myRPN.pos);
+   DEBUG_RPN    yLOG_value   ("l_working" , myRPN.l_working);
+   DEBUG_RPN    yLOG_value   ("x_len"     , x_len);
+   DEBUG_RPN    yLOG_value   ("pos"       , myRPN.pos);
    /*---(check for truncation)-----------*/
-   DEBUG_YRPN   yLOG_value   ("length"    , x_len);
+   DEBUG_RPN    yLOG_value   ("length"    , x_len);
    --rce;  if (x_len >= a_max) {
-      DEBUG_YRPN   yLOG_note    ("output too long for output provided");
+      DEBUG_RPN    yLOG_note    ("output too long for output provided");
       if (a_rpn != NULL) strlcpy (a_rpn, "", a_max);
-      DEBUG_YRPN   yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_RPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
    /*---(complete)-----------------------*/
-   DEBUG_YRPN   yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN    yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -399,7 +412,7 @@ yRPN__convert       (char *a_source)
     *   all presedence should match ansi-c to keep it clear and clean for me
     *
     */
-   DEBUG_YRPN  yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN   yLOG_enter   (__FUNCTION__);
    zRPN_DEBUG  printf("RPN_convert     :: beg ------------------------------\n");
    /*---(locals)-------------------------*/
    char      rce       =  -10;
@@ -409,18 +422,19 @@ yRPN__convert       (char *a_source)
    int       x_pass    =    0;
    /*---(defenses)-----------------------*/
    --rce;  if (a_source     == NULL)  {
-      DEBUG_YRPN  yLOG_exitr   (__FUNCTION__, rce);
+      DEBUG_RPN   yLOG_exitr   (__FUNCTION__, rce);
       return rce;    /* no source to convert         */
    }
    yRPN__load (a_source);
    /*---(main loop)----------------------*/
    zRPN_DEBUG  printf("   ---process-------------\n");
    myRPN.pproc = S_PPROC_NO;
-   DEBUG_YRPN  yLOG_note    ("convert loop enter--------------------");
+   DEBUG_RPN   yLOG_note    ("convert loop enter--------------------");
    while (myRPN.pos < myRPN.l_working) {
-      DEBUG_YRPN  yLOG_value   ("PASS"      , x_pass++);
+      DEBUG_RPN   yLOG_value   ("PASS"      , x_pass++);
       /*---(prepare)---------------------*/
       x_ch    = myRPN.working [myRPN.pos];
+      DEBUG_RPN   yLOG_char    ("x_ch"      , x_ch);
       rc      = myRPN.pos;
       /*---(pick handler)----------------*/
       if (rc <= myRPN.pos && (x_ch == '\"' || x_ch == '<'))   rc = yRPN__strings    (myRPN.pos);
@@ -455,7 +469,7 @@ yRPN__convert       (char *a_source)
       /*---(next)------------------------*/
       myRPN.pos = rc;
    }
-   DEBUG_YRPN  yLOG_note    ("convert loop exit---------------------");
+   DEBUG_RPN   yLOG_note    ("convert loop exit---------------------");
    /*---(handle errors)------------------*/
    --rce;  if (rc < 0) {
       zRPN_DEBUG  printf ("FATAL %4d : %s\n", rc, zRPN_ERRORS [ -rc - 100]);
@@ -467,7 +481,7 @@ yRPN__convert       (char *a_source)
       myRPN.l_shuntd  = 0;
       myRPN.n_shuntd  = 0;
       myRPN.n_tokens  = 0;
-      DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
+      DEBUG_RPN   yLOG_exit    (__FUNCTION__);
       return rce;
    }
    /*---(clear stack)--------------------*/
@@ -481,7 +495,7 @@ yRPN__convert       (char *a_source)
          strlcpy (myRPN.shuntd, YRPN_TOKEN_NULL, S_LEN_OUTPUT);
          myRPN.l_shuntd  = 0;
          myRPN.n_shuntd  = 0;
-         DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
+         DEBUG_RPN   yLOG_exit    (__FUNCTION__);
          return rce;
       }
       yRPN_stack_pops ();
@@ -494,15 +508,15 @@ yRPN__convert       (char *a_source)
    zRPN_DEBUG  printf("   parsed  = <<%s>>\n", myRPN.parsed);
    zRPN_DEBUG  printf("   tokens  = <<%s>>\n", myRPN.tokens);
    zRPN_DEBUG  printf("   pretty  = <<%s>>\n", myRPN.pretty);
-   DEBUG_YRPN  yLOG_info    ("shunted"   , myRPN.shuntd);
-   DEBUG_YRPN  yLOG_info    ("detail"    , myRPN.detail);
-   DEBUG_YRPN  yLOG_info    ("normal"    , myRPN.normal);
-   DEBUG_YRPN  yLOG_info    ("parsed"    , myRPN.parsed);
-   DEBUG_YRPN  yLOG_info    ("tokens"    , myRPN.tokens);
-   DEBUG_YRPN  yLOG_info    ("pretty"    , myRPN.pretty);
+   DEBUG_RPN   yLOG_info    ("shunted"   , myRPN.shuntd);
+   DEBUG_RPN   yLOG_info    ("detail"    , myRPN.detail);
+   DEBUG_RPN   yLOG_info    ("normal"    , myRPN.normal);
+   DEBUG_RPN   yLOG_info    ("parsed"    , myRPN.parsed);
+   DEBUG_RPN   yLOG_info    ("tokens"    , myRPN.tokens);
+   DEBUG_RPN   yLOG_info    ("pretty"    , myRPN.pretty);
    /*---(complete)-----------------------*/
    zRPN_DEBUG  printf("RPN_convert     :: end ------------------------------\n");
-   DEBUG_YRPN  yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN   yLOG_exit    (__FUNCTION__);
    return 0;
 }
 

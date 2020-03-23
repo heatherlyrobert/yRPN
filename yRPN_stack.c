@@ -33,18 +33,18 @@ char         /*--> initialize the stack ------------------[--------[--------]-*/
 yRPN_stack_init      (void)
 {
    /*---(header)-------------------------*/
-   DEBUG_YRPN    yLOG_senter  (__FUNCTION__);
+   DEBUG_RPN     yLOG_senter  (__FUNCTION__);
    /*---(stack)--------------------------*/
-   DEBUG_YRPN    yLOG_snote   ("clear stack");
+   DEBUG_RPN     yLOG_snote   ("clear stack");
    s_nstack       = 0;
-   DEBUG_YRPN    yLOG_sint    (s_nstack);
+   DEBUG_RPN     yLOG_sint    (s_nstack);
    /*---(line variables)-----------------*/
    myRPN.line_done  = S_LINE_OPEN;
    myRPN.line_type  = S_LINE_NORMAL;
    myRPN.line_sect  = '-';
    myRPN.paren_lvl  = 0;
    /*---(output)-------------------------*/
-   DEBUG_YRPN    yLOG_snote   ("clear output");
+   DEBUG_RPN     yLOG_snote   ("clear output");
    strlcpy (myRPN.shuntd  ,"" , S_LEN_OUTPUT);
    strlcpy (myRPN.detail  ,"" , S_LEN_OUTPUT);
    strlcpy (myRPN.normal  ,"" , S_LEN_OUTPUT);
@@ -55,7 +55,7 @@ yRPN_stack_init      (void)
    myRPN.l_normal   = 0;
    myRPN.n_shuntd   = 0;
    myRPN.n_tokens   = 0;
-   DEBUG_YRPN    yLOG_sint    (myRPN.n_shuntd);
+   DEBUG_RPN     yLOG_sint    (myRPN.n_shuntd);
    /*---(saved vars)---------------------*/
    strlcpy (myRPN.l_name  ,"" , S_LEN_TOKEN);
    myRPN.l_type     = S_TTYPE_NONE;
@@ -64,7 +64,7 @@ yRPN_stack_init      (void)
    myRPN.s_type     = S_TTYPE_NONE;
    myRPN.s_prec     = S_PREC_NONE;
    /*---(complete)-----------------------*/
-   DEBUG_YRPN    yLOG_sexit   (__FUNCTION__);
+   DEBUG_RPN     yLOG_sexit   (__FUNCTION__);
    return 0;
 }
 
@@ -475,7 +475,7 @@ yRPN_stack_tokens        (void)
    char        x_suf       =  ' ';
    char        x_new       [S_LEN_LABEL] = "";
    /*---(header)-------------------------*/
-   DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
+   DEBUG_RPN     yLOG_enter   (__FUNCTION__);
    /*---(check line done)----------------*/
    if (strcmp (";"     , myRPN.t_name) == 0)      myRPN.line_done = S_LINE_DONE;
    if (strcmp ("{"     , myRPN.t_name) == 0)      myRPN.line_done = S_LINE_DONE;
@@ -504,9 +504,9 @@ yRPN_stack_tokens        (void)
    if (myRPN.n_tokens >  0 && myRPN.line_type == S_LINE_DEF_VAR) {
       if (strcmp ("="     , myRPN.t_name) == 0)   myRPN.line_sect = '=';
    }
-   DEBUG_YRPN    yLOG_char    ("line_done" , myRPN.line_done);
-   DEBUG_YRPN    yLOG_char    ("line_type" , myRPN.line_type);
-   DEBUG_YRPN    yLOG_char    ("line_sect" , myRPN.line_sect);
+   DEBUG_RPN     yLOG_char    ("line_done" , myRPN.line_done);
+   DEBUG_RPN     yLOG_char    ("line_type" , myRPN.line_type);
+   DEBUG_RPN     yLOG_char    ("line_sect" , myRPN.line_sect);
    /*---(adapt divider)------------------*/
    if (myRPN.n_tokens == 0)    strlcpy (x_div, ""        , S_LEN_LABEL);
    else                        strlcpy (x_div, s_divider , S_LEN_LABEL);
@@ -536,7 +536,7 @@ yRPN_stack_tokens        (void)
    ++(myRPN.n_tokens);
    /*> printf ("myRPN.tokens after  %2d:%s\n", myRPN.n_tokens, myRPN.tokens);               <*/
    /*---(complete)-----------------------*/
-   DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
+   DEBUG_RPN     yLOG_exit    (__FUNCTION__);
    return 0;
 }
 

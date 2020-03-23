@@ -88,9 +88,6 @@ yrpn__unit_quick       (void)
 char       /*----: set up programgents/debugging -----------------------------*/
 yRPN__testquiet     (void)
 {
-   char       *x_args [2]  = { "yRPN_debug","@@quiet" };
-   yURG_logger (2, x_args);
-   yURG_urgs   (2, x_args);
    yrpn__unit_quick ();
    return 0;
 }
@@ -98,9 +95,9 @@ yRPN__testquiet     (void)
 char       /*----: set up programgents/debugging -----------------------------*/
 yRPN__testloud      (void)
 {
-   char       *x_args [3]  = { "yRPN_debug","@@kitchen","@@YRPN" };
-   yURG_logger (3, x_args);
-   yURG_urgs   (3, x_args);
+   char       *x_args [4]  = { "yRPN_unit","@@kitchen","@@RPN","@@YRPN" };
+   yURG_logger (4, x_args);
+   yURG_urgs   (4, x_args);
    yrpn__unit_quick ();
    return 0;
 }
