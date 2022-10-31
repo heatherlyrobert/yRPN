@@ -191,6 +191,7 @@ int         yRPN_errorpos           (void);
 char        yRPN_arity              (char *a_op);
 char        yRPN_compiler           (void);
 
+char        yRPN_symbols            (void);
 
 
 #endif

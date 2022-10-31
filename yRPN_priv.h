@@ -7,7 +7,6 @@
 
  *   focus         : (PS) programming support
  *   niche         : (rp) reverse-polish notation conversion
- *   heritage      : edsger dijkstra (titan and pioneer of computer science)
  *   purpose       : simple, clean infix to reverse polish notation conversion
  *
  *   base_system   : gnu/linux   (powerful, ubiquitous, technical, and hackable)
@@ -24,30 +23,43 @@
 
 /*===[[ BEG_HEADER ]]=========================================================*/
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-*/
+/*===[[ BEG_HEADER ]]=========================================================*/
+/*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-12345678901-*/
+
 
 /*===[[ ONE_LINERS ]]=========================================================*/
 
+#define     P_BASENAME  "yRPN"
+
 #define     P_FOCUS     "PS (programming support)"
 #define     P_NICHE     "rp (reverse-polish notation)"
+#define     P_SUBJECT   "machine efficient formulas"
 #define     P_PURPOSE   "simple, clean infix to reverse polish notation conversion"
 
-#define     P_NAMESAKE  "terpsikhore (delight in dance)
-#define     P_HERITAGE  "terpsikhore is the greek muse of choral song"
-#define     P_ALIGN     "choral song is about coordination as is rpn"
-#define     P_IMAGERY   "tbd"
+#define     P_NAMESAKE  "terpsikhore-seirenes (delight in dance)
+#define     P_HERITAGE  "terpsikhore is the greek muse of music, choral song, and dance"
+#define     P_IMAGERY   "beaufiful young woman sitting and playing a lyre"
+#define     P_REASON    "choral song is about coordination as is rpn"
+
+#define     P_ONELINE   P_NAMESAKE " " P_SUBJECT
+
+#define     P_HOMEDIR   "/home/system/yRPN.postfix_notation_conversion"
+#define     P_FULLPATH  "/usr/local/lib64/libyRPN.so"
+#define     P_SUFFIX    "n/a"
+#define     P_CONTENT   "n/a"
 
 #define     P_SYSTEM    "gnu/linux   (powerful, ubiquitous, technical, and hackable)"
 #define     P_LANGUAGE  "ansi-c      (wicked, limitless, universal, and everlasting)"
 #define     P_CODESIZE  "large       (appoximately 10,000 slocl)"
+#define     P_DEPENDS   "none"
 
 #define     P_AUTHOR    "heatherlyrobert"
 #define     P_CREATED   "2011-08"
-#define     P_DEPENDS   "none"
 
 #define     P_VERMAJOR  "1.--, production use, working out issues"
 #define     P_VERMINOR  "1.1-, first full production version"
-#define     P_VERNUM    "1.1j"
-#define     P_VERTXT    "fixed processing of gyges reference indicator (&)"
+#define     P_VERNUM    "1.1k"
+#define     P_VERTXT    "updated slightly for mounting in spidersdreaming"
 
 /*===[[ END_HEADER ]]=========================================================*/
 
@@ -66,40 +78,23 @@
 #include    <yLOG.h>         /* CUSTOM  heatherly program logging             */
 #include    <ySTR.h>         /* CUSTOM  heatherly string handling             */
 #include    <yVAR.h>         /* CUSTOM  heatherly variable testing            */
-#include    <yVIKEYS.h>      /* CUSTOM  heatherly vikeys library              */
 
 
 extern char s_divider [5];
 extern char s_divtech [5];
 
 extern char     *v_alphanum;
-extern char     *v_subs;
 extern char     *v_alpha;
-extern char     *v_upper;
-extern char     *v_upnum;
-extern char     *v_lower;
-extern char     *v_number;
 extern char     *v_float;
-extern char     *v_hex;
-extern char     *v_octal;
-extern char     *v_binary;
 extern char     *v_sequence;
 extern char     *v_enders;
-extern char     *v_operator;
 extern char     *v_preproc;
-extern char     *v_address;
 
 extern char      zRPN_olddebug;
 
 /*---(debugging)----------------------*/
 #define      S_DEBUG_NO         'n'
 #define      S_DEBUG_YES        'y'
-/*---(lengths)------------------------*/
-#define      S_LEN_OUTPUT     2000
-#define      LEN_RECD         2000
-#define      S_LEN_TOKEN       200
-#define      S_LEN_DESC        100
-#define      S_LEN_LABEL        20
 /*---(token types)--------------------*/
 #define      S_TTYPE_NONE       '-'
 /*---(grouping)--------*/
@@ -114,6 +109,7 @@ extern char      zRPN_olddebug;
 #define      S_TTYPE_FUNC       'f'
 #define      S_TTYPE_ADDR       '@'
 #define      S_TTYPE_VARS       'v'
+#define      S_TTYPE_LOCAL      'l'
 #define      S_TTYPE_MEMB       'm'
 #define      S_TTYPE_CAST       'c'
 #define      S_TTYPE_FPTR       '*'
@@ -167,18 +163,17 @@ extern char      zRPN_olddebug;
 
 extern char      g_type_counts    [LEN_LABEL];
 
-typedef  struct cRPN_DEBUG   tRPN_DEBUG;
-struct cRPN_DEBUG {
-   char        tops;                   /* t) broad structure and context      */
-   char        stack;                  /* stack                               */
-   char        cell;                   /* cell/address                        */
-   char        oper;                   /* operators                           */
-   char        keys;                   /* keywords                            */
-};
-tRPN_DEBUG  zRPN_debug;
+/*> typedef  struct cRPN_DEBUG   tRPN_DEBUG;                                           <* 
+ *> struct cRPN_DEBUG {                                                                <* 
+ *>    char        tops;                   /+ t) broad structure and context      +/   <* 
+ *>    char        stack;                  /+ stack                               +/   <* 
+ *>    char        cell;                   /+ cell/address                        +/   <* 
+ *>    char        oper;                   /+ operators                           +/   <* 
+ *>    char        keys;                   /+ keywords                            +/   <* 
+ *> };                                                                                 <* 
+ *> tRPN_DEBUG  zRPN_debug;                                                            <*/
 
 #define   zRPN_DEBUG       if ('n' == 'y')
-#define   DEBUG_OPER       if (zRPN_debug.oper == 'y')
 
 #define PRIV      static
 
@@ -186,10 +181,10 @@ tRPN_DEBUG  zRPN_debug;
 typedef   struct cRPN  tRPN;
 struct  cRPN {
    /*---(infix format)-------------------*/
-   char        source      [S_LEN_OUTPUT];  /* source infix string (const)    */
+   char        source      [LEN_RECD];  /* source infix string (const)    */
    int         l_source;                    /* length of source infix string  */
    /*---(working areas)------------------*/
-   char        working     [S_LEN_OUTPUT];  /* copy of source for parsing     */
+   char        working     [LEN_RECD];  /* copy of source for parsing     */
    int         l_working;                   /* position in working string     */
    int         pos;
    /*---(overall working)----------------*/
@@ -198,9 +193,9 @@ struct  cRPN {
    char        line_done;                   /* source line complete           */
    char        paren_lvl;                   /* how deep in parenthesis (any)  */
    /*---(token working)------------------*/
-   char        t_token     [S_LEN_TOKEN];   /* current token (full)           */
+   char        t_token     [LEN_FULL];   /* current token (full)           */
    char        t_type;                      /* current token type             */
-   char        t_name      [S_LEN_TOKEN];   /* current token name             */
+   char        t_name      [LEN_FULL];   /* current token name             */
    int         t_len;                       /* current token length           */
    char        t_prec;                      /* current token precidence       */
    char        t_dir;                       /* current token dir of eval      */
@@ -211,30 +206,30 @@ struct  cRPN {
    char        combined;                    /* once hit a combining operator  */
    char        pproc;                       /* pre-processor modes            */
    /*---(stack)--------------------------*/
-   char        p_name      [S_LEN_TOKEN];   /* peek token from stack          */
+   char        p_name      [LEN_FULL];   /* peek token from stack          */
    char        p_type;                      /* peek token from stack          */
    char        p_prec;                      /* peek token from stack          */
    /*---(shuntd)-------------------------*/
-   char        l_name      [S_LEN_TOKEN];   /* last token touched             */
+   char        l_name      [LEN_FULL];   /* last token touched             */
    char        l_type;                      /* last token touched             */
    char        l_prec;                      /* last token touched             */
    /*---(shuntd)-------------------------*/
-   char        s_name      [S_LEN_TOKEN];   /* last token shuntd              */
+   char        s_name      [LEN_FULL];   /* last token shuntd              */
    char        s_type;                      /* last token shuntd              */
    char        s_prec;                      /* last token shuntd              */
    /*---(infix output)-------------------*/
-   char        parsed      [S_LEN_OUTPUT];
-   char        tokens      [S_LEN_OUTPUT];
-   char        normal      [S_LEN_OUTPUT];
+   char        parsed      [LEN_RECD];
+   char        tokens      [LEN_RECD];
+   char        normal      [LEN_RECD];
    int         l_normal;
    int         n_tokens; 
    /*---(postfix output)-----------------*/
-   char        shuntd      [S_LEN_OUTPUT];
-   char        detail      [S_LEN_OUTPUT];
+   char        shuntd      [LEN_RECD];
+   char        detail      [LEN_RECD];
    int         l_shuntd;
    int         n_shuntd;
    /*---(pretty output)------------------*/
-   char        pretty      [S_LEN_OUTPUT];
+   char        pretty      [LEN_RECD];
    /*---(MAYBE GONE)---------------------*/
    char        about       [500];
 };
@@ -312,8 +307,8 @@ yRPN__badaddr      (int  a_pos);
 int        /* ---- : save off cell addresses ---------------------------------*/
 yRPN__addresses    (int  a_pos, short a_ctab);
 
-int        /* ---- : save off constants --------------------------------------*/
-yRPN__constants    (int  a_pos);
+/*> int        /+ ---- : save off constants --------------------------------------+/   <* 
+ *> yRPN__constants    (int  a_pos);                                                   <*/
 
 int        /* ---- : save off keywords ---------------------------------------*/
 yRPN__keywords     (int  a_pos);
@@ -333,16 +328,16 @@ char*      /* ---- : provide gray-box information to unit testing ------------*/
 yRPN_accessor      (char*, int);
 
 char       /*----: set up programgents/debugging -----------------------------*/
-yRPN__testquiet     (void);
+yRPN__unit_quiet    (void);
 
 char       /*----: set up programgents/debugging -----------------------------*/
-yRPN__testloud      (void);
+yRPN__unit_loud     (void);
 
 char       /*----: set up programgents/debugging -----------------------------*/
-yRPN__testend       (void);
+yRPN__unit_end      (void);
 
 
-extern char unit_answer [ S_LEN_OUTPUT ];
+extern char unit_answer [ LEN_RECD ];
 
 
 
@@ -393,6 +388,10 @@ char*       yrpn_addr__unit      (char *a_question, int a_item);
 
 char        yrpn_addr_insider_fake  (int b, int x, int y, int z);
 
+char        yrpn__token_unit_prep   (char a_type, char *a_working, int *a_pos, int a_start);
+char        yrpn_token_numtype      (int a_pos);
+char        yRPN__token_paren       (int a_pos);
+char        yrpn_token_add          (int *a_pos);
 
 #endif
 /*===[[ END ]]================================================================*/
