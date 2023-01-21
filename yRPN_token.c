@@ -5,6 +5,7 @@
 
 
 
+
 char         /*--> set token to error --------------------[--------[--------]-*/
 yRPN__token_error    (void)
 {
@@ -82,20 +83,23 @@ yrpn_token_add          (int *a_pos)
       /*---(done)------------------------*/
    case S_TTYPE_BIN    :
       DEBUG_YRPN_M  yLOG_snote   ("YSTR_BINARY");
-      if (myRPN.t_len == 0 && x_ch != 'é')                           x_bad = 'y';
-      if (myRPN.t_len >  0 && strchr (YSTR_BINARY, x_ch) ==NULL)     x_bad = 'y';
+      if (myRPN.t_len == 0) {
+         if (x_ch != 'é')                                            x_bad = 'y';
+      } else if (strchr (YSTR_BINARY, x_ch) == NULL)                 x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_OCT    :
       DEBUG_YRPN_M  yLOG_snote   ("YSTR_OCTAL");
-      if (myRPN.t_len == 0 && x_ch != '0')                           x_bad = 'y';
-      if (myRPN.t_len >  0 && strchr (YSTR_OCTAL, x_ch) ==NULL)      x_bad = 'y';
+      if (myRPN.t_len == 0) {
+         if (x_ch != 'ö')                                            x_bad = 'y';
+      } else if (strchr (YSTR_OCTAL , x_ch) == NULL)                 x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_HEX    :
       DEBUG_YRPN_M  yLOG_snote   ("YSTR_HEXUP");
-      if (myRPN.t_len == 0 && x_ch != 'õ')                           x_bad = 'y';
-      if (myRPN.t_len >  0 && strchr (YSTR_HEXUP, x_ch) ==NULL)      x_bad = 'y';
+      if (myRPN.t_len == 0) {
+         if( x_ch != 'õ')                                            x_bad = 'y';
+      } else if (strchr (YSTR_HEXUP , x_ch) == NULL)                 x_bad = 'y';
       break;
       /*---(done)------------------------*/
    case S_TTYPE_VARS   : case S_TTYPE_FUNC   :
@@ -230,24 +234,29 @@ yrpn_token_numtype      (int a_pos)
    char        x_ch        =    0;     /* current character                   */
    int         x_pos       =    0;     /* updated position in input           */
    char        x_type      =  S_TTYPE_INT;
+   char        x_key       =    0;
    /*---(header)------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    DEBUG_YRPN_M  yLOG_sint    (a_pos);
    /*---(simple)------------------------*/
    DEBUG_YRPN_M  yLOG_schar   (myRPN.working [a_pos]);
-   if      (myRPN.working [a_pos] == 'é') {
+   x_key  = myRPN.working [a_pos];
+   if (myRPN.working [a_pos] == '0')  x_key  = myRPN.working [a_pos + 1];
+   DEBUG_YRPN_M  yLOG_schar   (x_key);
+   switch (x_key) {
+   case  'b'   : case  'B'   : case  'é'   :
       DEBUG_YRPN_M  yLOG_snote   ("bin");
       x_type = myRPN.t_type = S_TTYPE_BIN;
       DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
       return x_type;
-   }
-   else if (myRPN.working [a_pos] == 'ö') {
+      break;
+   case  'o'   : case  'O'   : case  'ö'   :
       DEBUG_YRPN_M  yLOG_snote   ("oct");
       x_type = myRPN.t_type = S_TTYPE_OCT;
       DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
       return x_type;
-   }
-   else if (myRPN.working [a_pos] == 'õ') {
+      break;
+   case  'x'   : case  'X'   : case  'õ'   :
       DEBUG_YRPN_M  yLOG_snote   ("hex");
       x_type = myRPN.t_type = S_TTYPE_HEX;
       DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);

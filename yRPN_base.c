@@ -446,7 +446,7 @@ yRPN__convert       (char *a_source)
       /*> if (rc <= myRPN.pos && strchr (v_alpha    , x_ch) != 0)  rc = yRPN__constants  (myRPN.pos);   <*/
       if (rc <= myRPN.pos && strchr ("éöõ" YSTR_NUMBER, x_ch) != 0)  rc = yRPN__numbers    (myRPN.pos);
       if (rc <= myRPN.pos && strchr (v_alpha    , x_ch) != 0)  rc = yRPN__funcvar    (myRPN.pos);
-      if (rc <= myRPN.pos && strchr ("@•‘"      , x_ch) != 0)  rc = yRPN__funcvar    (myRPN.pos);
+      if (rc <= myRPN.pos && strchr ("@•ç"      , x_ch) != 0)  rc = yRPN__funcvar    (myRPN.pos);
       if (rc <= myRPN.pos && strchr (v_sequence , x_ch) != 0)  rc = yRPN__sequencer  (myRPN.pos);
       if (rc <= myRPN.pos && strchr (YSTR_OPER  , x_ch) != 0)  rc = yRPN__operators  (myRPN.pos);
       if (rc <= myRPN.pos && strchr (v_enders   , x_ch) != 0)  rc = yRPN__enders     (myRPN.pos);

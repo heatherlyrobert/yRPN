@@ -3,6 +3,7 @@
 #define zRPN_PRIVATE         loaded
 
 
+
 /*===[[ HEADER ]]=============================================================*
 
  *   focus         : (PS) programming support
@@ -58,8 +59,8 @@
 
 #define     P_VERMAJOR  "1.--, production use, working out issues"
 #define     P_VERMINOR  "1.1-, first full production version"
-#define     P_VERNUM    "1.1k"
-#define     P_VERTXT    "updated slightly for mounting in spidersdreaming"
+#define     P_VERNUM    "1.1l"
+#define     P_VERTXT    "all unit tests updated and passed"
 
 /*===[[ END_HEADER ]]=========================================================*/
 
@@ -234,6 +235,7 @@ struct  cRPN {
    char        about       [500];
 };
 extern  tRPN      myRPN;
+
 
 #define   zRPN_END       '~'
 

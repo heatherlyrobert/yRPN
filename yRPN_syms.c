@@ -75,8 +75,8 @@ tOPER     s_opers [MAX_OPER] = {
    /*---(additive)---------------*/
    { "+"   , "+"   , 'B', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "addition"                             },
    { "-"   , "-"   , 'B', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "substraction"                         },
-   { "›"   , "›"   , 'g', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "string concatination"                 },
-   { "››"  , "››"  , 'g', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "string concatination"                 },
+   { "©"   , "©"   , 'g', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "string concatination"                 },
+   { "©©"  , "©©"  , 'g', 'r',  4, 'h',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "string concatination"                 },
    /*---(shift)------------------*/
    { "<<"  , "<<"  , 'B', 'r',  5, 'i',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "bitwise shift left"                   },
    { ">>"  , ">>"  , 'B', 'r',  5, 'i',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "bitwise shift right"                  },
@@ -85,13 +85,13 @@ tOPER     s_opers [MAX_OPER] = {
    { "<="  , "<="  , 'B', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, "Ü" , "relational less or equal"             },
    { ">"   , ">"   , 'B', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "relational greater"                   },
    { ">="  , ">="  , 'B', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, "Ý" , "relational more or equal"             },
-   { "›<"  , "›<"  , 'g', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "relational string lesser"             },
-   { "›>"  , "›>"  , 'g', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "relational string greater"            },
+   { "©<"  , "©<"  , 'g', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "relational string lesser"             },
+   { "©>"  , "©>"  , 'g', 'r',  6, 'j',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "relational string greater"            },
    /*---(equality)---------------*/
    { "=="  , "=="  , 'B', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, "à"  , "relational equality"                  },
    { "!="  , "!="  , 'B', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, "Þ" , "relational inequality"                },
-   { "›="  , "›="  , 'g', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "relational string equality"           },
-   { "›!"  , "›!"  , 'g', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "relational string inequality"         },
+   { "©="  , "©="  , 'g', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "relational string equality"           },
+   { "©!"  , "©!"  , 'g', 'r',  7, 'k',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "relational string inequality"         },
    /*---(bitwise)----------------*/
    { "&"   , "&"   , 'B', 'r',  8, 'l',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "bitwise AND"                          },
    { "^"   , "^"   , 'B', 'r',  9, 'm',  S_LEFT , 2, S_YES, S_NO , S_YES, S_YES, ""  , "bitwise XOR"                          },
@@ -119,7 +119,7 @@ tOPER     s_opers [MAX_OPER] = {
    { "^="  , "^="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_NO , S_YES, S_YES, ""  , "compound assignment (bitwise XOR)"    },
    { "|="  , "|="  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_NO , S_YES, S_YES, ""  , "compound assignment (bitwise OR)"     },
    { "#"   , "#"   , 'B', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_NO , S_YES, S_YES, ""  , "direct string assignment"             },
-   { "›#"  , "›#"  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_NO , S_YES, S_YES, ""  , "concatinate and assign"               },
+   { "©#"  , "©#"  , 'c', 'r', 14, 'r',  S_RIGHT, 2, S_YES, S_NO , S_YES, S_YES, ""  , "concatinate and assign"               },
    /*---(comma)------------------*/
    { ",;"  , ";"   , 'c', 'r', 15, 'u',  S_LEFT , 1, S_YES, S_NO , S_NO , S_YES, ""  , "sequence mega-separator"              },
    { ","   , ","   , 'B', 'r', 15, 's',  S_LEFT , 2, S_YES, S_NO , S_NO , S_YES, ""  , "sequence separator"                   },
@@ -751,7 +751,7 @@ yRPN__numbers        (int  a_pos)
    case S_TTYPE_INT  :
       if (myRPN.t_len < 1)  x_bad = 'y';
       break;
-   case S_TTYPE_OCT  :
+   case S_TTYPE_BIN  : case S_TTYPE_OCT  : case S_TTYPE_HEX  :
       if (myRPN.t_len < 2)  x_bad = 'y';
       break;
    default           :
@@ -913,7 +913,7 @@ yRPN__funcvar      (int   a_pos)
          if (strcmp (myRPN.l_name, "." ) == 0)  myRPN.t_type = S_TTYPE_MEMB;
          if (strcmp (myRPN.l_name, "->") == 0)  myRPN.t_type = S_TTYPE_MEMB;
       }
-      if (myRPN.t_name [0] == '‘')              myRPN.t_type = S_TTYPE_LOCAL;
+      if (myRPN.t_name [0] == 'ç')              myRPN.t_type = S_TTYPE_LOCAL;
       strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
       yRPN_stack_tokens  ();         /* strait to tokens list                          */
       yRPN__token_save    (a_pos);
