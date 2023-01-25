@@ -59,8 +59,8 @@
 
 #define     P_VERMAJOR  "1.--, production use, working out issues"
 #define     P_VERMINOR  "1.1-, first full production version"
-#define     P_VERNUM    "1.1l"
-#define     P_VERTXT    "all unit tests updated and passed"
+#define     P_VERNUM    "1.1m"
+#define     P_VERTXT    "added scientific notation operators Ë, Ë-, and Ë+"
 
 /*===[[ END_HEADER ]]=========================================================*/
 
@@ -119,7 +119,6 @@ extern char      zRPN_olddebug;
 #define      S_TTYPE_STR        'S'
 #define      S_TTYPE_HEX        'X'
 #define      S_TTYPE_BIN        'B'
-#define      S_TTYPE_BINHEX     "BX"
 #define      S_TTYPE_OCT        'O'
 #define      S_TTYPE_INT        'I'
 #define      S_TTYPE_FLOAT      'F'

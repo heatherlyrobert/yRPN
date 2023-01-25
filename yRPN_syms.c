@@ -36,7 +36,7 @@ struct    cOPER {
 };
 #define   MAX_OPER    200
 tOPER     s_opers [MAX_OPER] = {
-   /*-sym----who--real---prec- ---dir--- ar -comb- -post- -pre-- -suf-- prety ---comment-----------------------------*/
+   /*-sym----who--real---prec-         ---dir--- ar -comb- -post- -pre-- -suf-- prety ---comment-----------------------------*/
    /*---(spreadsheet)------------*/
    { ".."  , ".."  , 'g', 'r',  0, 'd',  S_LEFT , 2, S_YES, S_NO , S_NO , S_NO , ""  , "cell range"                           },
    /*---(preprocessor)-----------*/
@@ -45,6 +45,9 @@ tOPER     s_opers [MAX_OPER] = {
    /*---(unary/suffix)-----------*/
    { ":+"  , "++"  , 'B', 'I',  1, 'e',  S_LEFT , 1, S_NO , S_YES, S_NO , S_YES, ""  , "postfix increment"                    },
    { ":-"  , "--"  , 'B', 'I',  1, 'e',  S_LEFT , 1, S_NO , S_YES, S_NO , S_YES, ""  , "postfix decrement"                    },
+   { "Ë"   , "Ë"   , 'B', 'r',  1, 'e',  S_LEFT , 2, S_YES, S_NO , S_NO , S_NO , ""  , "scientific exponent"                  },
+   { "Ë-"  , "Ë-"  , 'B', 'r',  1, 'e',  S_LEFT , 2, S_YES, S_NO , S_NO , S_NO , ""  , "scientific exponent"                  },
+   { "Ë+"  , "Ë+"  , 'B', 'r',  1, 'e',  S_LEFT , 2, S_YES, S_NO , S_NO , S_NO , ""  , "scientific exponent"                  },
    { "Æ"   , "Æ"   , 'B', 'r',  1, 'e',  S_LEFT , 1, S_NO , S_YES, S_NO , S_YES, ""  , "power of two, squared"                },
    { "Ç"   , "Ç"   , 'B', 'r',  1, 'e',  S_LEFT , 1, S_NO , S_YES, S_NO , S_YES, ""  , "power of three, cubed"                },
    { "È"   , "È"   , 'B', 'r',  1, 'e',  S_LEFT , 1, S_NO , S_YES, S_NO , S_YES, ""  , "power of four"                        },

@@ -244,19 +244,19 @@ yrpn_token_numtype      (int a_pos)
    if (myRPN.working [a_pos] == '0')  x_key  = myRPN.working [a_pos + 1];
    DEBUG_YRPN_M  yLOG_schar   (x_key);
    switch (x_key) {
-   case  'b'   : case  'B'   : case  'é'   :
+   case  'é'   :
       DEBUG_YRPN_M  yLOG_snote   ("bin");
       x_type = myRPN.t_type = S_TTYPE_BIN;
       DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
       return x_type;
       break;
-   case  'o'   : case  'O'   : case  'ö'   :
+   case  'ö'   :
       DEBUG_YRPN_M  yLOG_snote   ("oct");
       x_type = myRPN.t_type = S_TTYPE_OCT;
       DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
       return x_type;
       break;
-   case  'x'   : case  'X'   : case  'õ'   :
+   case  'õ'   :
       DEBUG_YRPN_M  yLOG_snote   ("hex");
       x_type = myRPN.t_type = S_TTYPE_HEX;
       DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
