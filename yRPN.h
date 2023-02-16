@@ -122,10 +122,20 @@
 #define   YRPN_PUBLIC        loaded
 
 
+#include <ySTR_solo.h>
 
 /*===[[ CONSTANTS ]]======================================*/
 #define   YRPN_TOKEN_NULL    "((null))"
 
+
+#define     YRPN_TOKENS        't'
+#define     YRPN_PARSED        'p'
+#define     YRPN_PRETTY        'P'
+#define     YRPN_MATHY         'M'
+#define     YRPN_EXACT         'E'
+#define     YRPN_SHUNTED       's'
+#define     YRPN_DETAIL        'd'
+#define     YRPN_DEBUG         'n'
 
 
 /*---(overall)------------------------*/
@@ -155,9 +165,40 @@
 #define      YRPN_GYGES        'g'
 #define      YRPN_BOTH         'B'
 
+/*---(lower)-----------*/
+#define      YRPN_KEYW          'k'    /* c language keyword                  */
+#define      YRPN_TYPE          't'    /* c language variable type            */
+#define      YRPN_ERROR         'e'    /* symbol is not understood            */
+#define      YRPN_CONST         'n'    /* built-in constant                   */
+#define      YRPN_OPER          'o'    /* built-in operator                   */
+#define      YRPN_FUNC          'f'    /* user-defined function               */
+#define      YRPN_ADDR          '@'    /* gyges addresss                      */
+#define      YRPN_VARS          'v'    /* user-defined variable               */
+#define      YRPN_LOCAL         'l'    /* agrios local variable               */
+#define      YRPN_MEMB          'm'    /* structure member                    */
+#define      YRPN_CAST          'c'    /* casting                             */
+#define      YRPN_FPTR          '*'    /* function pointer                    */
+#define      YRPN_PTYPE         'p'    /* variable type pointer               */
+#define      YRPN_GROUP         '('    /* grouping operator                   */
+/*---(upper)-----------*/
+#define      YRPN_CHAR          'C'
+#define      YRPN_STR           'S'
+#define      YRPN_HEX           'X'
+#define      YRPN_BIN           'B'
+#define      YRPN_OCT           'O'
+#define      YRPN_MONGO         'Z'
+#define      YRPN_INT           'I'
+#define      YRPN_FLOAT         'F'
+/*---(combo)-----------*/
+#define      YRPN_NONE          '-'
+#define      YRPN_TYPES         "ktenof@vlmc*p(CSXBOZIF"
+#define      YRPN_MATHERS       "n@vlmXBOZIF"
+/*---(done)------------*/
 
-typedef     const char   cchar;
-typedef     const int    cint;
+typedef     const char     cchar;
+typedef     const int      cint;
+typedef     unsigned char  uchar;
+typedef     unsigned short ushort;
 
 
 /*===[[ PUBLIC FUNCTIONS ]]===============================*/
@@ -165,33 +206,38 @@ typedef     const int    cint;
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
 char*       yRPN_version            (void);
 char        yRPN_init               (cchar a_mode);
+int         yRPN_errorpos           (void);
 
-char        yRPN_interpret          (char *a_src, char **a_rpn, int *a_nrpn, int a_max, int a_def);
-char        yRPN_detail             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-char        yRPN_pretty             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-char        yRPN_normal             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-char        yRPN_parsed             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-char        yRPN_tokens             (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
-char        yRPN_techtoken          (char *a_src, char **a_rpn, int *a_nrpn, int a_max);
+char        yRPN_get                (uchar a_type, uchar r_rpn [LEN_RECD], uchar *r_nrpn);
+char        yRPN_formula            (uchar *a_src, uchar a_type, uchar r_rpn [LEN_RECD], uchar *r_nrpn);
+char        yRPN_math               (uchar *a_src, uchar a_type, uchar r_rpn [LEN_RECD], uchar *r_nrpn);
+
+
+char        yRPN_compiler           (char *a_src, short a_tab, char **a_rpn, int a_nrpn, int a_max);
+char        yRPN_gyges              (char *a_src, char **r_rpn, int *r_nrpn, int a_max, int a_def);
+
+char        yRPN_interpret          (char *a_src, char **r_rpn, int *r_nrpn, int a_max, int a_def);
+char        yRPN_normal             (char *a_src, char **r_rpn, int *r_nrpn, int a_max);
+char        yRPN_detail             (char *a_src, char **r_rpn, int *r_nrpn, int a_max);
+char        yRPN_techtoken          (char *a_src, char **r_rpn, int *r_nrpn, int a_max);
+char        yRPN_parsed             (char *a_src, char **r_rpn, int *r_nrpn, int a_max);
+char        yRPN_tokens             (char *a_src, char **r_rpn, int *r_nrpn, int a_max);
+char        yRPN_pretty             (char *a_src, char **r_rpn, int *r_nrpn, int a_max);
 
 
 
 /*===[ YRPN_ADJ.C ]]==========================================================*/
 char        yRPN_addr_config        (void *a_breaker, void *a_maker, void *a_prettier, void *a_adjuster, void *a_insider);
 char        yRPN_addr_normal        (cchar *a_src, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
-/*> char        yRPN_addr_scoped        (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out);   <*/
 char        yRPN_addr_require       (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
 char        yRPN_addr_provide       (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x, cint y, cint z, cint a_max, char *a_out);
-char*       yRPN__adj_unit          (char *a_question, int a_item);
 
 
 
 
-int         yRPN_errorpos           (void);
-char        yRPN_arity              (char *a_op);
-char        yRPN_compiler           (void);
 
 char        yRPN_symbols            (void);
+char        yRPN_arity              (char *a_name, char *r_dir);
 
 
 #endif

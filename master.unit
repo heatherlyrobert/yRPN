@@ -1,1 +1,21 @@
+##
+##
+##  è   requires nothing outside file
+##        1-9 are independent for each file
+##
+##  é   requires only è functions, but outside file
+##
+##  ê   requires é functions
+##
+##
+##
+##
+## SCRP  [·è] [·é] [·ê] [·ë]      simple dependencies, only to · in its own file
+## SCRP  [´ì] [´í] [´î] [´ï]      dependent on · or less, or ´ in its own file
+## SCRP  [ ð] [ ñ] [ ò] [ ó]      dependent on ´ or less, or   in its own file
+## SCRP  [Ïô] [Ïõ] [Ïö] [Ï÷]      dependent on   or less, or Ï in its own file
+## SCRP  [¬ø] [¬ù] [¬ú] [¬û]      dependent on Ï or less, or ¬ in its own file
+## SCRP  [°ü] [°ý] [°þ] [°ÿ]      integration/string tests
+##
+##
 

@@ -32,8 +32,15 @@ static char    (*s_prettier)   (char *a_src, int a_def, char *a_out, char a_chec
 static char    (*s_adjuster)   (char *a_src, int a_bo, int a_xo, int a_yo, int a_zo, char x_force, char *a_out, char a_check);
 static char    (*s_insider )   (int a_b, int a_x, int a_y, int a_z);
 
+
+
+/*====================------------------------------------====================*/
+/*===----                       program level                          ----===*/
+/*====================------------------------------------====================*/
+void  o___PROGRAM_________o () { return; }
+
 char
-yrpn_addr__init         (void)
+yrpn_addr_init          (void)
 {
    /*---(begin)--------------------------*/
    DEBUG_YRPN    yLOG_senter  (__FUNCTION__);
@@ -111,13 +118,24 @@ yRPN_addr_config        (void *a_breaker, void *a_maker, void *a_prettier, void 
    return 0;
 }
 
+char
+yrpn_addr_one           (short l, char f, char p, char c)
+{
+   DEBUG_YRPN_M  yLOG_snote   ("ADDRESS");
+   if (c == 0)                                        return 0;
+   if (strchr (YSTR_ADDR, c) == NULL)                 return 0;
+   return 1;
+}
+
+
+
 /*====================------------------------------------====================*/
 /*===----                     formula modification                     ----===*/
 /*====================------------------------------------====================*/
 void  o___MODIFY__________o () { return; }
 
 char         /*-> shared argument validiation --------[ ------ [fe.G67.55#.92]*/ /*-[01.0000.018.!]-*/ /*-[--.---.---.--]-*/
-yRPN__adj_check       (char *a_src, char a_scope, char *a_target)
+yrpn_addr__adj_check    (char *a_src, char a_scope, char *a_target)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;                /* return code for errors    */
@@ -163,7 +181,7 @@ yRPN__adj_check       (char *a_src, char a_scope, char *a_target)
 }
 
 char         /*-> change a specific reference --------[ ------ [fe.HA4.498.A3]*/ /*-[02.0000.018.!]-*/ /*-[--.---.---.--]-*/
-yRPN__adj_one      (char *a_old, char a_scope, char *a_new)
+yrpn_addr__adj_one      (char *a_old, char a_scope, char *a_new)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;               /* return code for errors    */
@@ -248,18 +266,19 @@ yRPN__adj_one      (char *a_old, char a_scope, char *a_new)
 }
 
 char         /*-> change a specific reference --------[ ------ [fe.J75.197.84]*/ /*-[02.0000.037.!]-*/ /*-[--.---.---.--]-*/
-yRPN__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x, cint y, cint z, char *a_out)
+yrpn_addr__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x, cint y, cint z, char *a_out)
 {
    /*---(locals)-----------+-----+-----+-*/
-   char        rce         =  -10;               /* return code for errors    */
-   char        rc          =    0;               /* generic return code       */
-   char        x_tokens    [LEN_RECD] = "";  /* source made into tokens   */
-   char        x_final     [LEN_RECD] = "";  /* new version of formula    */
+   char        rce         =  -10;
+   char        rc          =    0;
+   char        x_tokens    [LEN_RECD] = "";      /* source made into tokens   */
+   char        x_final     [LEN_RECD] = "";      /* new version of formula    */
    char       *p           = NULL;               /* strtok field pointer      */
    char       *q           =  " ";               /* strtok delimiters         */
    char       *r           = NULL;               /* strtok context            */
-   char        x_new       [LEN_RECD] = "";  /* new element               */
+   char        x_new       [LEN_RECD] = "";      /* new element               */
    int         x_bad       =    0;
+   char        x_pre       =  '=';
    /*---(begin)--------------------------*/
    DEBUG_YRPN    yLOG_enter   (__FUNCTION__);
    /*---(defense)------------------------*/
@@ -268,7 +287,7 @@ yRPN__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   rc = yRPN__adj_check (a_src, a_scope, a_target);
+   rc = yrpn_addr__adj_check (a_src, a_scope, a_target);
    DEBUG_YRPN    yLOG_value   ("check"     , rc);
    --rce;  if (rc < 0)  {
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
@@ -280,13 +299,15 @@ yRPN__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x
    s_adjx  = x;
    s_adjy  = y;
    s_adjz  = z;
+   x_pre   = s_work [0];
    /*---(prepare tokens)-----------------*/
-   rc = yRPN_parsed (s_work, &x_tokens, NULL, 2000);
+   rc = yRPN_gyges (s_work, &x_tokens, NULL, LEN_RECD, 0);
    DEBUG_YRPN    yLOG_value   ("tokenize"  , rc);
    --rce;  if (rc < 0)  {
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
+   rc = yRPN_get   (YRPN_TOKENS , &x_tokens, NULL);
    DEBUG_YRPN    yLOG_info    ("x_tokens"  , x_tokens);
    /*---(parse first token)--------------*/
    p = strtok_r (x_tokens, q, &r);
@@ -298,7 +319,7 @@ yRPN__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x
    }
    /*---(loop through tokens)------------*/
    while (p != NULL) {
-      rc = yRPN__adj_one (p, a_scope, x_new);
+      rc = yrpn_addr__adj_one (p, a_scope, x_new);
       strcat (x_final, x_new);
       strcat (x_final, " ");
       DEBUG_YRPN    yLOG_info    ("x_final"   , x_final);
@@ -308,9 +329,14 @@ yRPN__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x
    /*---(strip final space)--------------*/
    x_final [strlen (x_final) - 1] = '\0';
    /*---(wrap-up)------------------------*/
+   sprintf (x_tokens, "%c%s", x_pre, x_final);
+   rc = yRPN_gyges (x_tokens, NULL, NULL, LEN_RECD, 0);
+   if (x_pre == '¼')  rc = yRPN_get   (YRPN_MATHY , &x_final, NULL);
+   else               rc = yRPN_get   (YRPN_PRETTY, &x_final, NULL);
+   DEBUG_YRPN    yLOG_info    ("x_tokens"  , x_tokens);
    DEBUG_YRPN    yLOG_info    ("final"     , x_final);
-   rc = yRPN_pretty (x_final, &s_final, NULL, 2000);
-   if (a_out != NULL)  strcpy (a_out, s_final);
+   sprintf (s_final, "%c%s", x_pre, x_final);
+   if (a_out != NULL)  strlcpy (a_out, s_final, LEN_RECD);
    DEBUG_YRPN    yLOG_info    ("a_out"     , a_out);
    /*---(check for ref troubles)---------*/
    DEBUG_YRPN    yLOG_value   ("x_bad"     , x_bad);
@@ -326,13 +352,13 @@ yRPN__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x
 char
 yRPN_addr_normal   (cchar *a_src, cint b, cint x, cint y, cint z, cint a_max, char *a_out)
 {
-   return yRPN__adj_main (a_src, YRPN_RREL, NULL, b, x, y, z, a_out);
+   return yrpn_addr__adj_main (a_src, YRPN_RREL, NULL, b, x, y, z, a_out);
 }
 
 /*> char                                                                                                        <* 
  *> yRPN_addr_scoped   (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z, cint a_max, char *a_out)   <* 
  *> {                                                                                                           <* 
- *>    return yRPN__adj_main (a_src, a_scope, NULL, b, x, y, z, a_out);                                         <* 
+ *>    return yrpn_addr__adj_main (a_src, a_scope, NULL, b, x, y, z, a_out);                                         <* 
  *> }                                                                                                           <*/
 
 char
@@ -340,7 +366,7 @@ yRPN_addr_require  (cchar *a_src, cchar a_scope, cint b, cint x, cint y, cint z,
 {
    strcpy (s_final, "n/a");
    if (strchr (YRPN_REQS  , a_scope) == NULL)  return -1;
-   return yRPN__adj_main (a_src, a_scope, NULL, b, x, y, z, a_out);
+   return yrpn_addr__adj_main (a_src, a_scope, NULL, b, x, y, z, a_out);
 }
 
 char
@@ -348,7 +374,7 @@ yRPN_addr_provide  (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x
 {
    strcpy (s_final, "n/a");
    if (strchr (YRPN_PROS , a_scope) == NULL)  return -1;
-   return yRPN__adj_main (a_src, a_scope, a_target, b, x, y, z, a_out);
+   return yrpn_addr__adj_main (a_src, a_scope, a_target, b, x, y, z, a_out);
 }
 
 
@@ -359,7 +385,7 @@ yRPN_addr_provide  (cchar *a_src, cchar a_scope, cchar *a_target, cint b, cint x
 static void      o___TOKENS__________________o (void) {;};
 
 int          /*--> check for bad addresses ---------------[--------[--------]-*/
-yRPN__badaddr        (int  a_pos)
+yrpn_addr_badref        (int  a_pos)
 {
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;
@@ -374,8 +400,8 @@ yRPN__badaddr        (int  a_pos)
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   yRPN__token_error ();
-   --rce;  if (zRPN_lang == YRPN_CBANG) {
+   yrpn_token_error  ();
+   --rce;  if (myRPN.lang == YRPN_CBANG) {
       DEBUG_YRPN     yLOG_note    ("skip in c lang mode");
       DEBUG_YRPN     yLOG_exitr   (__FUNCTION__, rce);
       return rce;
@@ -401,13 +427,12 @@ yRPN__badaddr        (int  a_pos)
    }
    /*---(handle)-------------------------*/
    x_pos = a_pos + 4;
-   myRPN.t_type   = S_TTYPE_ADDR;
+   myRPN.t_type   = YRPN_ADDR   ;
    strlcpy (myRPN.t_token, x_addr, LEN_LABEL);
    strlcpy (myRPN.t_name , x_addr, LEN_LABEL);
    myRPN.t_len = strlen (myRPN.t_name);
-   yRPN_stack_tokens ();
-   yRPN_stack_shuntd ();
-   yRPN_stack_normal (a_pos);
+   yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
+   yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;
    /*---(complete)-----------------------*/
    DEBUG_YRPN     yLOG_exit    (__FUNCTION__);
@@ -415,7 +440,7 @@ yRPN__badaddr        (int  a_pos)
 }
 
 int          /*--> chec for cell addresses ---------------[--------[--------]-*/
-yRPN__addresses      (int  a_pos, short a_def)
+yrpn_addr               (int  a_pos, short a_def)
 {  /*---(design notes)--------------------------------------------------------*/
    /* addresses are only lowercase alphanumerics plus $ and @.                */
    /*---(locals)-----------+-----------+-*/
@@ -435,8 +460,8 @@ yRPN__addresses      (int  a_pos, short a_def)
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   yRPN__token_error ();
-   --rce;  if (zRPN_lang == YRPN_CBANG) {
+   yrpn_token_error  ();
+   --rce;  if (myRPN.lang == YRPN_CBANG) {
       DEBUG_YRPN     yLOG_note    ("skip in c lang mode");
       DEBUG_YRPN     yLOG_exitr   (__FUNCTION__, rce);
       return rce;
@@ -449,15 +474,15 @@ yRPN__addresses      (int  a_pos, short a_def)
    }
    /*---(accumulate characters)------------*/
    DEBUG_YRPN     yLOG_note    ("accumulate characters");
-   myRPN.t_type   = S_TTYPE_ADDR;
+   myRPN.t_type   = YRPN_ADDR   ;
    x_pos        = a_pos;  /* starting point */
-   while (yrpn_token_add (&x_pos) == 0);
+   while (yrpn_token_accum (&x_pos) == 0);
    /*---(validate the address)-------------*/
    strlcpy (x_addr, myRPN.t_name, LEN_LABEL);
    /*> rc = s_prettier (x_addr, a_def, x_final, YSTR_LEGAL);                          <*/
    rc = s_breaker  (x_addr, &u, &x, &y, &z, NULL, 0, YSTR_LEGAL);
    --rce;  if (rc < 0) {
-      yRPN__token_error ();
+      yrpn_token_error  ();
       DEBUG_YRPN     yLOG_note    ("address not valid");
       DEBUG_YRPN     yLOG_exitr   (__FUNCTION__, rce);
       return rce;
@@ -465,16 +490,17 @@ yRPN__addresses      (int  a_pos, short a_def)
    rc = s_maker    (u, x, y, z, 0, x_temp , YSTR_LEGAL);
    rc = s_prettier (x_temp, a_def, x_shunt, YSTR_LEGAL);
    rc = s_prettier (x_addr, a_def, x_final, YSTR_LEGAL);
-   /*---(handle)-------------------------*/
+   /*---(handle rpn)---------------------*/
    strlcpy (myRPN.t_token, x_shunt, LEN_LABEL);
    strlcpy (myRPN.t_name , x_shunt, LEN_LABEL);
    myRPN.t_len = strlen (myRPN.t_name);
-   yRPN_stack_shuntd ();
+   /*> yrpn_output_shuntd_OLD ();                                                     <*/
+   yrpn_output_rpn (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
+   /*---(handle infix)-------------------*/
    strlcpy (myRPN.t_token, x_final, LEN_LABEL);
    strlcpy (myRPN.t_name , x_final, LEN_LABEL);
    myRPN.t_len = strlen (myRPN.t_name);
-   yRPN_stack_tokens ();
-   yRPN_stack_normal (a_pos);
+   yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;
    /*---(complete)-----------------------*/
    DEBUG_YRPN     yLOG_exit    (__FUNCTION__);
@@ -489,7 +515,7 @@ yRPN__addresses      (int  a_pos, short a_def)
 static void      o___UNIT_TEST_______________o (void) {;};
 
 char
-yrpn_addr_insider_fake  (int b, int x, int y, int z)
+yrpn_addr__uinsider     (int b, int x, int y, int z)
 {
    /*   6i8..6m12   */
    if (b != 6)  return 0;

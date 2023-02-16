@@ -13,11 +13,12 @@ char unit_answer [ LEN_RECD ];
 static void      o___UNITTEST________________o (void) {;};
 
 char*      /* ---- : answer unit testing gray-box questions ------------------*/
-yRPN_accessor      (char *a_question, int a_item)
+yrpn__unit              (char *a_question, int a_item)
 {
    /*---(locals)-----------+-----------+-*/
    int         i           = 0;
-   char        x_temp      [LEN_LABEL];
+   char        s           [LEN_LABEL] = "";
+   char        t           [LEN_RECD]  = "";
    /*---(input)--------------------------*/
    if          (strcmp (a_question, "source"    )     == 0) {
       snprintf (unit_answer, LEN_RECD, "source string    :%s"  , myRPN.source);
@@ -29,37 +30,70 @@ yRPN_accessor      (char *a_question, int a_item)
    else if     (strcmp (a_question, "token"     )     == 0) {
       snprintf (unit_answer, LEN_RECD, "current token    :%s"  , myRPN.t_name);
    } else if (strcmp (a_question, "precedence")     == 0) {
-      snprintf (unit_answer, LEN_RECD, "precedence       : %c"    , myRPN.t_prec);
+      snprintf (unit_answer, LEN_RECD, "precedence       : %c" , myRPN.t_prec);
    } else if (strcmp (a_question, "type"      )     == 0) {
-      snprintf (unit_answer, LEN_RECD, "current type     : %c"    , myRPN.t_type);
+      snprintf (unit_answer, LEN_RECD, "current type     : %c" , myRPN.t_type);
    }
-   /*---(output)-------------------------*/
+   /*---(token detail)-------------------*/
    else if    (strcmp (a_question, "n_tokens"     )     == 0) {
-      snprintf (unit_answer, LEN_RECD, "infix count      : %d"    , myRPN.n_tokens);
+      snprintf (unit_answer, LEN_RECD, "infix count      : %d" , myRPN.n_tokens);
    } else if (strcmp (a_question, "tokens"    )     == 0) {
-      snprintf (unit_answer, LEN_RECD, "infix output     :%s"  , myRPN.tokens);
+      strlcpy  (t, myRPN.tokens, LEN_RECD);
+      strldchg (t, 0x0F, '·', LEN_RECD);
+      snprintf (unit_answer, LEN_RECD, "infix output     :%s"  , t);
    } else if (strcmp (a_question, "pretty"    )     == 0) {
       snprintf (unit_answer, LEN_RECD, "pretty output    :%s"  , myRPN.pretty);
    } else if (strcmp (a_question, "n_detail"     )     == 0) {
-      snprintf (unit_answer, LEN_RECD, "postfix count    : %d"    , myRPN.n_shuntd);
+      snprintf (unit_answer, LEN_RECD, "postfix count    : %d" , myRPN.n_shunted);
    } else if (strcmp (a_question, "output"    )     == 0) {
-      snprintf (unit_answer, LEN_RECD, "postfix output   :%s"  , myRPN.shuntd);
+      snprintf (unit_answer, LEN_RECD, "postfix output   :%s"  , myRPN.shunted);
    } else if (strcmp (a_question, "detail"    )     == 0) {
-      snprintf (unit_answer, LEN_RECD, "postfix detail   :%s"  , myRPN.detail);
+      strlcpy  (t, myRPN.detail, LEN_RECD);
+      strldchg (t, G_KEY_SHIFT, '´', LEN_RECD);
+      snprintf (unit_answer, LEN_RECD, "postfix detail   :%s"  , t);
+   }
+   /*---(infix order)--------------------*/
+   else if     (strcmp (a_question, "o_tokens"       )     == 0) {
+      snprintf (unit_answer, LEN_RECD, "yRPN tokens (%2d) : %3då%sæ" , myRPN.n_tokens , strlen (myRPN.tokens ), myRPN.tokens );
+   } else if  (strcmp (a_question, "o_parsed"       )     == 0) {
+      snprintf (unit_answer, LEN_RECD, "yRPN parsed (%2d) : %3då%sæ" , myRPN.n_tokens , strlen (myRPN.parsed ), myRPN.parsed );
+   } else if  (strcmp (a_question, "o_pretty"       )     == 0) {
+      snprintf (unit_answer, LEN_RECD, "yRPN pretty (%2d) : %3då%sæ" , myRPN.n_tokens , strlen (myRPN.pretty ), myRPN.pretty );
+   } else if  (strcmp (a_question, "o_mathy"        )     == 0) {
+      snprintf (unit_answer, LEN_RECD, "yRPN mathy  (%2d) : %3då%sæ" , myRPN.n_tokens , strlen (myRPN.mathy  ), myRPN.mathy  );
+   } else if  (strcmp (a_question, "o_exact"        )     == 0) {
+      snprintf (unit_answer, LEN_RECD, "yRPN exact  (%2d) : %3då%sæ" , myRPN.n_shunted, strlen (myRPN.exact  ), myRPN.exact  );
+   }
+   /*---(infix order)--------------------*/
+   else if   (strcmp (a_question, "o_shunted"    )     == 0) {
+      snprintf (unit_answer, LEN_RECD, "yRPN shunted(%2d) : %3då%sæ" , myRPN.n_shunted, strlen (myRPN.shunted), myRPN.shunted);
+   } else if (strcmp (a_question, "o_detail"     )     == 0) {
+      snprintf (unit_answer, LEN_RECD, "yRPN detail (%2d) : %3då%sæ" , myRPN.n_shunted, strlen (myRPN.detail ), myRPN.detail );
+   } else if (strcmp (a_question, "o_debug"      )     == 0) {
+      snprintf (unit_answer, LEN_RECD, "yRPN debug  (%2d) : %3då%sæ" , myRPN.n_shunted, strlen (myRPN.debug  ), myRPN.debug  );
    }
    /*---(stack)--------------------------*/
+   else if   (strcmp (a_question, "stack"         )  == 0) {
+      snprintf (unit_answer, LEN_RECD, "yRPN stack  (%2d) : %2d ", g_nstack, myRPN.level);
+      for (i = 0; i < g_nstack; ++i) {
+         sprintf (s , "å%.5sæ", g_stack [i].name);
+         sprintf (t , " %c%c%s%d", g_stack [i].type, g_stack [i].prec, s, g_stack [i].pos);
+         strlcat (unit_answer, t, LEN_RECD);
+      }
+      strlcat (unit_answer, " ´", LEN_RECD);
+   }
    /*> else if   (strcmp (a_question, "depth"     )     == 0) {                                          <* 
-    *>    snprintf (unit_answer, LEN_RECD, "stack depth      : %d"    , s_nstack);                   <* 
+    *>    snprintf (unit_answer, LEN_RECD, "stack depth      : %d"    , g_nstack);                   <* 
     *> } else if (strcmp (a_question, "stack_list")     == 0) {                                          <* 
     *>    snprintf (unit_answer, LEN_RECD, "stack details    :");                                    <* 
-    *>    for (i = 0; i < s_nstack; ++i) {                                                               <* 
-    *>       sprintf (x_temp     , " %c,%c,%s", s_stack [i].type, s_stack [i].prec, s_stack [i].name);   <* 
+    *>    for (i = 0; i < g_nstack; ++i) {                                                               <* 
+    *>       sprintf (x_temp     , " %c,%c,%s", g_stack [i].type, g_stack [i].prec, g_stack [i].name);   <* 
     *>       strlcat (unit_answer, x_temp       , LEN_RECD);                                         <* 
     *>    }                                                                                              <* 
     *> } else if (strcmp (a_question, "stack_terse")    == 0) {                                          <* 
     *>    snprintf (unit_answer, LEN_RECD, "stack terse      :");                                    <* 
-    *>    for (i = 0; i < s_nstack && i < 6; ++i) {                                                      <* 
-    *>       sprintf (x_temp     , " %c%c", s_stack [i].type, s_stack [i].prec);                         <* 
+    *>    for (i = 0; i < g_nstack && i < 6; ++i) {                                                      <* 
+    *>       sprintf (x_temp     , " %c%c", g_stack [i].type, g_stack [i].prec);                         <* 
     *>       strlcat (unit_answer, x_temp       , LEN_RECD);                                         <* 
     *>    }                                                                                              <* 
     *> }                                                                                                 <*/
@@ -86,14 +120,7 @@ yrpn__unit_quick       (void)
 }
 
 char       /*----: set up programgents/debugging -----------------------------*/
-yRPN__unit_quiet    (void)
-{
-   yrpn__unit_quick ();
-   return 0;
-}
-
-char       /*----: set up programgents/debugging -----------------------------*/
-yRPN__unit_loud     (void)
+yrpn__unit_loud     (void)
 {
    char       *x_args [4]  = { "yRPN_unit","@@kitchen","@@RPN","@@YRPN" };
    yURG_logger (4, x_args);
@@ -102,8 +129,15 @@ yRPN__unit_loud     (void)
    return 0;
 }
 
+char       /*----: set up programgents/debugging -----------------------------*/
+yrpn__unit_quiet    (void)
+{
+   yrpn__unit_quick ();
+   return 0;
+}
+
 char       /*----: set up program urgents/debugging --------------------------*/
-yRPN__unit_end      (void)
+yrpn__unit_end      (void)
 {
    DEBUG_YRPN   yLOGS_end     ();
    return 0;
