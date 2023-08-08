@@ -307,7 +307,8 @@ yrpn_addr__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, c
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   rc = yRPN_get   (YRPN_TOKENS , &x_tokens, NULL);
+   /*> rc = yRPN_get   (YRPN_TOKENS , &x_tokens, NULL);                               <*/
+   rc = yRPN_get   (YRPN_PARSED , &x_tokens, NULL);
    DEBUG_YRPN    yLOG_info    ("x_tokens"  , x_tokens);
    /*---(parse first token)--------------*/
    p = strtok_r (x_tokens, q, &r);
@@ -330,7 +331,7 @@ yrpn_addr__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, c
    x_final [strlen (x_final) - 1] = '\0';
    /*---(wrap-up)------------------------*/
    sprintf (x_tokens, "%c%s", x_pre, x_final);
-   rc = yRPN_gyges (x_tokens, NULL, NULL, LEN_RECD, 0);
+   rc = yRPN_gyges (x_tokens, &x_final, NULL, LEN_RECD, 0);
    if (x_pre == '¼')  rc = yRPN_get   (YRPN_MATHY , &x_final, NULL);
    else               rc = yRPN_get   (YRPN_PRETTY, &x_final, NULL);
    DEBUG_YRPN    yLOG_info    ("x_tokens"  , x_tokens);
@@ -480,16 +481,16 @@ yrpn_addr               (int  a_pos, short a_def)
    /*---(validate the address)-------------*/
    strlcpy (x_addr, myRPN.t_name, LEN_LABEL);
    /*> rc = s_prettier (x_addr, a_def, x_final, YSTR_LEGAL);                          <*/
-   rc = s_breaker  (x_addr, &u, &x, &y, &z, NULL, 0, YSTR_LEGAL);
+   rc = s_breaker  (x_addr, &u, &x, &y, &z, NULL, 0, YSTR_CHECK);
    --rce;  if (rc < 0) {
       yrpn_token_error  ();
       DEBUG_YRPN     yLOG_note    ("address not valid");
       DEBUG_YRPN     yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   rc = s_maker    (u, x, y, z, 0, x_temp , YSTR_LEGAL);
-   rc = s_prettier (x_temp, a_def, x_shunt, YSTR_LEGAL);
-   rc = s_prettier (x_addr, a_def, x_final, YSTR_LEGAL);
+   rc = s_maker    (u, x, y, z, 0, x_temp , YSTR_CHECK);
+   rc = s_prettier (x_temp, a_def, x_shunt, YSTR_CHECK);
+   rc = s_prettier (x_addr, a_def, x_final, YSTR_CHECK);
    /*---(handle rpn)---------------------*/
    strlcpy (myRPN.t_token, x_shunt, LEN_LABEL);
    strlcpy (myRPN.t_name , x_shunt, LEN_LABEL);

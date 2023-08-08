@@ -51,9 +51,13 @@ yrpn_syms_one           (short l, char f, char p, char c)
    /*---(locals)-------------------------*/
    else if (f == 'ч') {
       if (l == 1) {
-         if (strchr ("п>!?@" YSTR_LOWER YSTR_NUMBER, c) == NULL)     return 0;
-      } else if (l == 2 && p == '@') {
-         if (strchr (YSTR_LOWER YSTR_NUMBER YSTR_GREEK, c) == NULL)  return 0;
+         if (strchr ("п>!?{" YSTR_LOWER YSTR_NUMBER, c) == NULL)     return 0;
+      } else                                                         return 0;
+   }
+   /*---(macros)-------------------------*/
+   else if (f == '@') {
+      if (l == 1) {
+         if (strchr (".ад" YSTR_LOWER YSTR_NUMBER YSTR_GREEK, c) == NULL)  return 0;
       } else                                                         return 0;
    }
    /*---(greek)--------------------------*/

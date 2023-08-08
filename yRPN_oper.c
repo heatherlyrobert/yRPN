@@ -57,7 +57,8 @@ tOPER     s_opers [MAX_OPER] = {
    { "-:"  , "-"   , 'B', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "unary minus"                          },
    { "!"   , "!"   , 'B', 'r',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "logical NOT"                          },
    { "~"   , "~"   , 'B', 'r',  2, 'f',    S_LEFT , 2, S_YES, S_NO ,    S_NO , S_NO , ""  ,   "bitwise NOT (len limited)"            },
-   { "*:"  , "*"   , 'B', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "indirection/dereference"              },
+   { "á"   , "*"   , 'B', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , "á" ,   "indirection/dereference"              },
+   { "á"   , "á"   , 'B', 'r',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "indirection/dereference"              },
    { "&:"  , "&"   , 'B', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "address-of"                           },
    { "(*)" , "*"   , 'c', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_YES, ""  ,   "casting modifier"                     },
    /*-mult-family--- who real off prec    --dir--  ar -comb-  -post-    -pre-- -suf- pretty   --comment-----------------------------*/
@@ -66,6 +67,7 @@ tOPER     s_opers [MAX_OPER] = {
    { "/"   , "/"   , 'B', 'r',  3, 'g',    S_LEFT , 2, S_YES, S_NO ,    S_YES, S_YES, ""  ,   "division"                             },
    { "%"   , "%"   , 'B', 'r',  3, 'g',    S_LEFT , 2, S_YES, S_NO ,    S_YES, S_YES, ""  ,   "modulus"                              },
    { "©-"  , "©-"  , 'g', 'r',  3, 'g',    S_LEFT , 2, S_YES, S_NO ,    S_YES, S_YES, ""  ,   "sub-string removal"                   },
+   { "©*"  , "©*"  , 'g', 'r',  3, 'g',    S_LEFT , 2, S_YES, S_NO ,    S_NO , S_NO , ""  ,   "word parsing"                         },
    { "©´"  , "©´"  , 'g', 'r',  3, 'g',    S_LEFT , 2, S_YES, S_NO ,    S_NO , S_NO , ""  ,   "list parsing"                         },
    { "©/"  , "©/"  , 'g', 'r',  3, 'g',    S_LEFT , 2, S_YES, S_NO ,    S_NO , S_NO , ""  ,   "field parsing"                        },
    { "©¬"  , "©¬"  , 'g', 'r',  3, 'g',    S_LEFT , 2, S_YES, S_NO ,    S_YES, S_YES, ""  ,   "character masking"                    },
@@ -159,6 +161,7 @@ yrpn_oper_init          (void)
    char        t           [LEN_SHORT] = "";
    char        c           =  '-';
    char       *p           = NULL;
+   DEBUG_YRPN     yLOG_enter   (__FUNCTION__);
    strlcpy (s_one, "", LEN_HUND);
    strlcpy (s_two, "", LEN_HUND);
    strlcpy (s_thr, "", LEN_HUND);
@@ -195,6 +198,10 @@ yrpn_oper_init          (void)
       }
       /*---(done)------------------------*/
    }
+   DEBUG_YRPN     yLOG_info    ("s_one"     , s_one);
+   DEBUG_YRPN     yLOG_info    ("s_two"     , s_two);
+   DEBUG_YRPN     yLOG_info    ("s_thr"     , s_thr);
+   DEBUG_YRPN     yLOG_exit    (__FUNCTION__);
    return 0;
 }
 
@@ -423,7 +430,7 @@ yrpn_oper_any           (int  a_pos)
       DEBUG_YRPN     yLOG_note    ("check for left operators in right only mode");
       if      (strcmp (myRPN.t_name, "+" ) == 0)  { strcpy (myRPN.t_name, "+:"); myRPN.t_len  = 2; }
       else if (strcmp (myRPN.t_name, "-" ) == 0)  { strcpy (myRPN.t_name, "-:"); myRPN.t_len  = 2; }
-      else if (strcmp (myRPN.t_name, "*" ) == 0)  { strcpy (myRPN.t_name, "*:"); myRPN.t_len  = 2; }
+      else if (strcmp (myRPN.t_name, "*" ) == 0)  { strcpy (myRPN.t_name, "á" ); myRPN.t_len  = 2; }
       else if (strcmp (myRPN.t_name, "&" ) == 0)  { strcpy (myRPN.t_name, "&:"); myRPN.t_len  = 2; }
    } else {
       DEBUG_YRPN     yLOG_note    ("check for right operators in left only mode");
@@ -437,7 +444,7 @@ yrpn_oper_any           (int  a_pos)
       DEBUG_YRPN     yLOG_note    ("pre-processor directive");
       yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
       myRPN.left_oper  = S_OPER_LEFT;  /* an oper after an oper must be right-only */
-   } else if (strcmp (myRPN.t_name, "*:") == 0) {
+   } else if (strcmp (myRPN.t_name, "á") == 0) {
       DEBUG_YRPN     yLOG_note    ("working with a pointer");
       yrpn_oper__splat  (a_pos);
    } else {
