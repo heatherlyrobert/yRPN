@@ -577,7 +577,7 @@ yrpn_base__convert      (char *a_source)
       if (rc <= myRPN.pos && strchr (YSTR_LOWER, x_ch) != 0)  rc = yrpn_cbang_type    (myRPN.pos);
       if (rc <= myRPN.pos && strchr (YSTR_NUML , x_ch) != 0)  rc = yrpn_nums_any      (myRPN.pos);
       if (rc <= myRPN.pos && strchr (YSTR_VARL , x_ch) != 0)  rc = yrpn_syms_funcvar  (myRPN.pos);
-      if (rc <= myRPN.pos && strchr ("@•ç"     , x_ch) != 0)  rc = yrpn_syms_funcvar  (myRPN.pos);
+      if (rc <= myRPN.pos && strchr ("@•ç"    , x_ch) != 0)  rc = yrpn_syms_funcvar  (myRPN.pos);
       if (rc <= myRPN.pos && strchr (YSTR_SEQ  , x_ch) != 0)  rc = yrpn_syms_sequence (myRPN.pos);
       if (rc <= myRPN.pos && strchr (YSTR_OPER , x_ch) != 0)  rc = yrpn_oper_any      (myRPN.pos);
       if (rc <= myRPN.pos && strchr (v_enders  , x_ch) != 0)  rc = yrpn_syms_ender    (myRPN.pos);

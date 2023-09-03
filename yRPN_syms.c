@@ -50,18 +50,28 @@ yrpn_syms_one           (short l, char f, char p, char c)
    }
    /*---(locals)-------------------------*/
    else if (f == 'ч') {
+      DEBUG_YRPN_M  yLOG_snote   ("local");
       if (l == 1) {
          if (strchr ("п>!?{" YSTR_LOWER YSTR_NUMBER, c) == NULL)     return 0;
       } else                                                         return 0;
    }
    /*---(macros)-------------------------*/
    else if (f == '@') {
+      DEBUG_YRPN_M  yLOG_snote   ("macro");
       if (l == 1) {
          if (strchr (".ад" YSTR_LOWER YSTR_NUMBER YSTR_GREEK, c) == NULL)  return 0;
       } else                                                         return 0;
    }
+   /*---(registers)----------------------*/
+   else if (f == 'П') {
+      DEBUG_YRPN_M  yLOG_snote   ("register");
+      if (l == 1) {
+         if (strchr ("╢" YSTR_LOWER YSTR_NUMBER YSTR_GREEK, c) == NULL)  return 0;
+      } else                                                         return 0;
+   }
    /*---(greek)--------------------------*/
    else if (f != 0 && strchr (YSTR_GREEK, f) != NULL) {
+      DEBUG_YRPN_M  yLOG_snote   ("greek");
       if (myRPN.math == 'y') {
          if (l == 1  && strchr (YSTR_SUBS , c) == NULL)              return 0;
          if (l >  1)                                                 return 0;
@@ -74,6 +84,7 @@ yrpn_syms_one           (short l, char f, char p, char c)
    }
    /*---(normal)-------------------------*/
    else {
+      DEBUG_YRPN_M  yLOG_snote   ("normal");
       if (myRPN.math == 'y') {
          if (l == 1 && strchr (YSTR_SUBS , c) == NULL)               return 0;
          if (l >  1)                                                 return 0;
@@ -208,6 +219,7 @@ yrpn_syms_funcvar       (int   a_pos)
          if (strcmp (myRPN.l_name, "->") == 0)  myRPN.t_type = YRPN_MEMB   ;
       }
       if (myRPN.t_name [0] == 'ч')              myRPN.t_type = YRPN_LOCAL   ;
+      DEBUG_YRPN     yLOG_char    ("t_type"    , myRPN.t_type);
       strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
       /*---(mathy stuff)-----------------*/
       yrpn_oper_mathy (a_pos);

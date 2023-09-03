@@ -113,8 +113,8 @@
 
 #define     P_VERMAJOR  "1.--, production use, working out issues"
 #define     P_VERMINOR  "1.1-, first full production version"
-#define     P_VERNUM    "1.2b"
-#define     P_VERTXT    "tiny fix to allow agrios code line access through a variable ¶ç{¶"
+#define     P_VERNUM    "1.2c"
+#define     P_VERTXT    "added ySRC source register support"
 
 /*===[[ END_HEADER ]]=========================================================*/
 
