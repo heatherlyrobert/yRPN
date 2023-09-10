@@ -101,7 +101,7 @@ yrpn_fixed_char         (short a_pos)
    }
    /*---(save)-----------------------------*/
    DEBUG_YRPN     yLOG_note    ("put char literal directly to output");
-   strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
+   ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
    yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
    yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;
@@ -161,7 +161,7 @@ yrpn_fixed_string       (short  a_pos)
    }
    /*---(save)-----------------------------*/
    DEBUG_YRPN     yLOG_note    ("put string literal directly to output");
-   strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
+   ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
    yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
    yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;

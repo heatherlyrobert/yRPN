@@ -88,7 +88,7 @@ yRPN_get           (uchar a_type, uchar r_rpn [LEN_RECD], uchar *r_nrpn)
    /*---(locals)-----------+-----+-----+-*/
    char        rce         =  -10;
    /*---(default)------------------------*/
-   if (r_rpn  != NULL)  strlcpy (r_rpn, "", LEN_RECD);
+   if (r_rpn  != NULL)  ystrlcpy (r_rpn, "", LEN_RECD);
    if (r_nrpn != NULL)  *r_nrpn = 0;
    /*---(defense)------------------------*/
    --rce;  if (myRPN.n_tokens <= 0 && myRPN.n_shunted <= 0) {
@@ -97,35 +97,35 @@ yRPN_get           (uchar a_type, uchar r_rpn [LEN_RECD], uchar *r_nrpn)
    /*---(save-back)----------------------*/
    --rce;  switch (a_type) {
    case YRPN_TOKENS  :
-      if (r_rpn  != NULL)  strlcpy (r_rpn, myRPN.tokens , LEN_RECD);
+      if (r_rpn  != NULL)  ystrlcpy (r_rpn, myRPN.tokens , LEN_RECD);
       if (r_nrpn != NULL)  *r_nrpn = myRPN.n_tokens;
       break;
    case YRPN_PARSED  :
-      if (r_rpn  != NULL)  strlcpy (r_rpn, myRPN.parsed , LEN_RECD);
+      if (r_rpn  != NULL)  ystrlcpy (r_rpn, myRPN.parsed , LEN_RECD);
       if (r_nrpn != NULL)  *r_nrpn = myRPN.n_tokens;
       break;
    case YRPN_PRETTY  :
-      if (r_rpn  != NULL)  strlcpy (r_rpn, myRPN.pretty , LEN_RECD);
+      if (r_rpn  != NULL)  ystrlcpy (r_rpn, myRPN.pretty , LEN_RECD);
       if (r_nrpn != NULL)  *r_nrpn = myRPN.n_tokens;
       break;
    case YRPN_MATHY   :
-      if (r_rpn  != NULL)  strlcpy (r_rpn, myRPN.mathy  , LEN_RECD);
+      if (r_rpn  != NULL)  ystrlcpy (r_rpn, myRPN.mathy  , LEN_RECD);
       if (r_nrpn != NULL)  *r_nrpn = myRPN.n_tokens;
       break;
    case YRPN_SHUNTED :
-      if (r_rpn  != NULL)  strlcpy (r_rpn, myRPN.shunted, LEN_RECD);
+      if (r_rpn  != NULL)  ystrlcpy (r_rpn, myRPN.shunted, LEN_RECD);
       if (r_nrpn != NULL)  *r_nrpn = myRPN.n_shunted;
       break;
    case YRPN_DETAIL  :
-      if (r_rpn  != NULL)  strlcpy (r_rpn, myRPN.detail , LEN_RECD);
+      if (r_rpn  != NULL)  ystrlcpy (r_rpn, myRPN.detail , LEN_RECD);
       if (r_nrpn != NULL)  *r_nrpn = myRPN.n_shunted;
       break;
    case YRPN_DEBUG   :
-      if (r_rpn  != NULL)  strlcpy (r_rpn, myRPN.debug  , LEN_RECD);
+      if (r_rpn  != NULL)  ystrlcpy (r_rpn, myRPN.debug  , LEN_RECD);
       if (r_nrpn != NULL)  *r_nrpn = myRPN.n_shunted;
       break;
    case YRPN_EXACT   :
-      if (r_rpn  != NULL)  strlcpy (r_rpn, myRPN.exact  , LEN_RECD);
+      if (r_rpn  != NULL)  ystrlcpy (r_rpn, myRPN.exact  , LEN_RECD);
       if (r_nrpn != NULL)  *r_nrpn = myRPN.n_shunted;
       break;
    default           :
@@ -450,7 +450,7 @@ yrpn_base__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, in
    DEBUG_YRPN    yLOG_info    ("a_src"     , a_src);
    DEBUG_YRPN    yLOG_point   ("a_rpn"     , a_rpn);
    DEBUG_YRPN    yLOG_point   ("*a_rpn"    , *a_rpn);
-   if (a_rpn != NULL) strlcpy (a_rpn, "", a_max);
+   if (a_rpn != NULL) ystrlcpy (a_rpn, "", a_max);
    /*---(configure)----------------------*/
    /*> if (a_type == YRPN_MATHY)  myRPN.math = 'y';                                   <* 
     *> else                       myRPN.math = '-';                                   <*/
@@ -474,14 +474,14 @@ yrpn_base__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, in
    DEBUG_YRPN    yLOG_value   ("n_tokens"  , myRPN.n_tokens);
    switch (a_type) {
    case YRPN_PARSED  :
-      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.parsed  , a_max);
+      if (a_rpn  != NULL)  ystrlcpy (a_rpn, myRPN.parsed  , a_max);
       if (a_nrpn != NULL)  *a_nrpn = myRPN.n_tokens;
       x_len = strlen (myRPN.tokens);
       break;
    case YRPN_TOKENS  :
       DEBUG_YRPN    yLOG_point   ("a_rpn"     , a_rpn);
       if (a_rpn  != NULL) {
-         strlcpy (a_rpn, myRPN.tokens  , a_max);
+         ystrlcpy (a_rpn, myRPN.tokens  , a_max);
          DEBUG_YRPN    yLOG_info    ("a_rpn"     , a_rpn);
       }
       DEBUG_YRPN    yLOG_point   ("a_nrpn"    , a_nrpn);
@@ -493,22 +493,22 @@ yrpn_base__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, in
       x_len = strlen (myRPN.tokens);
       break;
    case YRPN_PRETTY  :
-      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.pretty  , a_max);
+      if (a_rpn  != NULL)  ystrlcpy (a_rpn, myRPN.pretty  , a_max);
       if (a_nrpn != NULL)  *a_nrpn = myRPN.n_tokens;
       x_len = strlen (myRPN.pretty);
       break;
    case YRPN_DETAIL  :
-      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.detail  , a_max);
+      if (a_rpn  != NULL)  ystrlcpy (a_rpn, myRPN.detail  , a_max);
       if (a_nrpn != NULL)  *a_nrpn = myRPN.n_shunted;
       x_len = strlen (myRPN.detail);
       break;
    case YRPN_DEBUG   :
-      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.debug   , a_max);
+      if (a_rpn  != NULL)  ystrlcpy (a_rpn, myRPN.debug   , a_max);
       if (a_nrpn != NULL)  *a_nrpn = myRPN.n_tokens;
       x_len = strlen (myRPN.debug);
       break;
    case YRPN_SHUNTED :
-      if (a_rpn  != NULL)  strlcpy (a_rpn, myRPN.shunted , a_max);
+      if (a_rpn  != NULL)  ystrlcpy (a_rpn, myRPN.shunted , a_max);
       if (a_nrpn != NULL)  *a_nrpn = myRPN.n_shunted;
       x_len = strlen (myRPN.shunted);
       break;
@@ -520,7 +520,7 @@ yrpn_base__driver       (char *a_src, char a_type, char **a_rpn, int *a_nrpn, in
    DEBUG_YRPN    yLOG_value   ("length"    , x_len);
    --rce;  if (x_len >= a_max) {
       DEBUG_YRPN    yLOG_note    ("output too long for output provided");
-      if (a_rpn != NULL) strlcpy (a_rpn, "", a_max);
+      if (a_rpn != NULL) ystrlcpy (a_rpn, "", a_max);
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
@@ -607,13 +607,13 @@ yrpn_base__convert      (char *a_source)
    /*---(handle errors)------------------*/
    --rce;  if (rc < 0) {
       zRPN_DEBUG  printf ("FATAL %4d : %s\n", rc, zRPN_ERRORS [ -rc - 100]);
-      strlcpy (myRPN.detail , YRPN_TOKEN_NULL, LEN_RECD);
-      strlcpy (myRPN.shunted, YRPN_TOKEN_NULL, LEN_RECD);
-      strlcpy (myRPN.tokens , YRPN_TOKEN_NULL, LEN_RECD);
-      strlcpy (myRPN.debug  , YRPN_TOKEN_NULL, LEN_RECD);
-      strlcpy (myRPN.pretty , YRPN_TOKEN_NULL, LEN_RECD);
-      strlcpy (myRPN.mathy  , YRPN_TOKEN_NULL, LEN_RECD);
-      strlcpy (myRPN.exact  , YRPN_TOKEN_NULL, LEN_RECD);
+      ystrlcpy (myRPN.detail , YRPN_TOKEN_NULL, LEN_RECD);
+      ystrlcpy (myRPN.shunted, YRPN_TOKEN_NULL, LEN_RECD);
+      ystrlcpy (myRPN.tokens , YRPN_TOKEN_NULL, LEN_RECD);
+      ystrlcpy (myRPN.debug  , YRPN_TOKEN_NULL, LEN_RECD);
+      ystrlcpy (myRPN.pretty , YRPN_TOKEN_NULL, LEN_RECD);
+      ystrlcpy (myRPN.mathy  , YRPN_TOKEN_NULL, LEN_RECD);
+      ystrlcpy (myRPN.exact  , YRPN_TOKEN_NULL, LEN_RECD);
       myRPN.l_shunted  = 0;
       myRPN.n_shunted  = 0;
       myRPN.n_tokens  = 0;
@@ -628,8 +628,8 @@ yrpn_base__convert      (char *a_source)
       if (rc < 0)  break;
       if (strcmp (x_name, "(") == 0) {
          zRPN_DEBUG  printf ("FATAL %4d : %s\n", zRPN_ERR_UNBALANCED_PARENS, "unbalanced parentheses\n");
-         strlcpy (myRPN.detail , YRPN_TOKEN_NULL, LEN_RECD);
-         strlcpy (myRPN.shunted, YRPN_TOKEN_NULL, LEN_RECD);
+         ystrlcpy (myRPN.detail , YRPN_TOKEN_NULL, LEN_RECD);
+         ystrlcpy (myRPN.shunted, YRPN_TOKEN_NULL, LEN_RECD);
          myRPN.l_shunted  = 0;
          myRPN.n_shunted  = 0;
          DEBUG_YRPN   yLOG_exit    (__FUNCTION__);

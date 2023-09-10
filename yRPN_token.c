@@ -96,7 +96,7 @@ yrpn_token_accum        (int *a_pos)
       DEBUG_YRPN_M  yLOG_snote   ("misformed char/string");
       *a_pos      -= myRPN.t_len;
       myRPN.t_len  = 0;
-      strlcpy (myRPN.t_name, "", LEN_FULL);
+      ystrlcpy (myRPN.t_name, "", LEN_FULL);
       DEBUG_YRPN_M  yLOG_sexitr  (__FUNCTION__, rce);
       return rce;
    }
@@ -136,10 +136,10 @@ char
 yrpn_token__unit_prep   (char a_type, char *a_working, int *a_pos, int a_start)
 {
    myRPN.t_len    = 0;
-   strlcpy (myRPN.t_name, "", LEN_FULL);
+   ystrlcpy (myRPN.t_name, "", LEN_FULL);
    myRPN.t_type   = a_type;
-   if (a_working == NULL) strlcpy (myRPN.working, ""       , LEN_RECD);
-   else                   strlcpy (myRPN.working, a_working, LEN_RECD);
+   if (a_working == NULL) ystrlcpy (myRPN.working, ""       , LEN_RECD);
+   else                   ystrlcpy (myRPN.working, a_working, LEN_RECD);
    myRPN.l_working = strlen (myRPN.working);
    if (a_pos != NULL)  *a_pos = a_start;
    return 0;

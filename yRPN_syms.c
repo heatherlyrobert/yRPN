@@ -149,7 +149,7 @@ static void        o___SYMBOLS_________________o (void) {;}
  *>    }                                                                                     <* 
  *>    /+---(save)-----------------------------+/                                            <* 
  *>    DEBUG_YRPN     yLOG_note    ("put constant directly to output");                      <* 
- *>    strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);                                      <* 
+ *>    ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);                                      <* 
  *>    yrpn_output_tokens_OLD  ();         /+ strait to tokens list                          +/   <* 
  *>    yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);                  <*
  *>    myRPN.left_oper  = S_OPER_CLEAR;                                                      <* 
@@ -207,7 +207,7 @@ yrpn_syms_funcvar       (int   a_pos)
    if (myRPN.t_type == YRPN_FUNC   ) {
       DEBUG_YRPN     yLOG_note    ("put function on stack");
       myRPN.t_prec = S_PREC_FUNC;
-      strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
+      ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
       yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
       yrpn_stack_push   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
    }
@@ -220,7 +220,7 @@ yrpn_syms_funcvar       (int   a_pos)
       }
       if (myRPN.t_name [0] == 'ç')              myRPN.t_type = YRPN_LOCAL   ;
       DEBUG_YRPN     yLOG_char    ("t_type"    , myRPN.t_type);
-      strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
+      ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
       /*---(mathy stuff)-----------------*/
       yrpn_oper_mathy (a_pos);
       /*> if (myRPN.math == 'y') {                                                               <* 

@@ -103,17 +103,17 @@ yrpn_group_close        (uchar a_type, uchar a_prec, uchar a_name [LEN_FULL], uc
    c = myRPN.narg [myRPN.level];
    DEBUG_YRPN     yLOG_value   ("commas"    , c);
    /*---(prepare)-----------------------*/
-   strlcpy (x_name, a_name, LEN_FULL);
+   ystrlcpy (x_name, a_name, LEN_FULL);
    /*---(cbang)-------------------------*/
    DEBUG_YRPN     yLOG_char    ("line_type" , myRPN.line_type);
    if (myRPN.line_type == S_LINE_DEF_FPTR || myRPN.line_type == S_LINE_DEF_PRO) {
       if (x_type == YRPN_PTYPE) {
-         strlcpy (x_name, "?", LEN_LABEL);
+         ystrlcpy (x_name, "?", LEN_LABEL);
          a_type = YRPN_VARS   ;
          a_prec = S_PREC_NONE;
          yrpn_output_infix (a_type, a_prec, x_name, a_token, a_pos);
          yrpn_output_rpn   (a_type, a_prec, x_name, a_pos);
-         strlcpy (x_name, ")", LEN_LABEL);
+         ystrlcpy (x_name, ")", LEN_LABEL);
          a_type = S_TTYPE_GROUP;
          yrpn_oper_prec ();
       }
@@ -208,7 +208,7 @@ yrpn_syms_sequence      (int a_pos)
    myRPN.t_name [1] = '\0';
    myRPN.t_len      = 1;
    myRPN.t_type     = S_TTYPE_GROUP;
-   strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
+   ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
    x_pos          = a_pos + 1;
    DEBUG_YRPN     yLOG_info    ("myRPN.t_name", myRPN.t_name);
    DEBUG_YRPN     yLOG_value   ("myRPN.t_len" , myRPN.t_len);
@@ -250,12 +250,12 @@ yrpn_syms_sequence      (int a_pos)
       DEBUG_YRPN     yLOG_char    ("line_sect" , myRPN.line_sect);
       if (myRPN.line_type == S_LINE_DEF_FPTR || myRPN.line_type == S_LINE_DEF_PRO) {
          if (x_type == YRPN_PTYPE) {
-            strlcpy (myRPN.t_name, "?", LEN_LABEL);
+            ystrlcpy (myRPN.t_name, "?", LEN_LABEL);
             myRPN.t_type = YRPN_VARS   ;
             myRPN.t_prec = S_PREC_NONE;
             yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
             yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
-            strlcpy (myRPN.t_name, ",", LEN_LABEL);
+            ystrlcpy (myRPN.t_name, ",", LEN_LABEL);
             myRPN.t_type = S_TTYPE_GROUP;
             yrpn_oper_prec ();
          }
@@ -301,7 +301,7 @@ yrpn_syms_ender         (int  a_pos)
    myRPN.t_name [1] = '\0';
    myRPN.t_len      = 1;
    myRPN.t_type     = S_TTYPE_GROUP;
-   strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
+   ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
    x_pos          = a_pos + 1;
    DEBUG_YRPN     yLOG_info    ("myRPN.t_name", myRPN.t_name);
    DEBUG_YRPN     yLOG_value   ("myRPN.t_len" , myRPN.t_len);

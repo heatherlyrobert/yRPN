@@ -83,7 +83,7 @@ PROG__args              (int a_argc, char *a_argv[])
       else if (strcmp (a, "--all"    ) == 0) s_mode = 'a';
       else if (strcmp (a, "--symbols") == 0) s_mode = 'S';
       /*---(other)-----------------------*/
-      else if (a [0] != '-')   strlcpy (s_rpn , a, LEN_RECD);
+      else if (a [0] != '-')   ystrlcpy (s_rpn , a, LEN_RECD);
    }
    DEBUG_ARGS  yLOG_char   ("s_mode"    , s_mode);
    DEBUG_ARGS  yLOG_info   ("s_rpn"     , s_rpn);
@@ -181,10 +181,10 @@ main               (int a_argc, char **a_argv)
       yRPN_get       (YRPN_SHUNTED, &x_rpn, &x_nrpn);
       printf ("shunted  %2d å%sæ\n", x_nrpn, x_rpn);
       yRPN_get       (YRPN_DETAIL , &x_rpn, &x_nrpn);
-      strldchg (x_rpn, '', '·', LEN_RECD);
+      ystrldchg (x_rpn, '', '·', LEN_RECD);
       printf ("detail   %2d å%sæ\n", x_nrpn, x_rpn);
       yRPN_get       (YRPN_DEBUG  , &x_rpn, &x_nrpn);
-      strldchg (x_rpn, '', '·', LEN_RECD);
+      ystrldchg (x_rpn, '', '·', LEN_RECD);
       printf ("debug    %2d å%sæ\n", x_nrpn, x_rpn);
       printf ("\n");
       break;

@@ -173,8 +173,8 @@ yrpn_addr__adj_check    (char *a_src, char a_scope, char *a_target)
    }
    DEBUG_YRPN    yLOG_complex ("target"    , "b=%4d, x=%4d, y=%4d, z=%4d", s_targb, s_targx, s_targy, s_targz);
    /*---(save)---------------------------*/
-   strlcpy (s_work , a_src , LEN_RECD);
-   strlcpy (s_final, "n/a"   , LEN_RECD);
+   ystrlcpy (s_work , a_src , LEN_RECD);
+   ystrlcpy (s_final, "n/a"   , LEN_RECD);
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
    return 0;
@@ -337,7 +337,7 @@ yrpn_addr__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, c
    DEBUG_YRPN    yLOG_info    ("x_tokens"  , x_tokens);
    DEBUG_YRPN    yLOG_info    ("final"     , x_final);
    sprintf (s_final, "%c%s", x_pre, x_final);
-   if (a_out != NULL)  strlcpy (a_out, s_final, LEN_RECD);
+   if (a_out != NULL)  ystrlcpy (a_out, s_final, LEN_RECD);
    DEBUG_YRPN    yLOG_info    ("a_out"     , a_out);
    /*---(check for ref troubles)---------*/
    DEBUG_YRPN    yLOG_value   ("x_bad"     , x_bad);
@@ -419,7 +419,7 @@ yrpn_addr_badref        (int  a_pos)
       DEBUG_YRPN    yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
-   strlcpy (x_addr, myRPN.working + a_pos, 5);
+   ystrlcpy (x_addr, myRPN.working + a_pos, 5);
    DEBUG_YRPN    yLOG_info    ("x_addr"    , x_addr);
    --rce;  if (strcmp (x_addr, "#REF") != 0) {
       DEBUG_YRPN    yLOG_note    ("does not match #REF");
@@ -429,8 +429,8 @@ yrpn_addr_badref        (int  a_pos)
    /*---(handle)-------------------------*/
    x_pos = a_pos + 4;
    myRPN.t_type   = YRPN_ADDR   ;
-   strlcpy (myRPN.t_token, x_addr, LEN_LABEL);
-   strlcpy (myRPN.t_name , x_addr, LEN_LABEL);
+   ystrlcpy (myRPN.t_token, x_addr, LEN_LABEL);
+   ystrlcpy (myRPN.t_name , x_addr, LEN_LABEL);
    myRPN.t_len = strlen (myRPN.t_name);
    yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
    yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
@@ -479,7 +479,7 @@ yrpn_addr               (int  a_pos, short a_def)
    x_pos        = a_pos;  /* starting point */
    while (yrpn_token_accum (&x_pos) == 0);
    /*---(validate the address)-------------*/
-   strlcpy (x_addr, myRPN.t_name, LEN_LABEL);
+   ystrlcpy (x_addr, myRPN.t_name, LEN_LABEL);
    /*> rc = s_prettier (x_addr, a_def, x_final, YSTR_LEGAL);                          <*/
    rc = s_breaker  (x_addr, &u, &x, &y, &z, NULL, 0, YSTR_CHECK);
    --rce;  if (rc < 0) {
@@ -492,14 +492,14 @@ yrpn_addr               (int  a_pos, short a_def)
    rc = s_prettier (x_temp, a_def, x_shunt, YSTR_CHECK);
    rc = s_prettier (x_addr, a_def, x_final, YSTR_CHECK);
    /*---(handle rpn)---------------------*/
-   strlcpy (myRPN.t_token, x_shunt, LEN_LABEL);
-   strlcpy (myRPN.t_name , x_shunt, LEN_LABEL);
+   ystrlcpy (myRPN.t_token, x_shunt, LEN_LABEL);
+   ystrlcpy (myRPN.t_name , x_shunt, LEN_LABEL);
    myRPN.t_len = strlen (myRPN.t_name);
    /*> yrpn_output_shuntd_OLD ();                                                     <*/
    yrpn_output_rpn (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
    /*---(handle infix)-------------------*/
-   strlcpy (myRPN.t_token, x_final, LEN_LABEL);
-   strlcpy (myRPN.t_name , x_final, LEN_LABEL);
+   ystrlcpy (myRPN.t_token, x_final, LEN_LABEL);
+   ystrlcpy (myRPN.t_name , x_final, LEN_LABEL);
    myRPN.t_len = strlen (myRPN.t_name);
    yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;
@@ -531,7 +531,7 @@ char*      /* ---- : answer unit testing gray-box questions ------------------*/
 yrpn_addr__unit         (char *a_question, int a_item)
 {
    /*---(initialize)---------------------*/
-   strlcpy (unit_answer, "ADDR status      : unknown request", 100);
+   ystrlcpy (unit_answer, "ADDR status      : unknown request", 100);
    /*---(input)--------------------------*/
    if          (strcmp (a_question, "status"    )     == 0) {
       snprintf (unit_answer, LEN_RECD, "ADDR status      : %c" , s_ready);

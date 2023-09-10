@@ -91,7 +91,7 @@
 #define     P_SUBJECT   "machine efficient formulas"
 #define     P_PURPOSE   "simple, clean infix to reverse polish notation conversion"
 
-#define     P_NAMESAKE  "terpsikhore-seirenes (delight in dance)
+#define     P_NAMESAKE  "terpsikhore-seirenes (delight in dance)"
 #define     P_HERITAGE  "terpsikhore is the greek muse of music, choral song, and dance"
 #define     P_IMAGERY   "beaufiful young woman sitting and playing a lyre"
 #define     P_REASON    "choral song is about coordination as is rpn"
@@ -112,9 +112,9 @@
 #define     P_CREATED   "2011-08"
 
 #define     P_VERMAJOR  "1.--, production use, working out issues"
-#define     P_VERMINOR  "1.1-, first full production version"
-#define     P_VERNUM    "1.2c"
-#define     P_VERTXT    "added ySRC source register support"
+#define     P_VERMINOR  "1.2-, first full production version"
+#define     P_VERNUM    "1.2d"
+#define     P_VERTXT    "updated ySTR functions to ¶ystr¶ prefix"
 
 /*===[[ END_HEADER ]]=========================================================*/
 

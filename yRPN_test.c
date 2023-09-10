@@ -38,8 +38,8 @@ yrpn__unit              (char *a_question, int a_item)
    else if    (strcmp (a_question, "n_tokens"     )     == 0) {
       snprintf (unit_answer, LEN_RECD, "infix count      : %d" , myRPN.n_tokens);
    } else if (strcmp (a_question, "tokens"    )     == 0) {
-      strlcpy  (t, myRPN.tokens, LEN_RECD);
-      strldchg (t, 0x0F, '·', LEN_RECD);
+      ystrlcpy  (t, myRPN.tokens, LEN_RECD);
+      ystrldchg (t, 0x0F, '·', LEN_RECD);
       snprintf (unit_answer, LEN_RECD, "infix output     :%s"  , t);
    } else if (strcmp (a_question, "pretty"    )     == 0) {
       snprintf (unit_answer, LEN_RECD, "pretty output    :%s"  , myRPN.pretty);
@@ -48,8 +48,8 @@ yrpn__unit              (char *a_question, int a_item)
    } else if (strcmp (a_question, "output"    )     == 0) {
       snprintf (unit_answer, LEN_RECD, "postfix output   :%s"  , myRPN.shunted);
    } else if (strcmp (a_question, "detail"    )     == 0) {
-      strlcpy  (t, myRPN.detail, LEN_RECD);
-      strldchg (t, G_KEY_SHIFT, '´', LEN_RECD);
+      ystrlcpy  (t, myRPN.detail, LEN_RECD);
+      ystrldchg (t, G_KEY_SHIFT, '´', LEN_RECD);
       snprintf (unit_answer, LEN_RECD, "postfix detail   :%s"  , t);
    }
    /*---(infix order)--------------------*/
@@ -78,9 +78,9 @@ yrpn__unit              (char *a_question, int a_item)
       for (i = 0; i < g_nstack; ++i) {
          sprintf (s , "å%.5sæ", g_stack [i].name);
          sprintf (t , " %c%c%s%d", g_stack [i].type, g_stack [i].prec, s, g_stack [i].pos);
-         strlcat (unit_answer, t, LEN_RECD);
+         ystrlcat (unit_answer, t, LEN_RECD);
       }
-      strlcat (unit_answer, " ´", LEN_RECD);
+      ystrlcat (unit_answer, " ´", LEN_RECD);
    }
    /*> else if   (strcmp (a_question, "depth"     )     == 0) {                                          <* 
     *>    snprintf (unit_answer, LEN_RECD, "stack depth      : %d"    , g_nstack);                   <* 
@@ -88,13 +88,13 @@ yrpn__unit              (char *a_question, int a_item)
     *>    snprintf (unit_answer, LEN_RECD, "stack details    :");                                    <* 
     *>    for (i = 0; i < g_nstack; ++i) {                                                               <* 
     *>       sprintf (x_temp     , " %c,%c,%s", g_stack [i].type, g_stack [i].prec, g_stack [i].name);   <* 
-    *>       strlcat (unit_answer, x_temp       , LEN_RECD);                                         <* 
+    *>       ystrlcat (unit_answer, x_temp       , LEN_RECD);                                         <* 
     *>    }                                                                                              <* 
     *> } else if (strcmp (a_question, "stack_terse")    == 0) {                                          <* 
     *>    snprintf (unit_answer, LEN_RECD, "stack terse      :");                                    <* 
     *>    for (i = 0; i < g_nstack && i < 6; ++i) {                                                      <* 
     *>       sprintf (x_temp     , " %c%c", g_stack [i].type, g_stack [i].prec);                         <* 
-    *>       strlcat (unit_answer, x_temp       , LEN_RECD);                                         <* 
+    *>       ystrlcat (unit_answer, x_temp       , LEN_RECD);                                         <* 
     *>    }                                                                                              <* 
     *> }                                                                                                 <*/
    /*---(UNKNOWN)------------------------*/
@@ -114,9 +114,9 @@ yrpn__unit_insider     (int b, int x, int y, int z)
 char
 yrpn__unit_quick       (void)
 {
-   str0gyges  (NULL);
+   ystr0gyges  (NULL);
    yRPN_init (YRPN_GYGES);
-   yRPN_addr_config   (str2gyges, str4gyges, str6gyges, str8gyges, yrpn__unit_insider);
+   yRPN_addr_config   (ystr2gyges, ystr4gyges, ystr6gyges, ystr8gyges, yrpn__unit_insider);
 }
 
 char       /*----: set up programgents/debugging -----------------------------*/

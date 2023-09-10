@@ -22,7 +22,7 @@ yrpn_exact__by_index    (char a_work [LEN_RECD], char a_index, char *r_type, cha
    DEBUG_YRPN     yLOG_enter   (__FUNCTION__);
    /*---(default)------------------------*/
    if (r_type    != NULL)  *r_type  = '-';
-   if (r_content != NULL)  strlcpy (r_content, "", LEN_SHORT);
+   if (r_content != NULL)  ystrlcpy (r_content, "", LEN_SHORT);
    if (r_pos     != NULL)  *r_pos   = -1;
    /*---(defenses)-----------------------*/
    DEBUG_YRPN     yLOG_point   ("a_work"    , a_work);
@@ -60,7 +60,7 @@ yrpn_exact__by_index    (char a_work [LEN_RECD], char a_index, char *r_type, cha
       if (r_type    != NULL)  *r_type  = a_work [x_pos];
       snprintf (x_content, LEN_FULL, "%*.*s", l, l, b);
       DEBUG_YRPN     yLOG_info    ("r_content" , x_content);
-      if (r_content != NULL)  strlcpy (r_content, x_content, LEN_FULL);
+      if (r_content != NULL)  ystrlcpy (r_content, x_content, LEN_FULL);
       DEBUG_YRPN     yLOG_value   ("r_pos"     , x_pos);
       if (r_pos     != NULL)  *r_pos   = x_pos;
       DEBUG_YRPN     yLOG_exit    (__FUNCTION__);
@@ -228,10 +228,10 @@ yrpn_exact__act_func    (char a_work [LEN_RECD], char a_index, char a_arity, cha
       DEBUG_YRPN     yLOG_value   ("i"         , i);
       yrpn_exact__act_get  (a_work, a_index - i, t);
       DEBUG_YRPN     yLOG_info    ("arg"       , t);
-      if (i != c)  strlcat (x_new, ",", LEN_RECD);
-      strlcat (x_new, t, LEN_RECD);
+      if (i != c)  ystrlcat (x_new, ",", LEN_RECD);
+      ystrlcat (x_new, t, LEN_RECD);
    }
-   strlcat (x_new, "))", LEN_RECD);
+   ystrlcat (x_new, "))", LEN_RECD);
    /*---(make full)----------------------*/
    yrpn_exact__act_done (a_work, x_pre, x_new, x_suf);
    /*---(complete)-----------------------*/
@@ -264,7 +264,7 @@ yrpn_exact              (char a_before [LEN_RECD])
    }
    DEBUG_YRPN     yLOG_info    ("a_before"  , a_before);
    /*---(prepare)------------------------*/
-   strlcpy (w, a_before, LEN_RECD);
+   ystrlcpy (w, a_before, LEN_RECD);
    l = strlen (w);
    DEBUG_YRPN     yLOG_value   ("l"         , l);
    c = yrpn_exact__by_index (w, -1, NULL, NULL, NULL);

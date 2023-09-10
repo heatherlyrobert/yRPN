@@ -162,9 +162,9 @@ yrpn_oper_init          (void)
    char        c           =  '-';
    char       *p           = NULL;
    DEBUG_YRPN     yLOG_enter   (__FUNCTION__);
-   strlcpy (s_one, "", LEN_HUND);
-   strlcpy (s_two, "", LEN_HUND);
-   strlcpy (s_thr, "", LEN_HUND);
+   ystrlcpy (s_one, "", LEN_HUND);
+   ystrlcpy (s_two, "", LEN_HUND);
+   ystrlcpy (s_thr, "", LEN_HUND);
    for (i = 0; i < MAX_OPER; ++i) {
       if (s_opers [i].name [0] == '\0')                            break;
       if (s_opers [i].real     != 'r' )                            continue;
@@ -175,26 +175,26 @@ yrpn_oper_init          (void)
       if (c != '\0') {
          sprintf (t, "%c", c);
          p = strchr (s_one, c);
-         if (p == NULL)  strlcat (s_one, t, LEN_HUND);
+         if (p == NULL)  ystrlcat (s_one, t, LEN_HUND);
       }
       c = s_opers [i].orig [1];
       if (c != '\0') {
          sprintf (t, "%c", c);
          p = strchr (s_two, c);
-         if (p == NULL)  strlcat (s_two, t, LEN_HUND);
+         if (p == NULL)  ystrlcat (s_two, t, LEN_HUND);
       }
       c = s_opers [i].orig [2];
       if (c != '\0') {
          sprintf (t, "%c", c);
          p = strchr (s_thr, c);
-         if (p == NULL)  strlcat (s_thr, t, LEN_HUND);
+         if (p == NULL)  ystrlcat (s_thr, t, LEN_HUND);
       }
       /*---(pretty)----------------------*/
       c = s_opers [i].pretty [0];
       if (c != '\0') {
          sprintf (t, "%c", c);
          p = strchr (s_one, c);
-         strlcat (s_one, t, LEN_HUND);
+         ystrlcat (s_one, t, LEN_HUND);
       }
       /*---(done)------------------------*/
    }
@@ -208,9 +208,9 @@ yrpn_oper_init          (void)
 char
 yrpn_oper_wrap          (void)
 {
-   strlcpy (s_one, "", LEN_HUND);
-   strlcpy (s_two, "", LEN_HUND);
-   strlcpy (s_thr, "", LEN_HUND);
+   ystrlcpy (s_one, "", LEN_HUND);
+   ystrlcpy (s_two, "", LEN_HUND);
+   ystrlcpy (s_thr, "", LEN_HUND);
    return 0;
 }
 
@@ -243,7 +243,7 @@ yrpn_oper_spacing       (char  *a_name, char *r_pre, char *r_suf, char r_pretty 
    /*---(defaults)----------------*/
    if (r_pre    != NULL)  *r_pre = S_YES;
    if (r_suf    != NULL)  *r_suf = S_YES;
-   if (r_pretty != NULL)  strlcpy (r_pretty, "", LEN_SHORT);
+   if (r_pretty != NULL)  ystrlcpy (r_pretty, "", LEN_SHORT);
    --rce;  if (a_name == NULL)  return rce;
    /*---(find symbol)-------------*/
    i = yrpn_oper__by_name (-1, a_name);
@@ -251,7 +251,7 @@ yrpn_oper_spacing       (char  *a_name, char *r_pre, char *r_suf, char r_pretty 
    /*---(save-back)---------------*/
    if (r_pre    != NULL)  *r_pre = s_opers [i].pre;
    if (r_suf    != NULL)  *r_suf = s_opers [i].suf;
-   if (r_pretty != NULL)  strlcpy (r_pretty, s_opers [i].pretty, LEN_SHORT);
+   if (r_pretty != NULL)  ystrlcpy (r_pretty, s_opers [i].pretty, LEN_SHORT);
    /*---(complete)----------------*/
    return 0;
 }
@@ -342,7 +342,7 @@ yrpn_oper__splat        (int  a_pos)
    DEBUG_YRPN     yLOG_char    ("p_type"    , myRPN.p_type);
    if (rc >= 0 && myRPN.p_type == YRPN_CAST   ) {
       DEBUG_YRPN     yLOG_note    ("working in * casting mode");
-      strlcpy (myRPN.t_name, "(*)", LEN_LABEL);
+      ystrlcpy (myRPN.t_name, "(*)", LEN_LABEL);
       myRPN.t_type = YRPN_CAST   ;
       myRPN.t_prec = S_PREC_FUNC;
       myRPN.t_dir  = S_RIGHT;
@@ -352,7 +352,7 @@ yrpn_oper__splat        (int  a_pos)
       myRPN.left_oper  = S_OPER_CLEAR;
    } else if (rc >= 0 && (myRPN.line_type == S_LINE_DEF_FPTR || myRPN.line_type == S_LINE_DEF_FUN || myRPN.line_type == S_LINE_DEF_PRO)) {
       DEBUG_YRPN     yLOG_note    ("working in * type modifier mode");
-      strlcpy (myRPN.t_name, "(*)", LEN_LABEL);
+      ystrlcpy (myRPN.t_name, "(*)", LEN_LABEL);
       myRPN.t_type = YRPN_PTYPE;
       DEBUG_YRPN     yLOG_info    ("t_name"    , myRPN.t_name);
       DEBUG_YRPN     yLOG_char    ("t_type"    , myRPN.t_type);
@@ -360,7 +360,7 @@ yrpn_oper__splat        (int  a_pos)
       myRPN.left_oper  = S_OPER_CLEAR;
    } else if (myRPN.line_type == S_LINE_DEF_FPTR) {
       DEBUG_YRPN     yLOG_note    ("working in function pointer mode");
-      strlcpy (myRPN.t_name, "(>", LEN_LABEL);
+      ystrlcpy (myRPN.t_name, "(>", LEN_LABEL);
       myRPN.t_type = YRPN_FPTR   ;
       DEBUG_YRPN     yLOG_info    ("t_name"    , myRPN.t_name);
       DEBUG_YRPN     yLOG_char    ("t_type"    , myRPN.t_type);
@@ -368,7 +368,7 @@ yrpn_oper__splat        (int  a_pos)
       myRPN.left_oper  = S_OPER_CLEAR;
    } else if ((myRPN.line_type == S_LINE_DEF || myRPN.line_type == S_LINE_DEF_VAR) && myRPN.line_sect != '=') {
       DEBUG_YRPN     yLOG_note    ("working in * type modifier mode");
-      strlcpy (myRPN.t_name, "(*)", LEN_LABEL);
+      ystrlcpy (myRPN.t_name, "(*)", LEN_LABEL);
       myRPN.t_type = YRPN_TYPE   ;
       DEBUG_YRPN     yLOG_info    ("t_name"    , myRPN.t_name);
       DEBUG_YRPN     yLOG_char    ("t_type"    , myRPN.t_type);
@@ -420,8 +420,8 @@ yrpn_oper_any           (int  a_pos)
       return rce;
    }
    /*---(save original)--------------------*/
-   strlcpy (myRPN.t_name , s_opers [i].name, LEN_FULL);
-   strlcpy (myRPN.t_token, s_opers [i].orig, LEN_FULL);
+   ystrlcpy (myRPN.t_name , s_opers [i].name, LEN_FULL);
+   ystrlcpy (myRPN.t_token, s_opers [i].orig, LEN_FULL);
    /*---(constants)------------------------*/
    /*> if (strchr ("лк", myRPN.t_name) != NULL) {                                     <* 
     *> }                                                                              <*/

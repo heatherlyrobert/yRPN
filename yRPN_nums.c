@@ -241,7 +241,7 @@ yrpn_nums_any           (short a_pos)
    }
    /*---(check float decimals)-------------*/
    --rce;  if (myRPN.t_type == YRPN_FLOAT) {
-      rc = strldcnt (myRPN.t_name, '.', LEN_FULL);
+      rc = ystrldcnt (myRPN.t_name, '.', LEN_FULL);
       --rce;  if (rc != 1) {
          yrpn_token_error  ();
          DEBUG_YRPN     yLOG_note    ("too many decimals");
@@ -278,7 +278,7 @@ yrpn_nums_any           (short a_pos)
    }
    /*---(save)-----------------------------*/
    DEBUG_YRPN     yLOG_note    ("put har literal directly to output");
-   strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
+   ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
    yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
    yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
    myRPN.left_oper  = S_OPER_CLEAR;

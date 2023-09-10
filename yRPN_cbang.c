@@ -236,7 +236,7 @@ yrpn_cbang_keyword      (short a_pos)
       else                                        myRPN.pproc = S_PPROC_OTHER;
    }
    /*---(save)-----------------------------*/
-   strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
+   ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
    DEBUG_YRPN     yLOG_note    ("keyword is a function");
    yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
    if (x_use == 'f')  yrpn_stack_push   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
@@ -251,7 +251,7 @@ yrpn_cbang_keyword      (short a_pos)
 /*> char                                                                              <* 
  *> yrpn_type_reset      (void)                                                       <* 
  *> {                                                                                 <* 
- *>    strlcpy (g_type_counts, "00.000.0000.000.000", LEN_LABEL);                     <* 
+ *>    ystrlcpy (g_type_counts, "00.000.0000.000.000", LEN_LABEL);                     <* 
  *>    return 0;                                                                      <* 
  *> }                                                                                 <*/
 
@@ -305,7 +305,7 @@ yrpn_cbang_type         (short a_pos)
       return rce;
    }
    /*---(definition vs casting)----------*/
-   strlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
+   ystrlcpy (myRPN.t_token, myRPN.t_name, LEN_FULL);
    yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
    if (myRPN.line_type == S_LINE_NORMAL) {
       DEBUG_YRPN     yLOG_note    ("treating as a casting onto stack");
@@ -332,7 +332,7 @@ yrpn_cbang_type         (short a_pos)
          DEBUG_YRPN     yLOG_note    ("casting type");
          /*---(fix paren)----------------*/
          if (strcmp (myRPN.p_name, "(") == 0) {
-            strlcpy (myRPN.p_name, "(:", LEN_LABEL);
+            ystrlcpy (myRPN.p_name, "(:", LEN_LABEL);
             myRPN.p_type = YRPN_CAST   ;
             myRPN.p_prec = S_PREC_FUNC;
             yrpn_stack_update (myRPN.t_type, myRPN.t_prec, myRPN.t_name);
