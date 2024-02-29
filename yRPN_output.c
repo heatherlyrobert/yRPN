@@ -69,12 +69,15 @@ yrpn_output__shunted    (uchar a_type, uchar a_name [LEN_FULL], short a_pos, uch
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    /*---(make divider)-------------------*/
+   DEBUG_YRPN_M  yLOG_snote   (a_name);
    if (myRPN.n_shunted == 0)  ystrlcpy (x_div, ""   , LEN_SHORT);
    else                       ystrlcpy (x_div, a_div, LEN_SHORT);
+   DEBUG_YRPN_M  yLOG_snote   (x_div);
    /*---(add token)----------------------*/
    DEBUG_YRPN_M  yLOG_snote   ("write normal");
    ystrlcat (myRPN.shunted, x_div  , LEN_RECD);
    ystrlcat (myRPN.shunted, a_name , LEN_RECD);
+   DEBUG_YRPN_M  yLOG_snote   (myRPN.shunted);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
@@ -88,10 +91,12 @@ yrpn_output__detail     (uchar a_type, uchar a_name [LEN_FULL], short a_pos, uch
    char        x_token     [LEN_FULL];
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_snote   (a_name);
    /*---(add token)----------------------*/
    DEBUG_YRPN_M  yLOG_snote   ("write detail");
    if (myRPN.n_shunted == 0)  ystrlcpy (x_div, ""   , LEN_SHORT);
-   else                       sprintf (x_div, a_div, LEN_SHORT);
+   else                       sprintf  (x_div, a_div, LEN_SHORT);
+   DEBUG_YRPN_M  yLOG_snote   (x_div);
    ystrlcat (myRPN.detail, x_div           , LEN_RECD);
    sprintf (x_token, "%c,%s", a_type, a_name);
    ystrlcat (myRPN.detail, x_token         , LEN_RECD);
@@ -101,6 +106,7 @@ yrpn_output__detail     (uchar a_type, uchar a_name [LEN_FULL], short a_pos, uch
    else                       sprintf (x_div, "Œ"  , LEN_SHORT);
    ystrlcat (myRPN.exact , x_div           , LEN_RECD);
    ystrlcat (myRPN.exact , x_token         , LEN_RECD);
+   DEBUG_YRPN_M  yLOG_snote   (myRPN.exact);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
@@ -114,15 +120,18 @@ yrpn_output__debug      (uchar a_type, uchar a_name [LEN_FULL], short a_pos, uch
    char        x_token     [LEN_FULL];
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_snote   (a_name);
    /*---(make divider)-------------------*/
    if (myRPN.n_shunted == 0)  ystrlcpy (x_div, ""   , LEN_SHORT);
    else                       sprintf (x_div, a_div, LEN_SHORT);
+   DEBUG_YRPN_M  yLOG_snote   (x_div);
    /*---(add token)----------------------*/
    DEBUG_YRPN_M  yLOG_snote   ("write debug");
    ystrlcat (myRPN.debug , x_div      , LEN_RECD);
    sprintf (x_token, "%c,%d,%s", a_type, a_pos, a_name);
    ystrlcat (myRPN.debug , x_token    , LEN_RECD);
    myRPN.l_tokens = strlen (myRPN.debug );
+   DEBUG_YRPN_M  yLOG_snote   (myRPN.debug);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
@@ -195,13 +204,17 @@ yrpn_output__tokens     (uchar a_type, uchar a_name [LEN_FULL], uchar a_token [L
    char        x_div       [LEN_SHORT] = "";
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_snote   (a_name);
+   DEBUG_YRPN_M  yLOG_snote   (a_token);
    /*---(make divider)-------------------*/
    if (myRPN.n_tokens  == 0)  ystrlcpy (x_div, ""   , LEN_SHORT);
    else                       ystrlcpy (x_div, a_div, LEN_SHORT);
+   DEBUG_YRPN_M  yLOG_snote   (x_div);
    /*---(add token)----------------------*/
    DEBUG_YRPN_M  yLOG_snote   ("write tokens");
    ystrlcat (myRPN.tokens, x_div      , LEN_RECD);
    ystrlcat (myRPN.tokens, a_name     , LEN_RECD);
+   DEBUG_YRPN_M  yLOG_snote   (myRPN.tokens);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
@@ -214,13 +227,17 @@ yrpn_output__parsed     (uchar a_type, uchar a_name [LEN_FULL], uchar a_token [L
    char        x_div       [LEN_SHORT] = "";
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_snote   (a_name);
+   DEBUG_YRPN_M  yLOG_snote   (a_token);
    /*---(make divider)-------------------*/
    if (myRPN.n_tokens  == 0)  ystrlcpy (x_div, ""   , LEN_SHORT);
    else                       ystrlcpy (x_div, a_div, LEN_SHORT);
+   DEBUG_YRPN_M  yLOG_snote   (x_div);
    /*---(add token)----------------------*/
    DEBUG_YRPN_M  yLOG_snote   ("write parsed");
    ystrlcat (myRPN.parsed, x_div      , LEN_RECD);
    ystrlcat (myRPN.parsed, a_token    , LEN_RECD);
+   DEBUG_YRPN_M  yLOG_snote   (myRPN.parsed);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
@@ -237,6 +254,7 @@ yrpn_output__pretty     (uchar a_type, uchar a_name [LEN_FULL], uchar a_token [L
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    DEBUG_YRPN_M  yLOG_snote   (a_name);
+   DEBUG_YRPN_M  yLOG_snote   (a_token);
    /*---(quick-out)----------------------*/
    if (strcmp (myRPN.t_name, "?") == 0) {
       DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
@@ -265,6 +283,7 @@ yrpn_output__pretty     (uchar a_type, uchar a_name [LEN_FULL], uchar a_token [L
    DEBUG_YRPN_M  yLOG_snote   ("save last");
    myRPN.l_type  = a_type;
    ystrlcpy (myRPN.l_name , a_name , LEN_LABEL);
+   DEBUG_YRPN_M  yLOG_snote   (myRPN.pretty);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;
@@ -280,6 +299,8 @@ yrpn_output__mathy      (uchar a_type, uchar a_name [LEN_FULL], uchar a_token [L
    char        x_new       [LEN_LABEL] = "";
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
+   DEBUG_YRPN_M  yLOG_snote   (a_name);
+   DEBUG_YRPN_M  yLOG_snote   (a_token);
    /*---(add token)----------------------*/
    if (myRPN.math == 'y' && strcmp (a_name, "*") == 0) {
       DEBUG_YRPN_M  yLOG_snote   ("leave out multiplies, implied");
@@ -299,6 +320,7 @@ yrpn_output__mathy      (uchar a_type, uchar a_name [LEN_FULL], uchar a_token [L
    DEBUG_YRPN_M  yLOG_snote   ("write mathy");
    if (x_new [0] == '\0')  ystrlcat (myRPN.mathy , a_token, LEN_RECD);
    else                    ystrlcat (myRPN.mathy , x_new  , LEN_RECD);
+   DEBUG_YRPN_M  yLOG_snote   (myRPN.mathy);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
    return 0;

@@ -113,8 +113,8 @@
 
 #define     P_VERMAJOR  "1.--, production use, working out issues"
 #define     P_VERMINOR  "1.2-, first full production version"
-#define     P_VERNUM    "1.2d"
-#define     P_VERTXT    "updated ySTR functions to ¶ystr¶ prefix"
+#define     P_VERNUM    "1.2e"
+#define     P_VERTXT    "complete with unit test clean-up after modifications"
 
 /*===[[ END_HEADER ]]=========================================================*/
 
@@ -208,6 +208,8 @@ extern char     *v_preproc;
 
 #define      S_YES              'y'
 #define      S_NO               '-'
+
+
 
 
 extern char      g_type_counts    [LEN_LABEL];
@@ -377,6 +379,7 @@ char        yrpn_group_close_mathy  (uchar a_type, uchar a_prec, uchar a_name [L
 /*345678901-12345678901-12345678901-12345678901-12345678901-12345678901-123456*/
 /*---(program)-----------------*/
 char        yrpn_stack_init         (void);
+char        yrpn_stack_show         (void);
 /*---(stack on)----------------*/
 char        yrpn_stack_push         (uchar a_type, uchar a_prec, uchar a_name [LEN_FULL], short a_pos);
 char        yrpn_stack_update       (uchar a_type, uchar a_prec, uchar a_name [LEN_FULL]);
@@ -456,7 +459,7 @@ char*       yrpn_addr__unit         (char *a_question, int a_item);
 int         yrpn_syms_funcvar       (int a_pos);
 /*---(operator)-------------*/
 /*---(grouping)-------------*/
-int         yrpn_syms_sequence      (int a_pos);
+int         yrpn_group_sequence     (int a_pos);
 int         yrpn_syms_ender         (int a_pos);
 /*---(done)-----------------*/
 

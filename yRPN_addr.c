@@ -173,7 +173,8 @@ yrpn_addr__adj_check    (char *a_src, char a_scope, char *a_target)
    }
    DEBUG_YRPN    yLOG_complex ("target"    , "b=%4d, x=%4d, y=%4d, z=%4d", s_targb, s_targx, s_targy, s_targz);
    /*---(save)---------------------------*/
-   ystrlcpy (s_work , a_src , LEN_RECD);
+   if (strchr (YSTR_CALC_PRE, a_src [0]) != NULL)  ystrlcpy (s_work, a_src, LEN_RECD);
+   else                                            snprintf (s_work, LEN_RECD, "·%s", a_src);
    ystrlcpy (s_final, "n/a"   , LEN_RECD);
    /*---(complete)-----------------------*/
    DEBUG_YRPN    yLOG_exit    (__FUNCTION__);
@@ -336,7 +337,9 @@ yrpn_addr__adj_main     (cchar *a_src, cchar a_scope, cchar *a_target, cint b, c
    else               rc = yRPN_get   (YRPN_PRETTY, &x_final, NULL);
    DEBUG_YRPN    yLOG_info    ("x_tokens"  , x_tokens);
    DEBUG_YRPN    yLOG_info    ("final"     , x_final);
-   sprintf (s_final, "%c%s", x_pre, x_final);
+   if (strchr (YSTR_CALC_SPC, x_pre) != NULL)   sprintf (s_final, "%c %s", x_pre, x_final);
+   else if (x_pre != '·')                       sprintf (s_final, "%c%s" , x_pre, x_final);
+   else                                         sprintf (s_final, "%s"   , x_final);
    if (a_out != NULL)  ystrlcpy (a_out, s_final, LEN_RECD);
    DEBUG_YRPN    yLOG_info    ("a_out"     , a_out);
    /*---(check for ref troubles)---------*/

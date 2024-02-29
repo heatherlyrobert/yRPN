@@ -39,6 +39,25 @@ yrpn_stack_init      (void)
    return 0;
 }
 
+char
+yrpn_stack_show         (void)
+{
+   int         i           =    0;
+   char        t           [LEN_HUND]  = "";
+   /*---(header)-------------------------*/
+   DEBUG_YRPN     yLOG_senter  (__FUNCTION__);
+   DEBUG_YRPN     yLOG_svalue  ("d", g_nstack);
+   /*---(stack)--------------------------*/
+   for (i = 0; i < g_nstack; ++i) {
+      sprintf (t, "%c,%c,%d,%s", g_stack [i].type, g_stack [i].prec, g_stack [i].pos, g_stack [i].name);
+      DEBUG_YRPN     yLOG_snote   (t);
+   }
+   /*---(complete)-----------------------*/
+   DEBUG_YRPN     yLOG_sexit   (__FUNCTION__);
+   return 0;
+
+}
+
 
 
 /*====================------------------------------------====================*/
@@ -74,6 +93,7 @@ yrpn_stack_push         (uchar a_type, uchar a_prec, uchar a_name [LEN_FULL], sh
    DEBUG_YRPN_M  yLOG_sint    (g_nstack);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
+   yrpn_stack_show ();
    return 0;
 }
 
@@ -105,6 +125,7 @@ yrpn_stack_update       (uchar a_type, uchar a_prec, uchar a_name [LEN_FULL])
    DEBUG_YRPN_M  yLOG_schar   (g_stack [g_nstack - 1].prec);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
+   yrpn_stack_show ();
    return 0;
 }
 
@@ -120,6 +141,7 @@ yrpn_stack_peek         (uchar *r_type, uchar *r_prec, uchar r_name [LEN_FULL], 
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         =  -10;
+   yrpn_stack_show ();
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_senter  (__FUNCTION__);
    /*---(default params)-----------------*/
@@ -157,8 +179,10 @@ yrpn_stack_peek         (uchar *r_type, uchar *r_prec, uchar r_name [LEN_FULL], 
    return 0;
 }
 
+char yRPN_stack_peek_OLD  (void)  { return yrpn_stack_peek (NULL, NULL, NULL, NULL); }
+
 char
-yRPN_stack_peek_OLD     (void)
+yRPN_stack_peek_DEAD    (void)
 {
    /*---(locals)-----------+-----------+-*/
    char        rce         =  -10;
@@ -199,6 +223,7 @@ yrpn_stack_pop      (void)
    char        x_div       [LEN_LABEL];
    char        x_token     [LEN_FULL];
    char        c           =    0;
+   yrpn_stack_show ();
    /*---(header)-------------------------*/
    DEBUG_YRPN_M  yLOG_enter   (__FUNCTION__);
    /*---(defense)------------------------*/
@@ -258,6 +283,7 @@ yrpn_stack__toss   (void)
    DEBUG_YRPN_M  yLOG_sint    (g_nstack);
    /*---(complete)-----------------------*/
    DEBUG_YRPN_M  yLOG_sexit   (__FUNCTION__);
+   yrpn_stack_show ();
    return 0;
 }
 

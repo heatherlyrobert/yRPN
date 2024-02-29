@@ -57,8 +57,9 @@ tOPER     s_opers [MAX_OPER] = {
    { "-:"  , "-"   , 'B', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "unary minus"                          },
    { "!"   , "!"   , 'B', 'r',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "logical NOT"                          },
    { "~"   , "~"   , 'B', 'r',  2, 'f',    S_LEFT , 2, S_YES, S_NO ,    S_NO , S_NO , ""  ,   "bitwise NOT (len limited)"            },
-   { "á"   , "*"   , 'B', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , "á" ,   "indirection/dereference"              },
-   { "á"   , "á"   , 'B', 'r',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "indirection/dereference"              },
+   { "á"   , "*"   , 'c', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "indirection/dereference"              },
+   { "*:"  , "*"   , 'c', 'r',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "indirection/dereference (classic)"    },
+   { "á"   , "á"   , 'g', 'r',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "indirection/dereference (sweet)"      },
    { "&:"  , "&"   , 'B', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_NO , ""  ,   "address-of"                           },
    { "(*)" , "*"   , 'c', 'I',  2, 'f',    S_RIGHT, 1, S_NO , S_NO ,    S_YES, S_YES, ""  ,   "casting modifier"                     },
    /*-mult-family--- who real off prec    --dir--  ar -comb-  -post-    -pre-- -suf- pretty   --comment-----------------------------*/
@@ -348,7 +349,8 @@ yrpn_oper__splat        (int  a_pos)
       myRPN.t_dir  = S_RIGHT;
       DEBUG_YRPN     yLOG_info    ("t_name"    , myRPN.t_name);
       DEBUG_YRPN     yLOG_char    ("t_type"    , myRPN.t_type);
-      yrpn_stack_push   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
+      /*> yrpn_stack_push   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);        <*/
+      yrpn_stack_update (myRPN.t_type, myRPN.t_prec, myRPN.t_name);
       myRPN.left_oper  = S_OPER_CLEAR;
    } else if (rc >= 0 && (myRPN.line_type == S_LINE_DEF_FPTR || myRPN.line_type == S_LINE_DEF_FUN || myRPN.line_type == S_LINE_DEF_PRO)) {
       DEBUG_YRPN     yLOG_note    ("working in * type modifier mode");
@@ -419,6 +421,8 @@ yrpn_oper_any           (int  a_pos)
       DEBUG_YRPN     yLOG_exitr   (__FUNCTION__, rce);
       return rce;
    }
+   DEBUG_YRPN     yLOG_value   ("i"           , i);
+   DEBUG_YRPN     yLOG_info    ("desc"        , s_opers [i].desc);
    /*---(save original)--------------------*/
    ystrlcpy (myRPN.t_name , s_opers [i].name, LEN_FULL);
    ystrlcpy (myRPN.t_token, s_opers [i].orig, LEN_FULL);
@@ -430,8 +434,11 @@ yrpn_oper_any           (int  a_pos)
       DEBUG_YRPN     yLOG_note    ("check for left operators in right only mode");
       if      (strcmp (myRPN.t_name, "+" ) == 0)  { strcpy (myRPN.t_name, "+:"); myRPN.t_len  = 2; }
       else if (strcmp (myRPN.t_name, "-" ) == 0)  { strcpy (myRPN.t_name, "-:"); myRPN.t_len  = 2; }
-      else if (strcmp (myRPN.t_name, "*" ) == 0)  { strcpy (myRPN.t_name, "á" ); myRPN.t_len  = 2; }
       else if (strcmp (myRPN.t_name, "&" ) == 0)  { strcpy (myRPN.t_name, "&:"); myRPN.t_len  = 2; }
+      else if (strcmp (myRPN.t_name, "*" ) == 0)  {
+         if (myRPN.lang == YRPN_GYGES)  { strcpy (myRPN.t_name, "á" ); myRPN.t_len  = 2; }
+         else                           { strcpy (myRPN.t_name, "*:"); myRPN.t_len  = 2; }
+      }
    } else {
       DEBUG_YRPN     yLOG_note    ("check for right operators in left only mode");
       if      (strcmp (myRPN.t_name, "++") == 0)  { strcpy (myRPN.t_name, ":+"); myRPN.t_len  = 2; }
@@ -445,7 +452,10 @@ yrpn_oper_any           (int  a_pos)
       yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
       myRPN.left_oper  = S_OPER_LEFT;  /* an oper after an oper must be right-only */
    } else if (strcmp (myRPN.t_name, "á") == 0) {
-      DEBUG_YRPN     yLOG_note    ("working with a pointer");
+      DEBUG_YRPN     yLOG_note    ("working with a gyges-pointer");
+      yrpn_oper__splat  (a_pos);
+   } else if (strcmp (myRPN.t_name, "*:") == 0) {
+      DEBUG_YRPN     yLOG_note    ("working with a c-pointer");
       yrpn_oper__splat  (a_pos);
    } else {
       DEBUG_YRPN     yLOG_note    ("working with normal operators");

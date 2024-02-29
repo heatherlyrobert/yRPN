@@ -335,7 +335,9 @@ yrpn_cbang_type         (short a_pos)
             ystrlcpy (myRPN.p_name, "(:", LEN_LABEL);
             myRPN.p_type = YRPN_CAST   ;
             myRPN.p_prec = S_PREC_FUNC;
+            myRPN.t_type = YRPN_CAST   ;
             yrpn_stack_update (myRPN.t_type, myRPN.t_prec, myRPN.t_name);
+             /*> yrpn_stack__toss   ();                                               <*/
          }
          /*---(update current)-----------*/
          myRPN.t_type = YRPN_CAST   ;

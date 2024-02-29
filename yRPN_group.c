@@ -171,8 +171,43 @@ yrpn_group_close_mathy  (uchar a_type, uchar a_prec, uchar a_name [LEN_FULL], uc
    return 0;
 }
 
+int
+yrpn_group_placeholder  (int a_pos)
+{
+   /*---(locals)-----------+-----+-----+-*/
+   int         x_type      =  '-';
+   char        x_name      [LEN_LABEL] = "";
+   /*---(header)------------------------*/
+   DEBUG_YRPN     yLOG_enter   (__FUNCTION__);
+   /*---(prepare)------------------------*/
+   myRPN.line_sect = '-';
+   ystrlcpy (x_name, myRPN.t_name, LEN_LABEL);
+   /*---(prepare)------------------------*/
+   DEBUG_YRPN     yLOG_char    ("line_type" , myRPN.line_type);
+   if (myRPN.line_type == S_LINE_DEF_FPTR || myRPN.line_type == S_LINE_DEF_PRO) {
+      DEBUG_YRPN     yLOG_char    ("s_type"    , myRPN.s_type);
+      if (myRPN.s_type == YRPN_PTYPE) {
+         DEBUG_YRPN     yLOG_note    ("found unnamed parameter");
+         /*---(push in placeholder)---*/
+         ystrlcpy (myRPN.t_name, "?", LEN_LABEL);
+         myRPN.t_type = YRPN_VARS   ;
+         myRPN.t_prec = S_PREC_NONE;
+         yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
+         yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
+         /*---(put back---------------*/
+         ystrlcpy (myRPN.t_name, x_name, LEN_LABEL);
+         myRPN.t_type = S_TTYPE_GROUP;
+         yrpn_oper_prec ();
+         /*---(done)------------------*/
+      }
+   }
+   /*---(complete)-------------------------*/
+   DEBUG_YRPN     yLOG_exit    (__FUNCTION__);
+   return 0;
+}
+
 int          /*--> check for grouping symbols ------------[--------[--------]-*/
-yrpn_syms_sequence      (int a_pos)
+yrpn_group_sequence     (int a_pos)
 {  /*---(design notes)--------------------------------------------------------*/
    /* grouping symbols are all one-char and specific.                         */
    /*---(locals)-----------+-----------+-*/
@@ -223,6 +258,7 @@ yrpn_syms_sequence      (int a_pos)
       yrpn_group_open_mathy  (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
       break;
    case ')' :
+      yrpn_group_placeholder (a_pos);
       yrpn_group_close       (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
       break;
    case '¹' :
@@ -244,22 +280,7 @@ yrpn_syms_sequence      (int a_pos)
    case ',' :
       DEBUG_YRPN     yLOG_note    ("comma");
       ++(myRPN.narg [myRPN.level]);
-      x_type  = myRPN.s_type;
-      myRPN.line_sect = '-';
-      DEBUG_YRPN     yLOG_char    ("x_type"    , x_type);
-      DEBUG_YRPN     yLOG_char    ("line_sect" , myRPN.line_sect);
-      if (myRPN.line_type == S_LINE_DEF_FPTR || myRPN.line_type == S_LINE_DEF_PRO) {
-         if (x_type == YRPN_PTYPE) {
-            ystrlcpy (myRPN.t_name, "?", LEN_LABEL);
-            myRPN.t_type = YRPN_VARS   ;
-            myRPN.t_prec = S_PREC_NONE;
-            yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
-            yrpn_output_rpn   (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
-            ystrlcpy (myRPN.t_name, ",", LEN_LABEL);
-            myRPN.t_type = S_TTYPE_GROUP;
-            yrpn_oper_prec ();
-         }
-      }
+      yrpn_group_placeholder (a_pos);
       yrpn_output_infix (myRPN.t_type, myRPN.t_prec, myRPN.t_name, myRPN.t_token, a_pos);
       rc = yrpn_stack_comma (myRPN.t_type, myRPN.t_prec, myRPN.t_name, a_pos);
       myRPN.left_oper  = S_OPER_LEFT;
