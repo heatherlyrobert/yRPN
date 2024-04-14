@@ -113,8 +113,8 @@
 
 #define     P_VERMAJOR  "1.--, production use, working out issues"
 #define     P_VERMINOR  "1.2-, first full production version"
-#define     P_VERNUM    "1.2e"
-#define     P_VERTXT    "complete with unit test clean-up after modifications"
+#define     P_VERNUM    "1.2f"
+#define     P_VERTXT    "minor updates to support library changes"
 
 /*===[[ END_HEADER ]]=========================================================*/
 
